@@ -107,7 +107,7 @@
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "uuid": "^11.1.0",
-    "validator": "^13.15.23",
+    "validator": "^13.15.26",
     "winston": "^3.19.0"
   },
   "devDependencies": {
