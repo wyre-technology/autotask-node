@@ -26,11 +26,12 @@ export declare class TicketNotes extends BaseEntity {
     constructor(axios: AxiosInstance, logger: winston.Logger, requestHandler?: RequestHandler);
     static getMetadata(): MethodMetadata[];
     /**
-     * Create a new ticketnotes
-     * @param ticketNotes - The ticketnotes data to create
-     * @returns Promise with the created ticketnotes
+     * Create a new ticket note
+     * @param ticketId - The parent ticket ID
+     * @param ticketNotes - The ticket note data to create
+     * @returns Promise with the created ticket note
      */
-    create(ticketNotes: ITicketNotes): Promise<ApiResponse<ITicketNotes>>;
+    create(ticketId: number, ticketNotes: ITicketNotes): Promise<ApiResponse<ITicketNotes>>;
     /**
      * Get a ticketnotes by ID
      * @param id - The ticketnotes ID

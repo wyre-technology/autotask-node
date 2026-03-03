@@ -9,6 +9,46 @@ const RetryStrategy_1 = require("../errors/RetryStrategy");
 const CircuitBreaker_1 = require("../errors/CircuitBreaker");
 const ErrorLogger_1 = require("../errors/ErrorLogger");
 /**
+ * Limits concurrent requests per endpoint to respect Autotask's 3-thread-per-endpoint
+ * constraint (per API tracking identifier). Queues excess requests rather than rejecting them.
+ *
+ * See: https://autotask.net/help/DeveloperHelp/Content/AdminSetup/2ExtensionsIntegrations/APIs/REST/API_Rate_Limiting.htm
+ */
+class EndpointSemaphore {
+    constructor(limit = 3) {
+        this.limit = limit;
+        this.active = new Map();
+        this.queues = new Map();
+    }
+    async acquire(endpoint) {
+        const current = this.active.get(endpoint) ?? 0;
+        if (current < this.limit) {
+            this.active.set(endpoint, current + 1);
+            return;
+        }
+        return new Promise(resolve => {
+            const queue = this.queues.get(endpoint) ?? [];
+            queue.push(resolve);
+            this.queues.set(endpoint, queue);
+        });
+    }
+    release(endpoint) {
+        const queue = this.queues.get(endpoint) ?? [];
+        if (queue.length > 0) {
+            // Pass the slot directly to the next waiter without changing the count
+            const next = queue.shift();
+            this.queues.set(endpoint, queue);
+            next();
+        }
+        else {
+            this.active.set(endpoint, Math.max(0, (this.active.get(endpoint) ?? 1) - 1));
+        }
+    }
+    queueLength(endpoint) {
+        return this.queues.get(endpoint)?.length ?? 0;
+    }
+}
+/**
  * Enhanced request handler with structured error handling, retry logic, and logging
  */
 class RequestHandler {
@@ -27,6 +67,9 @@ class RequestHandler {
             useAdvancedRetry: true,
             enableCircuitBreaker: true,
         };
+        // Autotask enforces 3 concurrent threads per endpoint per API tracking identifier.
+        // This semaphore queues excess requests to prevent HTTP 429 "thread limit exceeded" errors.
+        this.endpointSemaphore = new EndpointSemaphore(3);
         this.errorLogger = errorLogger || ErrorLogger_1.defaultErrorLogger;
         this.performanceMonitor = new performanceMonitor_1.PerformanceMonitor(this.logger);
         this.retryStrategy = new RetryStrategy_1.RetryStrategy({
@@ -79,7 +122,8 @@ class RequestHandler {
         });
     }
     /**
-     * Execute a request with enterprise-grade reliability patterns
+     * Execute a request with enterprise-grade reliability patterns.
+     * Automatically limits concurrent requests per endpoint to 3 (Autotask's hard limit).
      */
     async executeRequest(requestFn, endpoint, method, options = {}) {
         const mergedOptions = {
@@ -95,17 +139,30 @@ class RequestHandler {
             startTime: Date.now(),
             attempt: 0,
         };
+        // Enforce Autotask's 3 concurrent thread limit per endpoint.
+        // Strip query string so /v1.0/Tickets?id=1 and /v1.0/Tickets share the same slot pool.
+        const endpointBase = endpoint.split('?')[0];
+        const queueLen = this.endpointSemaphore.queueLength(endpointBase);
+        if (queueLen > 0) {
+            this.logger.debug(`Autotask thread limit reached for ${endpointBase}, queuing request (${queueLen} ahead)`);
+        }
+        await this.endpointSemaphore.acquire(endpointBase);
         // Start performance monitoring if enabled
         let performanceTimer;
         if (mergedOptions.enablePerformanceMonitoring) {
             performanceTimer = this.performanceMonitor.startTimer(endpoint, method);
         }
-        // Use advanced retry strategy if enabled
-        if (mergedOptions.useAdvancedRetry) {
-            return this.executeWithAdvancedRetry(requestFn, context, mergedOptions, performanceTimer);
+        try {
+            // Use advanced retry strategy if enabled
+            if (mergedOptions.useAdvancedRetry) {
+                return await this.executeWithAdvancedRetry(requestFn, context, mergedOptions, performanceTimer);
+            }
+            // Fall back to legacy retry logic for backward compatibility
+            return await this.executeWithLegacyRetry(requestFn, context, mergedOptions, performanceTimer);
         }
-        // Fall back to legacy retry logic for backward compatibility
-        return this.executeWithLegacyRetry(requestFn, context, mergedOptions, performanceTimer);
+        finally {
+            this.endpointSemaphore.release(endpointBase);
+        }
     }
     /**
      * Execute request with advanced retry strategy and circuit breaker

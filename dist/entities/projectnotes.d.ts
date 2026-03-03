@@ -26,11 +26,12 @@ export declare class ProjectNotes extends BaseEntity {
     constructor(axios: AxiosInstance, logger: winston.Logger, requestHandler?: RequestHandler);
     static getMetadata(): MethodMetadata[];
     /**
-     * Create a new projectnotes
-     * @param projectNotes - The projectnotes data to create
-     * @returns Promise with the created projectnotes
+     * Create a new project note
+     * @param projectId - The parent project ID
+     * @param projectNotes - The project note data to create
+     * @returns Promise with the created project note
      */
-    create(projectNotes: IProjectNotes): Promise<ApiResponse<IProjectNotes>>;
+    create(projectId: number, projectNotes: IProjectNotes): Promise<ApiResponse<IProjectNotes>>;
     /**
      * Get a projectnotes by ID
      * @param id - The projectnotes ID

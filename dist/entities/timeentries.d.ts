@@ -26,11 +26,12 @@ export declare class TimeEntries extends BaseEntity {
     constructor(axios: AxiosInstance, logger: winston.Logger, requestHandler?: RequestHandler);
     static getMetadata(): MethodMetadata[];
     /**
-     * Create a new timeentries
-     * @param timeEntries - The timeentries data to create
-     * @returns Promise with the created timeentries
+     * Create a new time entry under a ticket
+     * @param ticketId - The parent ticket ID
+     * @param timeEntries - The time entry data to create
+     * @returns Promise with the created time entry
      */
-    create(timeEntries: ITimeEntries): Promise<ApiResponse<ITimeEntries>>;
+    create(ticketId: number, timeEntries: ITimeEntries): Promise<ApiResponse<ITimeEntries>>;
     /**
      * Get a timeentries by ID
      * @param id - The timeentries ID

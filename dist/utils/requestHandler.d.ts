@@ -37,13 +37,15 @@ export declare class RequestHandler {
     private retryStrategy;
     private circuitBreakerRegistry;
     private errorLogger;
+    private endpointSemaphore;
     constructor(axios: AxiosInstance, logger: winston.Logger, globalOptions?: Partial<RequestOptions>, errorLogger?: ErrorLogger);
     /**
      * Setup axios interceptors for request/response logging and timeout handling
      */
     private setupAxiosInterceptors;
     /**
-     * Execute a request with enterprise-grade reliability patterns
+     * Execute a request with enterprise-grade reliability patterns.
+     * Automatically limits concurrent requests per endpoint to 3 (Autotask's hard limit).
      */
     executeRequest<T>(requestFn: () => Promise<AxiosResponse<T>>, endpoint: string, method: string, options?: RequestOptions): Promise<AxiosResponse<T>>;
     /**
