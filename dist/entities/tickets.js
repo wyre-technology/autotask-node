@@ -84,8 +84,7 @@ class Tickets extends base_1.BaseEntity {
      */
     async patch(id, tickets) {
         this.logger.info('Patching tickets', { id, tickets });
-        // Autotask REST API: PATCH goes to the collection endpoint with id in the body
-        return this.executeRequest(async () => this.axios.patch(this.endpoint, { id, ...tickets }), this.endpoint, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, tickets), `${this.endpoint}/${id}`, 'PATCH');
     }
     /**
      * Delete a tickets

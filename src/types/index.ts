@@ -3,6 +3,7 @@ export interface AutotaskAuth {
   integrationCode: string;
   secret: string;
   apiUrl?: string; // Optional override
+  skipConnectionTest?: boolean; // Skip the /Version connectivity check (useful in gateway/stateless mode)
 }
 
 /**
