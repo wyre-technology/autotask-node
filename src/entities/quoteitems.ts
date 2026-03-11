@@ -39,10 +39,10 @@ export class QuoteItems extends BaseEntity {
     return [
       {
         operation: 'createQuoteItems',
-        requiredParams: ['quoteItems'],
+        requiredParams: ['quoteId', 'quoteItems'],
         optionalParams: [],
         returnType: 'IQuoteItems',
-        endpoint: '/QuoteItems',
+        endpoint: '/Quotes/{quoteId}/QuoteItems',
       },
       {
         operation: 'getQuoteItems',
@@ -76,15 +76,43 @@ export class QuoteItems extends BaseEntity {
   }
 
   /**
-   * Create a new quoteitems
-   * @param quoteItems - The quoteitems data to create
-   * @returns Promise with the created quoteitems
+   * Create a new quote item under a parent quote
+   * @param quoteId - The parent quote ID
+   * @param quoteItems - The quote item data to create
+   * @returns Promise with the created quote item
    */
-  async create(quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>> {
-    this.logger.info('Creating quoteitems', { quoteItems });
+  async create(quoteId: number, quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>>;
+  /**
+   * @deprecated Use create(quoteId, quoteItems) instead. QuoteItems is a child entity of Quotes.
+   */
+  async create(quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>>;
+  async create(quoteIdOrItems: number | IQuoteItems, quoteItems?: IQuoteItems): Promise<ApiResponse<IQuoteItems>> {
+    // Support both signatures: create(quoteId, item) and create(item) for backwards compatibility
+    let createEndpoint: string;
+    let itemData: IQuoteItems;
+
+    if (typeof quoteIdOrItems === 'number' && quoteItems) {
+      // New parent-child URL pattern: POST /Quotes/{quoteId}/QuoteItems
+      createEndpoint = `/Quotes/${quoteIdOrItems}/QuoteItems`;
+      itemData = quoteItems;
+    } else if (typeof quoteIdOrItems === 'object') {
+      // Legacy pattern or when quoteID is in the body - extract quoteID for the URL
+      itemData = quoteIdOrItems;
+      if (itemData.quoteID) {
+        createEndpoint = `/Quotes/${itemData.quoteID}/QuoteItems`;
+      } else {
+        // Fallback to flat endpoint (will likely fail with 404)
+        createEndpoint = this.endpoint;
+      }
+    } else {
+      createEndpoint = this.endpoint;
+      itemData = quoteIdOrItems as any;
+    }
+
+    this.logger.info('Creating quote item', { endpoint: createEndpoint, quoteItems: itemData });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, quoteItems),
-      this.endpoint,
+      async () => this.axios.post(createEndpoint, itemData),
+      createEndpoint,
       'POST'
     );
   }
