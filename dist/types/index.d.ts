@@ -3,6 +3,7 @@ export interface AutotaskAuth {
     integrationCode: string;
     secret: string;
     apiUrl?: string;
+    skipConnectionTest?: boolean;
 }
 /**
  * Performance and reliability configuration options

@@ -17,11 +17,11 @@ export interface IQuoteItemsQuery {
 
 /**
  * QuoteItems entity class for Autotask API
- * 
+ *
  * Line items within quotes
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/QuoteItemsEntity.htm}
  */
 export class QuoteItems extends BaseEntity {
@@ -39,10 +39,10 @@ export class QuoteItems extends BaseEntity {
     return [
       {
         operation: 'createQuoteItems',
-        requiredParams: ['quoteItems'],
+        requiredParams: ['quoteId', 'quoteItems'],
         optionalParams: [],
         returnType: 'IQuoteItems',
-        endpoint: '/QuoteItems',
+        endpoint: '/Quotes/{quoteId}/Items',
       },
       {
         operation: 'getQuoteItems',
@@ -60,10 +60,10 @@ export class QuoteItems extends BaseEntity {
       },
       {
         operation: 'deleteQuoteItems',
-        requiredParams: ['id'],
+        requiredParams: ['quoteId', 'id'],
         optionalParams: [],
         returnType: 'void',
-        endpoint: '/QuoteItems/{id}',
+        endpoint: '/Quotes/{quoteId}/Items/{id}',
       },
       {
         operation: 'listQuoteItems',
@@ -71,22 +71,68 @@ export class QuoteItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IQuoteItems[]',
         endpoint: '/QuoteItems',
-      }
+      },
     ];
   }
 
   /**
-   * Create a new quoteitems
-   * @param quoteItems - The quoteitems data to create
-   * @returns Promise with the created quoteitems
+   * Create a new quote item under a parent quote
+   * @param quoteId - The parent quote ID
+   * @param quoteItems - The quote item data to create
+   * @returns Promise with the created quote item
    */
-  async create(quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>> {
-    this.logger.info('Creating quoteitems', { quoteItems });
-    return this.executeRequest(
-      async () => this.axios.post(this.endpoint, quoteItems),
-      this.endpoint,
+  async create(
+    quoteId: number,
+    quoteItems: IQuoteItems
+  ): Promise<ApiResponse<IQuoteItems>>;
+  /**
+   * @deprecated Use create(quoteId, quoteItems) instead. QuoteItems is a child entity of Quotes.
+   */
+  async create(quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>>;
+  async create(
+    quoteIdOrItems: number | IQuoteItems,
+    quoteItems?: IQuoteItems
+  ): Promise<ApiResponse<IQuoteItems>> {
+    // Support both signatures: create(quoteId, item) and create(item) for backwards compatibility
+    let createEndpoint: string;
+    let itemData: IQuoteItems;
+
+    if (typeof quoteIdOrItems === 'number' && quoteItems) {
+      // New parent-child URL pattern: POST /Quotes/{quoteId}/Items
+      createEndpoint = `/Quotes/${quoteIdOrItems}/Items`;
+      itemData = quoteItems;
+    } else if (typeof quoteIdOrItems === 'object') {
+      // Legacy pattern or when quoteID is in the body - extract quoteID for the URL
+      itemData = quoteIdOrItems;
+      if (itemData.quoteID) {
+        createEndpoint = `/Quotes/${itemData.quoteID}/Items`;
+      } else {
+        // Fallback to flat endpoint (will likely fail with 404)
+        createEndpoint = this.endpoint;
+      }
+    } else {
+      createEndpoint = this.endpoint;
+      itemData = quoteIdOrItems as any;
+    }
+
+    this.logger.info('Creating quote item', {
+      endpoint: createEndpoint,
+      quoteItems: itemData,
+    });
+    const createResult = await this.executeRequest<any>(
+      async () => this.axios.post(createEndpoint, itemData),
+      createEndpoint,
       'POST'
     );
+
+    // The Autotask API returns {itemId: number} for child entity creates.
+    // Fetch the full item to return consistent data.
+    const newItemId = createResult.data?.itemId ?? createResult.data?.id;
+    if (newItemId) {
+      return this.get(newItemId);
+    }
+
+    return createResult as ApiResponse<IQuoteItems>;
   }
 
   /**
@@ -140,15 +186,27 @@ export class QuoteItems extends BaseEntity {
   }
 
   /**
-   * Delete a quoteitems
-   * @param id - The quoteitems ID
-   * @returns Promise that resolves when deletion is complete
+   * Delete a quote item
+   * @param quoteId - The parent quote ID
+   * @param id - The quote item ID
    */
-  async delete(id: number): Promise<void> {
-    this.logger.info('Deleting quoteitems', { id });
+  async delete(quoteId: number, id: number): Promise<void>;
+  /**
+   * @deprecated Use delete(quoteId, id) instead. QuoteItems require parent-child URL for deletion.
+   */
+  async delete(id: number): Promise<void>;
+  async delete(quoteIdOrItemId: number, itemId?: number): Promise<void> {
+    let deleteEndpoint: string;
+    if (itemId !== undefined) {
+      deleteEndpoint = `/Quotes/${quoteIdOrItemId}/Items/${itemId}`;
+    } else {
+      // Legacy fallback - try flat endpoint (may return 405)
+      deleteEndpoint = `${this.endpoint}/${quoteIdOrItemId}`;
+    }
+    this.logger.info('Deleting quote item', { endpoint: deleteEndpoint });
     await this.executeRequest(
-      async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.delete(deleteEndpoint),
+      deleteEndpoint,
       'DELETE'
     );
   }
@@ -158,7 +216,9 @@ export class QuoteItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of quoteitems
    */
-  async list(query: IQuoteItemsQuery = {}): Promise<ApiResponse<IQuoteItems[]>> {
+  async list(
+    query: IQuoteItemsQuery = {}
+  ): Promise<ApiResponse<IQuoteItems[]>> {
     this.logger.info('Listing quoteitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +237,11 @@ export class QuoteItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

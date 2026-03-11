@@ -26,11 +26,12 @@ export declare class CompanyNotes extends BaseEntity {
     constructor(axios: AxiosInstance, logger: winston.Logger, requestHandler?: RequestHandler);
     static getMetadata(): MethodMetadata[];
     /**
-     * Create a new companynotes
-     * @param companyNotes - The companynotes data to create
-     * @returns Promise with the created companynotes
+     * Create a new company note
+     * @param companyId - The parent company ID
+     * @param companyNotes - The company note data to create
+     * @returns Promise with the created company note
      */
-    create(companyNotes: ICompanyNotes): Promise<ApiResponse<ICompanyNotes>>;
+    create(companyId: number, companyNotes: ICompanyNotes): Promise<ApiResponse<ICompanyNotes>>;
     /**
      * Get a companynotes by ID
      * @param id - The companynotes ID

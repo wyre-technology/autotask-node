@@ -421,53 +421,56 @@ export class AutotaskClient {
       ],
     });
 
-    // Test the connection with a simple request
-    try {
-      logger.info('Testing API connection...');
-      const versionResponse = await axiosInstance.get('/Version');
-      logger.info('API connection successful');
+    // Test the connection with a simple request (skipped in gateway/stateless mode)
+    if (config.skipConnectionTest) {
+      logger.info('Skipping connection test (skipConnectionTest=true)');
+    } else
+      try {
+        logger.info('Testing API connection...');
+        const versionResponse = await axiosInstance.get('/Version');
+        logger.info('API connection successful');
 
-      // Log successful connection test
-      const tempErrorLogger = errorLogger || defaultErrorLogger;
-      const correlationId = tempErrorLogger.generateCorrelationId();
-      tempErrorLogger.info(
-        'Autotask API connection test successful',
-        {
-          correlationId,
-          operation: 'connection-test',
-          request: {
-            method: 'GET',
-            url: config.apiUrl + '/Version',
+        // Log successful connection test
+        const tempErrorLogger = errorLogger || defaultErrorLogger;
+        const correlationId = tempErrorLogger.generateCorrelationId();
+        tempErrorLogger.info(
+          'Autotask API connection test successful',
+          {
+            correlationId,
+            operation: 'connection-test',
+            request: {
+              method: 'GET',
+              url: config.apiUrl + '/Version',
+            },
           },
-        },
-        {
-          statusCode: versionResponse.status,
-          apiVersion: versionResponse.data,
-        }
-      );
-    } catch (error) {
-      // Log connection test failure
-      const tempErrorLogger = errorLogger || defaultErrorLogger;
-      const correlationId = tempErrorLogger.generateCorrelationId();
-      tempErrorLogger.error(
-        'Failed to connect to Autotask API',
-        error as Error,
-        {
-          correlationId,
-          operation: 'connection-test',
-          request: {
-            method: 'GET',
-            url: config.apiUrl + '/Version',
-          },
-        }
-      );
+          {
+            statusCode: versionResponse.status,
+            apiVersion: versionResponse.data,
+          }
+        );
+      } catch (error) {
+        // Log connection test failure
+        const tempErrorLogger = errorLogger || defaultErrorLogger;
+        const correlationId = tempErrorLogger.generateCorrelationId();
+        tempErrorLogger.error(
+          'Failed to connect to Autotask API',
+          error as Error,
+          {
+            correlationId,
+            operation: 'connection-test',
+            request: {
+              method: 'GET',
+              url: config.apiUrl + '/Version',
+            },
+          }
+        );
 
-      throw new ConfigurationError(
-        'Failed to connect to Autotask API. Please check your credentials and API URL.',
-        'connection',
-        error as Error
-      );
-    }
+        throw new ConfigurationError(
+          'Failed to connect to Autotask API. Please check your credentials and API URL.',
+          'connection',
+          error as Error
+        );
+      }
 
     return new AutotaskClient(
       config,

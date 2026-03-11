@@ -20,10 +20,10 @@ class QuoteItems extends base_1.BaseEntity {
         return [
             {
                 operation: 'createQuoteItems',
-                requiredParams: ['quoteItems'],
+                requiredParams: ['quoteId', 'quoteItems'],
                 optionalParams: [],
                 returnType: 'IQuoteItems',
-                endpoint: '/QuoteItems',
+                endpoint: '/Quotes/{quoteId}/Items',
             },
             {
                 operation: 'getQuoteItems',
@@ -41,10 +41,10 @@ class QuoteItems extends base_1.BaseEntity {
             },
             {
                 operation: 'deleteQuoteItems',
-                requiredParams: ['id'],
+                requiredParams: ['quoteId', 'id'],
                 optionalParams: [],
                 returnType: 'void',
-                endpoint: '/QuoteItems/{id}',
+                endpoint: '/Quotes/{quoteId}/Items/{id}',
             },
             {
                 operation: 'listQuoteItems',
@@ -55,14 +55,39 @@ class QuoteItems extends base_1.BaseEntity {
             }
         ];
     }
-    /**
-     * Create a new quoteitems
-     * @param quoteItems - The quoteitems data to create
-     * @returns Promise with the created quoteitems
-     */
-    async create(quoteItems) {
-        this.logger.info('Creating quoteitems', { quoteItems });
-        return this.executeRequest(async () => this.axios.post(this.endpoint, quoteItems), this.endpoint, 'POST');
+    async create(quoteIdOrItems, quoteItems) {
+        // Support both signatures: create(quoteId, item) and create(item) for backwards compatibility
+        let createEndpoint;
+        let itemData;
+        if (typeof quoteIdOrItems === 'number' && quoteItems) {
+            // New parent-child URL pattern: POST /Quotes/{quoteId}/Items
+            createEndpoint = `/Quotes/${quoteIdOrItems}/Items`;
+            itemData = quoteItems;
+        }
+        else if (typeof quoteIdOrItems === 'object') {
+            // Legacy pattern or when quoteID is in the body - extract quoteID for the URL
+            itemData = quoteIdOrItems;
+            if (itemData.quoteID) {
+                createEndpoint = `/Quotes/${itemData.quoteID}/Items`;
+            }
+            else {
+                // Fallback to flat endpoint (will likely fail with 404)
+                createEndpoint = this.endpoint;
+            }
+        }
+        else {
+            createEndpoint = this.endpoint;
+            itemData = quoteIdOrItems;
+        }
+        this.logger.info('Creating quote item', { endpoint: createEndpoint, quoteItems: itemData });
+        const createResult = await this.executeRequest(async () => this.axios.post(createEndpoint, itemData), createEndpoint, 'POST');
+        // The Autotask API returns {itemId: number} for child entity creates.
+        // Fetch the full item to return consistent data.
+        const newItemId = createResult.data?.itemId ?? createResult.data?.id;
+        if (newItemId) {
+            return this.get(newItemId);
+        }
+        return createResult;
     }
     /**
      * Get a quoteitems by ID
@@ -93,14 +118,17 @@ class QuoteItems extends base_1.BaseEntity {
         this.logger.info('Patching quoteitems', { id, quoteItems });
         return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, quoteItems), `${this.endpoint}/${id}`, 'PATCH');
     }
-    /**
-     * Delete a quoteitems
-     * @param id - The quoteitems ID
-     * @returns Promise that resolves when deletion is complete
-     */
-    async delete(id) {
-        this.logger.info('Deleting quoteitems', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+    async delete(quoteIdOrItemId, itemId) {
+        let deleteEndpoint;
+        if (itemId !== undefined) {
+            deleteEndpoint = `/Quotes/${quoteIdOrItemId}/Items/${itemId}`;
+        }
+        else {
+            // Legacy fallback - try flat endpoint (may return 405)
+            deleteEndpoint = `${this.endpoint}/${quoteIdOrItemId}`;
+        }
+        this.logger.info('Deleting quote item', { endpoint: deleteEndpoint });
+        await this.executeRequest(async () => this.axios.delete(deleteEndpoint), deleteEndpoint, 'DELETE');
     }
     /**
      * List quoteitems with optional filtering

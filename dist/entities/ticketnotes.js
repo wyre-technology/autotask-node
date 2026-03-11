@@ -20,10 +20,10 @@ class TicketNotes extends base_1.BaseEntity {
         return [
             {
                 operation: 'createTicketNotes',
-                requiredParams: ['ticketNotes'],
+                requiredParams: ['ticketId', 'ticketNotes'],
                 optionalParams: [],
                 returnType: 'ITicketNotes',
-                endpoint: '/TicketNotes',
+                endpoint: '/Tickets/{ticketId}/Notes',
             },
             {
                 operation: 'getTicketNotes',
@@ -45,17 +45,19 @@ class TicketNotes extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ITicketNotes[]',
                 endpoint: '/TicketNotes',
-            }
+            },
         ];
     }
     /**
-     * Create a new ticketnotes
-     * @param ticketNotes - The ticketnotes data to create
-     * @returns Promise with the created ticketnotes
+     * Create a new ticket note
+     * @param ticketId - The parent ticket ID
+     * @param ticketNotes - The ticket note data to create
+     * @returns Promise with the created ticket note
      */
-    async create(ticketNotes) {
-        this.logger.info('Creating ticketnotes', { ticketNotes });
-        return this.executeRequest(async () => this.axios.post(this.endpoint, ticketNotes), this.endpoint, 'POST');
+    async create(ticketId, ticketNotes) {
+        const createEndpoint = `/Tickets/${ticketId}/Notes`;
+        this.logger.info('Creating ticketnotes', { ticketId, ticketNotes });
+        return this.executeRequest(async () => this.axios.post(createEndpoint, ticketNotes), createEndpoint, 'POST');
     }
     /**
      * Get a ticketnotes by ID
@@ -110,7 +112,9 @@ class TicketNotes extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({
