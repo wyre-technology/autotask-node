@@ -26,9 +26,14 @@ export declare class QuoteItems extends BaseEntity {
     constructor(axios: AxiosInstance, logger: winston.Logger, requestHandler?: RequestHandler);
     static getMetadata(): MethodMetadata[];
     /**
-     * Create a new quoteitems
-     * @param quoteItems - The quoteitems data to create
-     * @returns Promise with the created quoteitems
+     * Create a new quote item under a parent quote
+     * @param quoteId - The parent quote ID
+     * @param quoteItems - The quote item data to create
+     * @returns Promise with the created quote item
+     */
+    create(quoteId: number, quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>>;
+    /**
+     * @deprecated Use create(quoteId, quoteItems) instead. QuoteItems is a child entity of Quotes.
      */
     create(quoteItems: IQuoteItems): Promise<ApiResponse<IQuoteItems>>;
     /**
@@ -52,9 +57,13 @@ export declare class QuoteItems extends BaseEntity {
      */
     patch(id: number, quoteItems: Partial<IQuoteItems>): Promise<ApiResponse<IQuoteItems>>;
     /**
-     * Delete a quoteitems
-     * @param id - The quoteitems ID
-     * @returns Promise that resolves when deletion is complete
+     * Delete a quote item
+     * @param quoteId - The parent quote ID
+     * @param id - The quote item ID
+     */
+    delete(quoteId: number, id: number): Promise<void>;
+    /**
+     * @deprecated Use delete(quoteId, id) instead. QuoteItems require parent-child URL for deletion.
      */
     delete(id: number): Promise<void>;
     /**
