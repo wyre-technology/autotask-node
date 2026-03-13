@@ -413,10 +413,16 @@ export class AutotaskClient {
       },
       transformRequest: [
         (data, headers) => {
-          if (defaultPerformanceConfig.enableCompression && data) {
+          if (!data) return JSON.stringify(data);
+          const json = JSON.stringify(data);
+          if (defaultPerformanceConfig.enableCompression) {
+            // Actually compress the body when Content-Encoding: gzip is set
+            // Requires: import { gzipSync } from 'zlib';
+            const { gzipSync } = require('zlib');
             headers!['Content-Encoding'] = 'gzip';
+            return gzipSync(Buffer.from(json, 'utf8'));
           }
-          return JSON.stringify(data);
+          return json;
         },
       ],
     });
