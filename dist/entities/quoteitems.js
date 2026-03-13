@@ -52,7 +52,7 @@ class QuoteItems extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IQuoteItems[]',
                 endpoint: '/QuoteItems',
-            }
+            },
         ];
     }
     async create(quoteIdOrItems, quoteItems) {
@@ -79,7 +79,10 @@ class QuoteItems extends base_1.BaseEntity {
             createEndpoint = this.endpoint;
             itemData = quoteIdOrItems;
         }
-        this.logger.info('Creating quote item', { endpoint: createEndpoint, quoteItems: itemData });
+        this.logger.info('Creating quote item', {
+            endpoint: createEndpoint,
+            quoteItems: itemData,
+        });
         const createResult = await this.executeRequest(async () => this.axios.post(createEndpoint, itemData), createEndpoint, 'POST');
         // The Autotask API returns {itemId: number} for child entity creates.
         // Fetch the full item to return consistent data.
@@ -154,7 +157,9 @@ class QuoteItems extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

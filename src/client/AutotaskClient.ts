@@ -412,10 +412,7 @@ export class AutotaskClient {
         Secret: config.secret,
       },
       transformRequest: [
-        (data, headers) => {
-          if (defaultPerformanceConfig.enableCompression && data) {
-            headers!['Content-Encoding'] = 'gzip';
-          }
+        data => {
           return JSON.stringify(data);
         },
       ],
