@@ -59,13 +59,13 @@ import {
 /**
  * CoreClient handles the primary business entities:
  * - Companies (Organizations)
- * - Contacts (Individuals within companies) 
+ * - Contacts (Individuals within companies)
  * - Tickets (Service tickets and support requests)
  * - Projects (Client projects and work orders)
  * - Tasks (Project tasks and work items)
  * - Opportunities (Sales opportunities and pipeline)
  * - Resources (Human resources and staff members)
- * 
+ *
  * Plus all related attachments, notes, and extended functionality.
  */
 export class CoreClient extends BaseSubClient {
@@ -148,35 +148,72 @@ export class CoreClient extends BaseSubClient {
     this.projectAttachments = new ProjectAttachments(this.axios, this.logger);
     this.taskAttachments = new TaskAttachments(this.axios, this.logger);
     this.resourceAttachments = new ResourceAttachments(this.axios, this.logger);
-    this.opportunityAttachments = new OpportunityAttachments(this.axios, this.logger);
+    this.opportunityAttachments = new OpportunityAttachments(
+      this.axios,
+      this.logger
+    );
 
     // Core notes
     this.companyNotes = new CompanyNotes(this.axios, this.logger);
     this.ticketNotes = new TicketNotes(this.axios, this.logger);
     this.projectNotes = new ProjectNotes(this.axios, this.logger);
     this.taskNotes = new TaskNotes(this.axios, this.logger);
-    this.companyNoteAttachments = new CompanyNoteAttachments(this.axios, this.logger);
-    this.ticketNoteAttachments = new TicketNoteAttachments(this.axios, this.logger);
-    this.projectNoteAttachments = new ProjectNoteAttachments(this.axios, this.logger);
+    this.companyNoteAttachments = new CompanyNoteAttachments(
+      this.axios,
+      this.logger
+    );
+    this.ticketNoteAttachments = new TicketNoteAttachments(
+      this.axios,
+      this.logger
+    );
+    this.projectNoteAttachments = new ProjectNoteAttachments(
+      this.axios,
+      this.logger
+    );
     this.taskNoteAttachments = new TaskNoteAttachments(this.axios, this.logger);
 
     // Extended ticket entities
     this.ticketCategories = new TicketCategories(this.axios, this.logger);
-    this.ticketCategoryFieldDefaults = new TicketCategoryFieldDefaults(this.axios, this.logger);
-    this.ticketAdditionalConfigurationItems = new TicketAdditionalConfigurationItems(this.axios, this.logger);
-    this.ticketAdditionalContacts = new TicketAdditionalContacts(this.axios, this.logger);
-    this.ticketChangeRequestApprovals = new TicketChangeRequestApprovals(this.axios, this.logger);
+    this.ticketCategoryFieldDefaults = new TicketCategoryFieldDefaults(
+      this.axios,
+      this.logger
+    );
+    this.ticketAdditionalConfigurationItems =
+      new TicketAdditionalConfigurationItems(this.axios, this.logger);
+    this.ticketAdditionalContacts = new TicketAdditionalContacts(
+      this.axios,
+      this.logger
+    );
+    this.ticketChangeRequestApprovals = new TicketChangeRequestApprovals(
+      this.axios,
+      this.logger
+    );
     this.ticketCharges = new TicketCharges(this.axios, this.logger);
-    this.ticketChecklistItems = new TicketChecklistItems(this.axios, this.logger);
-    this.ticketChecklistLibraries = new TicketChecklistLibraries(this.axios, this.logger);
+    this.ticketChecklistItems = new TicketChecklistItems(
+      this.axios,
+      this.logger
+    );
+    this.ticketChecklistLibraries = new TicketChecklistLibraries(
+      this.axios,
+      this.logger
+    );
     this.ticketHistory = new TicketHistory(this.axios, this.logger);
     this.ticketRmaCredits = new TicketRmaCredits(this.axios, this.logger);
-    this.ticketSecondaryResources = new TicketSecondaryResources(this.axios, this.logger);
-    this.ticketTagAssociations = new TicketTagAssociations(this.axios, this.logger);
+    this.ticketSecondaryResources = new TicketSecondaryResources(
+      this.axios,
+      this.logger
+    );
+    this.ticketTagAssociations = new TicketTagAssociations(
+      this.axios,
+      this.logger
+    );
 
     // Extended task entities
     this.taskPredecessors = new TaskPredecessors(this.axios, this.logger);
-    this.taskSecondaryResources = new TaskSecondaryResources(this.axios, this.logger);
+    this.taskSecondaryResources = new TaskSecondaryResources(
+      this.axios,
+      this.logger
+    );
 
     // Extended project entities
     this.projectCharges = new ProjectCharges(this.axios, this.logger);
@@ -185,14 +222,21 @@ export class CoreClient extends BaseSubClient {
     this.companyAlerts = new CompanyAlerts(this.axios, this.logger);
     this.companyCategories = new CompanyCategories(this.axios, this.logger);
     this.companyLocations = new CompanyLocations(this.axios, this.logger);
-    this.companySiteConfigurations = new CompanySiteConfigurations(this.axios, this.logger);
+    this.companySiteConfigurations = new CompanySiteConfigurations(
+      this.axios,
+      this.logger
+    );
     this.companyTeams = new CompanyTeams(this.axios, this.logger);
     this.companyToDos = new CompanyToDos(this.axios, this.logger);
 
     // Extended contact entities
-    this.contactBillingProductAssociations = new ContactBillingProductAssociations(this.axios, this.logger);
+    this.contactBillingProductAssociations =
+      new ContactBillingProductAssociations(this.axios, this.logger);
     this.contactGroups = new ContactGroups(this.axios, this.logger);
-    this.contactGroupContacts = new ContactGroupContacts(this.axios, this.logger);
+    this.contactGroupContacts = new ContactGroupContacts(
+      this.axios,
+      this.logger
+    );
   }
 
   getName(): string {
@@ -539,5 +583,77 @@ export class CoreClient extends BaseSubClient {
       pageSize,
       sort: 'projectName asc',
     });
+  }
+
+  /**
+   * Search resources (users/technicians) by name or email
+   * @param query - Search query string
+   * @param searchFields - Fields to search in (default: ['firstName', 'lastName', 'email'])
+   * @param pageSize - Number of records to return (default: 100)
+   * @returns Promise with matching resources
+   */
+  async searchResources(
+    query: string,
+    searchFields: string[] = ['firstName', 'lastName', 'email'],
+    pageSize: number = 100
+  ) {
+    const filters = searchFields.map(field => ({
+      op: 'contains',
+      field,
+      value: query,
+    }));
+
+    return this.resources.list({
+      filter: filters.length === 1 ? filters : [{ op: 'or', items: filters }],
+      pageSize,
+      sort: 'lastName asc',
+    });
+  }
+
+  /**
+   * Resolve a resource by full name (e.g., "Will Spence").
+   * Splits the name into first/last parts and searches accordingly.
+   * @param name - Full name of the resource (e.g., "Will Spence")
+   * @returns The matched resource, or null if not found
+   * @throws Error if multiple resources match (ambiguous)
+   */
+  async resolveResourceByName(name: string): Promise<{
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    [key: string]: any;
+  } | null> {
+    const nameParts = name.trim().split(/\s+/);
+    let resources: any[];
+
+    if (nameParts.length >= 2) {
+      // Search by last name (more unique), then filter by first name
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ');
+      const result = await this.searchResources(lastName, ['lastName']);
+      resources = ((result.data as any[]) || []).filter((r: any) =>
+        r.firstName?.toLowerCase().includes(firstName.toLowerCase())
+      );
+      // Fall back to full string search if no match
+      if (resources.length === 0) {
+        const fallback = await this.searchResources(name);
+        resources = (fallback.data as any[]) || [];
+      }
+    } else {
+      const result = await this.searchResources(name);
+      resources = (result.data as any[]) || [];
+    }
+
+    if (resources.length === 0) return null;
+    if (resources.length > 1) {
+      const names = resources
+        .map((r: any) => `${r.firstName} ${r.lastName} (ID: ${r.id})`)
+        .join(', ');
+      throw new Error(
+        `Multiple resources found matching "${name}": ${names}. Please be more specific.`
+      );
+    }
+    return resources[0];
   }
 }

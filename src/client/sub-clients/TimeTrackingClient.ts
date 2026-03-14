@@ -53,19 +53,40 @@ export class TimeTrackingClient extends BaseSubClient {
 
     // Time tracking
     this.timeEntries = new TimeEntries(this.axios, this.logger);
-    this.timeEntryAttachments = new TimeEntryAttachments(this.axios, this.logger);
+    this.timeEntryAttachments = new TimeEntryAttachments(
+      this.axios,
+      this.logger
+    );
 
     // Appointments and scheduling
     this.appointments = new Appointments(this.axios, this.logger);
 
     // Resource availability and time off
-    this.resourceDailyAvailabilities = new ResourceDailyAvailabilities(this.axios, this.logger);
-    this.resourceTimeOffAdditional = new ResourceTimeOffAdditional(this.axios, this.logger);
-    this.resourceTimeOffApprovers = new ResourceTimeOffApprovers(this.axios, this.logger);
-    this.resourceTimeOffBalances = new ResourceTimeOffBalances(this.axios, this.logger);
+    this.resourceDailyAvailabilities = new ResourceDailyAvailabilities(
+      this.axios,
+      this.logger
+    );
+    this.resourceTimeOffAdditional = new ResourceTimeOffAdditional(
+      this.axios,
+      this.logger
+    );
+    this.resourceTimeOffApprovers = new ResourceTimeOffApprovers(
+      this.axios,
+      this.logger
+    );
+    this.resourceTimeOffBalances = new ResourceTimeOffBalances(
+      this.axios,
+      this.logger
+    );
     this.timeOffRequests = new TimeOffRequests(this.axios, this.logger);
-    this.timeOffRequestsApprove = new TimeOffRequestsApprove(this.axios, this.logger);
-    this.timeOffRequestsReject = new TimeOffRequestsReject(this.axios, this.logger);
+    this.timeOffRequestsApprove = new TimeOffRequestsApprove(
+      this.axios,
+      this.logger
+    );
+    this.timeOffRequestsReject = new TimeOffRequestsReject(
+      this.axios,
+      this.logger
+    );
 
     // Holiday management
     this.holidays = new Holidays(this.axios, this.logger);
@@ -80,7 +101,6 @@ export class TimeTrackingClient extends BaseSubClient {
     // Test connection with a simple time entries query
     await this.axios.get('/TimeEntries?$select=id&$top=1');
   }
-
 
   // Convenience methods for common operations
 
@@ -236,7 +256,10 @@ export class TimeTrackingClient extends BaseSubClient {
    * @param pageSize - Number of records to return (default: 500)
    * @returns Promise with resource time off requests
    */
-  async getTimeOffRequestsByResource(resourceId: number, pageSize: number = 500) {
+  async getTimeOffRequestsByResource(
+    resourceId: number,
+    pageSize: number = 500
+  ) {
     return this.timeOffRequests.list({
       filter: [
         {
@@ -357,6 +380,52 @@ export class TimeTrackingClient extends BaseSubClient {
       pageSize,
       sort: 'dateWorked desc',
     });
+  }
+
+  /**
+   * Create a Regular Time entry (not tied to a ticket, task, or project).
+   * Used for meetings, admin work, training, etc.
+   *
+   * Regular Time entries require:
+   * - resourceID: The user logging the time
+   * - internalBillingCodeID: The category (must be a BillingCode with useType=3)
+   * - dateWorked: The date worked
+   * - hoursWorked: Number of hours
+   *
+   * Automatically sets timeEntryType to 5 (Activity) if not specified.
+   *
+   * @param timeEntry - The time entry data
+   * @returns Promise with the created time entry ID
+   */
+  async createRegularTimeEntry(timeEntry: {
+    resourceID: number;
+    internalBillingCodeID: number;
+    dateWorked: string;
+    hoursWorked: number;
+    summaryNotes?: string;
+    internalNotes?: string;
+    startDateTime?: string;
+    endDateTime?: string;
+    timeEntryType?: number;
+    [key: string]: any;
+  }): Promise<number> {
+    if (!timeEntry.resourceID) {
+      throw new Error('resourceID is required for Regular Time entries');
+    }
+    if (!timeEntry.internalBillingCodeID) {
+      throw new Error(
+        'internalBillingCodeID is required for Regular Time entries. Use a BillingCode with useType=3 (e.g., Internal Meeting, Training, Administrative).'
+      );
+    }
+
+    const entry = {
+      ...timeEntry,
+      timeEntryType: timeEntry.timeEntryType ?? 5, // Activity
+    };
+
+    const response = await this.timeEntries.createDirect(entry);
+    // Autotask API returns { itemId: N } for creates, not { id: N }
+    return response.data?.itemId || response.data?.id;
   }
 
   /**
