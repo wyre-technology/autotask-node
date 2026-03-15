@@ -169,8 +169,20 @@ function createAutotaskError(error, requestDetails) {
         case 500:
         case 502:
         case 503:
-        case 504:
-            return new ServerError(`Server error (${status}): ${message}`, status, error, requestDetails);
+        case 504: {
+            // Include error details from the response body if available
+            // The Autotask API often returns details in the errors array even for 500s
+            let serverMessage = `Server error (${status}): ${message}`;
+            if (validationErrors &&
+                Array.isArray(validationErrors) &&
+                validationErrors.length > 0) {
+                const details = validationErrors
+                    .map((e) => typeof e === 'string' ? e : e.message || JSON.stringify(e))
+                    .join('; ');
+                serverMessage += ` [${details}]`;
+            }
+            return new ServerError(serverMessage, status, error, requestDetails);
+        }
         default:
             // Handle network errors (no response)
             if (!error.response) {
