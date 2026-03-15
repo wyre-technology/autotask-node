@@ -1,5 +1,32 @@
 # Autotask Node SDK Release Notes
 
+## [2.2.0] - 2026-03-15
+
+### Added
+
+- **Regular Time entry support** (`TimeTrackingClient.createRegularTimeEntry()`) — create non-ticket time entries for meetings, admin work, training, etc. with `timeEntryType=5` (Activity) set automatically
+- **`TimeEntries.createDirect()`** — POST to `/TimeEntries` without parent scope, enabling Regular Time workflows
+- **`CoreClient.searchResources()` / `resolveResourceByName()`** — search and resolve resources/technicians by full name with first/last split logic
+- **`FinancialClient.getInternalBillingCodes()` / `resolveInternalBillingCodeByName()`** — fetch and resolve BillingCodes with `useType=3` (internal allocation codes: Internal Meeting, Training, PTO, etc.)
+
+### Fixed
+
+- **Better 500/5xx error messages** — `ServerError` now includes details from the `errors` array in Autotask API responses, making it much easier to debug server-side validation failures
+- **Proper gzip compression** — requests with `enableCompression: true` now actually compress the body with gzip (previously the `Content-Encoding: gzip` header was set but the body was uncompressed, causing 500 errors on child entity endpoints)
+
+### Notes (Autotask API discoveries)
+
+- Regular Time entries require `internalBillingCodeID` (NOT `billingCodeID`)
+- Only BillingCodes with `useType=3` are valid for Regular Time categories
+- The API returns `{itemId: N}` for creates (not `{id: N}`) — handled automatically in `createRegularTimeEntry()`
+- The Autotask error message references "InternallAllocationCodeID" (with typo) but the actual REST API field is `internalBillingCodeID`
+
+## [2.1.1] - 2026-02-26
+
+### Fixed
+
+- **QuoteItems endpoint** — `create()` and `delete()` now use the correct parent-child URL `/Quotes/{id}/Items` instead of the top-level `/QuoteItems` endpoint
+
 ## [2.1.0] - 2026-02-10
 
 ### Changed
