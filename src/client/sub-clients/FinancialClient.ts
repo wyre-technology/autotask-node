@@ -116,12 +116,18 @@ export class FinancialClient extends BaseSubClient {
     // Billing entities
     this.billingCodes = new BillingCodes(this.axios, this.logger);
     this.billingItems = new BillingItems(this.axios, this.logger);
-    this.billingItemApprovalLevels = new BillingItemApprovalLevels(this.axios, this.logger);
+    this.billingItemApprovalLevels = new BillingItemApprovalLevels(
+      this.axios,
+      this.logger
+    );
 
     // Invoice entities
     this.invoices = new Invoices(this.axios, this.logger);
     this.invoiceTemplates = new InvoiceTemplates(this.axios, this.logger);
-    this.additionalInvoiceFieldValues = new AdditionalInvoiceFieldValues(this.axios, this.logger);
+    this.additionalInvoiceFieldValues = new AdditionalInvoiceFieldValues(
+      this.axios,
+      this.logger
+    );
 
     // Quote entities
     this.quotes = new Quotes(this.axios, this.logger);
@@ -132,18 +138,30 @@ export class FinancialClient extends BaseSubClient {
     // Purchase entities
     this.purchaseOrders = new PurchaseOrders(this.axios, this.logger);
     this.purchaseOrderItems = new PurchaseOrderItems(this.axios, this.logger);
-    this.purchaseOrderItemReceiving = new PurchaseOrderItemReceiving(this.axios, this.logger);
+    this.purchaseOrderItemReceiving = new PurchaseOrderItemReceiving(
+      this.axios,
+      this.logger
+    );
     this.purchaseApprovals = new PurchaseApprovals(this.axios, this.logger);
 
     // Sales entities
     this.salesOrders = new SalesOrders(this.axios, this.logger);
-    this.salesOrderAttachments = new SalesOrderAttachments(this.axios, this.logger);
+    this.salesOrderAttachments = new SalesOrderAttachments(
+      this.axios,
+      this.logger
+    );
 
     // Expense entities
     this.expenseItems = new ExpenseItems(this.axios, this.logger);
     this.expenseReports = new ExpenseReports(this.axios, this.logger);
-    this.expenseItemAttachments = new ExpenseItemAttachments(this.axios, this.logger);
-    this.expenseReportAttachments = new ExpenseReportAttachments(this.axios, this.logger);
+    this.expenseItemAttachments = new ExpenseItemAttachments(
+      this.axios,
+      this.logger
+    );
+    this.expenseReportAttachments = new ExpenseReportAttachments(
+      this.axios,
+      this.logger
+    );
 
     // Order and change entities
     this.changeOrderCharges = new ChangeOrderCharges(this.axios, this.logger);
@@ -158,13 +176,25 @@ export class FinancialClient extends BaseSubClient {
     this.paymentTerms = new PaymentTerms(this.axios, this.logger);
 
     // Pricing entities
-    this.priceListMaterialCodes = new PriceListMaterialCodes(this.axios, this.logger);
+    this.priceListMaterialCodes = new PriceListMaterialCodes(
+      this.axios,
+      this.logger
+    );
     this.priceListProducts = new PriceListProducts(this.axios, this.logger);
-    this.priceListProductTiers = new PriceListProductTiers(this.axios, this.logger);
+    this.priceListProductTiers = new PriceListProductTiers(
+      this.axios,
+      this.logger
+    );
     this.priceListRoles = new PriceListRoles(this.axios, this.logger);
     this.priceListServices = new PriceListServices(this.axios, this.logger);
-    this.priceListServiceBundles = new PriceListServiceBundles(this.axios, this.logger);
-    this.priceListWorkTypeModifiers = new PriceListWorkTypeModifiers(this.axios, this.logger);
+    this.priceListServiceBundles = new PriceListServiceBundles(
+      this.axios,
+      this.logger
+    );
+    this.priceListWorkTypeModifiers = new PriceListWorkTypeModifiers(
+      this.axios,
+      this.logger
+    );
   }
 
   getName(): string {
@@ -442,5 +472,62 @@ export class FinancialClient extends BaseSubClient {
       ],
       pageSize,
     });
+  }
+
+  /**
+   * Get internal billing codes (useType=3) used for Regular Time entries.
+   * These represent categories like Internal Meeting, Training, PTO, etc.
+   * @param pageSize - Number of records to return (default: 500)
+   * @returns Promise with internal billing codes
+   */
+  async getInternalBillingCodes(pageSize: number = 500) {
+    return this.billingCodes.list({
+      filter: [
+        { op: 'eq', field: 'isActive', value: true },
+        { op: 'eq', field: 'useType', value: 3 },
+      ],
+      pageSize,
+    });
+  }
+
+  /**
+   * Resolve an internal billing code by name for Regular Time entries.
+   * Searches BillingCodes with useType=3 (internal allocation codes).
+   * @param name - Category name (e.g., "Internal Meeting", "Training", "PTO")
+   * @returns The matched billing code, or null if not found
+   * @throws Error if multiple billing codes match (ambiguous)
+   */
+  async resolveInternalBillingCodeByName(name: string): Promise<{
+    id: number;
+    name: string;
+    [key: string]: any;
+  } | null> {
+    const result = await this.getInternalBillingCodes();
+    const codes = (result.data as any[]) || [];
+    const searchName = name.toLowerCase();
+
+    // Try exact match first
+    let match = codes.find((bc: any) => bc.name?.toLowerCase() === searchName);
+
+    // Then try contains match
+    if (!match) {
+      const containsMatches = codes.filter(
+        (bc: any) =>
+          bc.name?.toLowerCase().includes(searchName) ||
+          searchName.includes(bc.name?.toLowerCase())
+      );
+      if (containsMatches.length === 1) {
+        match = containsMatches[0];
+      } else if (containsMatches.length > 1) {
+        const names = containsMatches
+          .map((bc: any) => `${bc.name} (ID: ${bc.id})`)
+          .join(', ');
+        throw new Error(
+          `Multiple billing codes match "${name}": ${names}. Please be more specific.`
+        );
+      }
+    }
+
+    return match || null;
   }
 }

@@ -109,6 +109,33 @@ export declare class TimeTrackingClient extends BaseSubClient {
      */
     getBillableTimeEntries(days?: number, pageSize?: number): Promise<import("../../types").ApiResponse<import("../../entities/timeentries").ITimeEntries[]>>;
     /**
+     * Create a Regular Time entry (not tied to a ticket, task, or project).
+     * Used for meetings, admin work, training, etc.
+     *
+     * Regular Time entries require:
+     * - resourceID: The user logging the time
+     * - internalBillingCodeID: The category (must be a BillingCode with useType=3)
+     * - dateWorked: The date worked
+     * - hoursWorked: Number of hours
+     *
+     * Automatically sets timeEntryType to 5 (Activity) if not specified.
+     *
+     * @param timeEntry - The time entry data
+     * @returns Promise with the created time entry ID
+     */
+    createRegularTimeEntry(timeEntry: {
+        resourceID: number;
+        internalBillingCodeID: number;
+        dateWorked: string;
+        hoursWorked: number;
+        summaryNotes?: string;
+        internalNotes?: string;
+        startDateTime?: string;
+        endDateTime?: string;
+        timeEntryType?: number;
+        [key: string]: any;
+    }): Promise<number>;
+    /**
      * Search time entries by summary or internal notes
      * @param query - Search query string
      * @param searchFields - Fields to search in (default: ['summaryNotes', 'internalNotes'])

@@ -136,5 +136,24 @@ export declare class FinancialClient extends BaseSubClient {
      * @returns Promise with pending purchase orders
      */
     getPendingPurchaseOrders(pageSize?: number): Promise<import("../../types").ApiResponse<import("../../entities/purchaseorders").IPurchaseOrders[]>>;
+    /**
+     * Get internal billing codes (useType=3) used for Regular Time entries.
+     * These represent categories like Internal Meeting, Training, PTO, etc.
+     * @param pageSize - Number of records to return (default: 500)
+     * @returns Promise with internal billing codes
+     */
+    getInternalBillingCodes(pageSize?: number): Promise<import("../../types").ApiResponse<import("../../entities/billingcodes").IBillingCodes[]>>;
+    /**
+     * Resolve an internal billing code by name for Regular Time entries.
+     * Searches BillingCodes with useType=3 (internal allocation codes).
+     * @param name - Category name (e.g., "Internal Meeting", "Training", "PTO")
+     * @returns The matched billing code, or null if not found
+     * @throws Error if multiple billing codes match (ambiguous)
+     */
+    resolveInternalBillingCodeByName(name: string): Promise<{
+        id: number;
+        name: string;
+        [key: string]: any;
+    } | null>;
 }
 //# sourceMappingURL=FinancialClient.d.ts.map

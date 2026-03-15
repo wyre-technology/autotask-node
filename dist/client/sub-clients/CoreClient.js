@@ -45,7 +45,8 @@ class CoreClient extends BaseSubClient_1.BaseSubClient {
         // Extended ticket entities
         this.ticketCategories = new entities_1.TicketCategories(this.axios, this.logger);
         this.ticketCategoryFieldDefaults = new entities_1.TicketCategoryFieldDefaults(this.axios, this.logger);
-        this.ticketAdditionalConfigurationItems = new entities_1.TicketAdditionalConfigurationItems(this.axios, this.logger);
+        this.ticketAdditionalConfigurationItems =
+            new entities_1.TicketAdditionalConfigurationItems(this.axios, this.logger);
         this.ticketAdditionalContacts = new entities_1.TicketAdditionalContacts(this.axios, this.logger);
         this.ticketChangeRequestApprovals = new entities_1.TicketChangeRequestApprovals(this.axios, this.logger);
         this.ticketCharges = new entities_1.TicketCharges(this.axios, this.logger);
@@ -68,7 +69,8 @@ class CoreClient extends BaseSubClient_1.BaseSubClient {
         this.companyTeams = new entities_1.CompanyTeams(this.axios, this.logger);
         this.companyToDos = new entities_1.CompanyToDos(this.axios, this.logger);
         // Extended contact entities
-        this.contactBillingProductAssociations = new entities_1.ContactBillingProductAssociations(this.axios, this.logger);
+        this.contactBillingProductAssociations =
+            new entities_1.ContactBillingProductAssociations(this.axios, this.logger);
         this.contactGroups = new entities_1.ContactGroups(this.axios, this.logger);
         this.contactGroupContacts = new entities_1.ContactGroupContacts(this.axios, this.logger);
     }
@@ -375,6 +377,61 @@ class CoreClient extends BaseSubClient_1.BaseSubClient {
             pageSize,
             sort: 'projectName asc',
         });
+    }
+    /**
+     * Search resources (users/technicians) by name or email
+     * @param query - Search query string
+     * @param searchFields - Fields to search in (default: ['firstName', 'lastName', 'email'])
+     * @param pageSize - Number of records to return (default: 100)
+     * @returns Promise with matching resources
+     */
+    async searchResources(query, searchFields = ['firstName', 'lastName', 'email'], pageSize = 100) {
+        const filters = searchFields.map(field => ({
+            op: 'contains',
+            field,
+            value: query,
+        }));
+        return this.resources.list({
+            filter: filters.length === 1 ? filters : [{ op: 'or', items: filters }],
+            pageSize,
+            sort: 'lastName asc',
+        });
+    }
+    /**
+     * Resolve a resource by full name (e.g., "Will Spence").
+     * Splits the name into first/last parts and searches accordingly.
+     * @param name - Full name of the resource (e.g., "Will Spence")
+     * @returns The matched resource, or null if not found
+     * @throws Error if multiple resources match (ambiguous)
+     */
+    async resolveResourceByName(name) {
+        const nameParts = name.trim().split(/\s+/);
+        let resources;
+        if (nameParts.length >= 2) {
+            // Search by last name (more unique), then filter by first name
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ');
+            const result = await this.searchResources(lastName, ['lastName']);
+            resources = (result.data || []).filter((r) => r.firstName?.toLowerCase().includes(firstName.toLowerCase()));
+            // Fall back to full string search if no match
+            if (resources.length === 0) {
+                const fallback = await this.searchResources(name);
+                resources = fallback.data || [];
+            }
+        }
+        else {
+            const result = await this.searchResources(name);
+            resources = result.data || [];
+        }
+        if (resources.length === 0)
+            return null;
+        if (resources.length > 1) {
+            const names = resources
+                .map((r) => `${r.firstName} ${r.lastName} (ID: ${r.id})`)
+                .join(', ');
+            throw new Error(`Multiple resources found matching "${name}": ${names}. Please be more specific.`);
+        }
+        return resources[0];
     }
 }
 exports.CoreClient = CoreClient;

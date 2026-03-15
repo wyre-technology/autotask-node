@@ -67,6 +67,17 @@ class TimeEntries extends base_1.BaseEntity {
         return this.executeRequest(async () => this.axios.post(createEndpoint, timeEntries), createEndpoint, 'POST');
     }
     /**
+     * Create a time entry directly (not scoped to a parent entity).
+     * Used for Regular Time entries (meetings, admin work, etc.)
+     * that are not tied to a specific ticket, task, or project.
+     * @param timeEntries - The time entry data to create
+     * @returns Promise with the created time entry
+     */
+    async createDirect(timeEntries) {
+        this.logger.info('Creating direct time entry', { timeEntries });
+        return this.executeRequest(async () => this.axios.post(this.endpoint, timeEntries), this.endpoint, 'POST');
+    }
+    /**
      * Get a timeentries by ID
      * @param id - The timeentries ID
      * @returns Promise with the timeentries data
