@@ -174,5 +174,27 @@ export declare class CoreClient extends BaseSubClient {
      * @returns Promise with matching projects
      */
     searchProjects(query: string, searchFields?: string[], pageSize?: number): Promise<import("../../types").ApiResponse<import("../../entities/projects").IProjects[]>>;
+    /**
+     * Search resources (users/technicians) by name or email
+     * @param query - Search query string
+     * @param searchFields - Fields to search in (default: ['firstName', 'lastName', 'email'])
+     * @param pageSize - Number of records to return (default: 100)
+     * @returns Promise with matching resources
+     */
+    searchResources(query: string, searchFields?: string[], pageSize?: number): Promise<import("../../types").ApiResponse<import("../../entities/resources").IResources[]>>;
+    /**
+     * Resolve a resource by full name (e.g., "Will Spence").
+     * Splits the name into first/last parts and searches accordingly.
+     * @param name - Full name of the resource (e.g., "Will Spence")
+     * @returns The matched resource, or null if not found
+     * @throws Error if multiple resources match (ambiguous)
+     */
+    resolveResourceByName(name: string): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        [key: string]: any;
+    } | null>;
 }
 //# sourceMappingURL=CoreClient.d.ts.map

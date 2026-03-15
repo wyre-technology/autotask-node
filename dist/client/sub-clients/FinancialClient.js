@@ -307,6 +307,50 @@ class FinancialClient extends BaseSubClient_1.BaseSubClient {
             pageSize,
         });
     }
+    /**
+     * Get internal billing codes (useType=3) used for Regular Time entries.
+     * These represent categories like Internal Meeting, Training, PTO, etc.
+     * @param pageSize - Number of records to return (default: 500)
+     * @returns Promise with internal billing codes
+     */
+    async getInternalBillingCodes(pageSize = 500) {
+        return this.billingCodes.list({
+            filter: [
+                { op: 'eq', field: 'isActive', value: true },
+                { op: 'eq', field: 'useType', value: 3 },
+            ],
+            pageSize,
+        });
+    }
+    /**
+     * Resolve an internal billing code by name for Regular Time entries.
+     * Searches BillingCodes with useType=3 (internal allocation codes).
+     * @param name - Category name (e.g., "Internal Meeting", "Training", "PTO")
+     * @returns The matched billing code, or null if not found
+     * @throws Error if multiple billing codes match (ambiguous)
+     */
+    async resolveInternalBillingCodeByName(name) {
+        const result = await this.getInternalBillingCodes();
+        const codes = result.data || [];
+        const searchName = name.toLowerCase();
+        // Try exact match first
+        let match = codes.find((bc) => bc.name?.toLowerCase() === searchName);
+        // Then try contains match
+        if (!match) {
+            const containsMatches = codes.filter((bc) => bc.name?.toLowerCase().includes(searchName) ||
+                searchName.includes(bc.name?.toLowerCase()));
+            if (containsMatches.length === 1) {
+                match = containsMatches[0];
+            }
+            else if (containsMatches.length > 1) {
+                const names = containsMatches
+                    .map((bc) => `${bc.name} (ID: ${bc.id})`)
+                    .join(', ');
+                throw new Error(`Multiple billing codes match "${name}": ${names}. Please be more specific.`);
+            }
+        }
+        return match || null;
+    }
 }
 exports.FinancialClient = FinancialClient;
 //# sourceMappingURL=FinancialClient.js.map

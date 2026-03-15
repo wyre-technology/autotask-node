@@ -297,6 +297,36 @@ class TimeTrackingClient extends BaseSubClient_1.BaseSubClient {
         });
     }
     /**
+     * Create a Regular Time entry (not tied to a ticket, task, or project).
+     * Used for meetings, admin work, training, etc.
+     *
+     * Regular Time entries require:
+     * - resourceID: The user logging the time
+     * - internalBillingCodeID: The category (must be a BillingCode with useType=3)
+     * - dateWorked: The date worked
+     * - hoursWorked: Number of hours
+     *
+     * Automatically sets timeEntryType to 5 (Activity) if not specified.
+     *
+     * @param timeEntry - The time entry data
+     * @returns Promise with the created time entry ID
+     */
+    async createRegularTimeEntry(timeEntry) {
+        if (!timeEntry.resourceID) {
+            throw new Error('resourceID is required for Regular Time entries');
+        }
+        if (!timeEntry.internalBillingCodeID) {
+            throw new Error('internalBillingCodeID is required for Regular Time entries. Use a BillingCode with useType=3 (e.g., Internal Meeting, Training, Administrative).');
+        }
+        const entry = {
+            ...timeEntry,
+            timeEntryType: timeEntry.timeEntryType ?? 5, // Activity
+        };
+        const response = await this.timeEntries.createDirect(entry);
+        // Autotask API returns { itemId: N } for creates, not { id: N }
+        return response.data?.itemId || response.data?.id;
+    }
+    /**
      * Search time entries by summary or internal notes
      * @param query - Search query string
      * @param searchFields - Fields to search in (default: ['summaryNotes', 'internalNotes'])
