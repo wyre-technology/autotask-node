@@ -17,11 +17,11 @@ export interface IPriceListProductTiersQuery {
 
 /**
  * PriceListProductTiers entity class for Autotask API
- * 
+ *
  * Product tiers in price lists
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: pricing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PriceListProductTiersEntity.htm}
  */
 export class PriceListProductTiers extends BaseEntity {
@@ -71,7 +71,7 @@ export class PriceListProductTiers extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPriceListProductTiers[]',
         endpoint: '/PriceListProductTiers',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class PriceListProductTiers extends BaseEntity {
    * @param priceListProductTiers - The pricelistproducttiers data to create
    * @returns Promise with the created pricelistproducttiers
    */
-  async create(priceListProductTiers: IPriceListProductTiers): Promise<ApiResponse<IPriceListProductTiers>> {
-    this.logger.info('Creating pricelistproducttiers', { priceListProductTiers });
+  async create(
+    priceListProductTiers: IPriceListProductTiers
+  ): Promise<ApiResponse<IPriceListProductTiers>> {
+    this.logger.info('Creating pricelistproducttiers', {
+      priceListProductTiers,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, priceListProductTiers),
       this.endpoint,
@@ -98,7 +102,7 @@ export class PriceListProductTiers extends BaseEntity {
     this.logger.info('Getting pricelistproducttiers', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class PriceListProductTiers extends BaseEntity {
     id: number,
     priceListProductTiers: Partial<IPriceListProductTiers>
   ): Promise<ApiResponse<IPriceListProductTiers>> {
-    this.logger.info('Updating pricelistproducttiers', { id, priceListProductTiers });
+    this.logger.info('Updating pricelistproducttiers', {
+      id,
+      priceListProductTiers,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, priceListProductTiers),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, priceListProductTiers),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class PriceListProductTiers extends BaseEntity {
     id: number,
     priceListProductTiers: Partial<IPriceListProductTiers>
   ): Promise<ApiResponse<IPriceListProductTiers>> {
-    this.logger.info('Patching pricelistproducttiers', { id, priceListProductTiers });
+    this.logger.info('Patching pricelistproducttiers', {
+      id,
+      priceListProductTiers,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, priceListProductTiers),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(priceListProductTiers as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class PriceListProductTiers extends BaseEntity {
     this.logger.info('Deleting pricelistproducttiers', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class PriceListProductTiers extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of pricelistproducttiers
    */
-  async list(query: IPriceListProductTiersQuery = {}): Promise<ApiResponse<IPriceListProductTiers[]>> {
+  async list(
+    query: IPriceListProductTiersQuery = {}
+  ): Promise<ApiResponse<IPriceListProductTiers[]>> {
     this.logger.info('Listing pricelistproducttiers', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class PriceListProductTiers extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

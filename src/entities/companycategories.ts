@@ -17,11 +17,11 @@ export interface ICompanyCategoriesQuery {
 
 /**
  * CompanyCategories entity class for Autotask API
- * 
+ *
  * Categories for organizing companies
  * Supported Operations: GET
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/CompanyCategoriesEntity.htm}
  */
 export class CompanyCategories extends BaseEntity {
@@ -50,7 +50,7 @@ export class CompanyCategories extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ICompanyCategories[]',
         endpoint: '/CompanyCategories',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class CompanyCategories extends BaseEntity {
     this.logger.info('Getting companycategories', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class CompanyCategories extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of companycategories
    */
-  async list(query: ICompanyCategoriesQuery = {}): Promise<ApiResponse<ICompanyCategories[]>> {
+  async list(
+    query: ICompanyCategoriesQuery = {}
+  ): Promise<ApiResponse<ICompanyCategories[]>> {
     this.logger.info('Listing companycategories', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class CompanyCategories extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

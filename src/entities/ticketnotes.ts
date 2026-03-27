@@ -96,7 +96,7 @@ export class TicketNotes extends BaseEntity {
     this.logger.info('Getting ticketnotes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,8 +113,8 @@ export class TicketNotes extends BaseEntity {
   ): Promise<ApiResponse<ITicketNotes>> {
     this.logger.info('Updating ticketnotes', { id, ticketNotes });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, ticketNotes),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, ticketNotes),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,8 +131,9 @@ export class TicketNotes extends BaseEntity {
   ): Promise<ApiResponse<ITicketNotes>> {
     this.logger.info('Patching ticketnotes', { id, ticketNotes });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, ticketNotes),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(ticketNotes as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }

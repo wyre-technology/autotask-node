@@ -52,7 +52,7 @@ class ContractBillingRules extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractBillingRules[]',
                 endpoint: '/ContractBillingRules',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ContractBillingRules extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractbillingrules', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a contractbillingrules
@@ -80,8 +80,11 @@ class ContractBillingRules extends base_1.BaseEntity {
      * @returns Promise with the updated contractbillingrules
      */
     async update(id, contractBillingRules) {
-        this.logger.info('Updating contractbillingrules', { id, contractBillingRules });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, contractBillingRules), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating contractbillingrules', {
+            id,
+            contractBillingRules,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, contractBillingRules), this.endpoint, 'PUT');
     }
     /**
      * Partially update a contractbillingrules
@@ -90,8 +93,14 @@ class ContractBillingRules extends base_1.BaseEntity {
      * @returns Promise with the updated contractbillingrules
      */
     async patch(id, contractBillingRules) {
-        this.logger.info('Patching contractbillingrules', { id, contractBillingRules });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, contractBillingRules), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching contractbillingrules', {
+            id,
+            contractBillingRules,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...contractBillingRules,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a contractbillingrules
@@ -100,7 +109,7 @@ class ContractBillingRules extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractbillingrules', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractbillingrules with optional filtering
@@ -126,7 +135,9 @@ class ContractBillingRules extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

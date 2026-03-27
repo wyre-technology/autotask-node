@@ -17,11 +17,11 @@ export interface IComanagedAssociationsQuery {
 
 /**
  * ComanagedAssociations entity class for Autotask API
- * 
+ *
  * Co-managed service associations
  * Supported Operations: GET, POST, DELETE
  * Category: associations
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ComanagedAssociationsEntity.htm}
  */
 export class ComanagedAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ComanagedAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IComanagedAssociations[]',
         endpoint: '/ComanagedAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ComanagedAssociations extends BaseEntity {
    * @param comanagedAssociations - The comanagedassociations data to create
    * @returns Promise with the created comanagedassociations
    */
-  async create(comanagedAssociations: IComanagedAssociations): Promise<ApiResponse<IComanagedAssociations>> {
-    this.logger.info('Creating comanagedassociations', { comanagedAssociations });
+  async create(
+    comanagedAssociations: IComanagedAssociations
+  ): Promise<ApiResponse<IComanagedAssociations>> {
+    this.logger.info('Creating comanagedassociations', {
+      comanagedAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, comanagedAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ComanagedAssociations extends BaseEntity {
     this.logger.info('Getting comanagedassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ComanagedAssociations extends BaseEntity {
     this.logger.info('Deleting comanagedassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ComanagedAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of comanagedassociations
    */
-  async list(query: IComanagedAssociationsQuery = {}): Promise<ApiResponse<IComanagedAssociations[]>> {
+  async list(
+    query: IComanagedAssociationsQuery = {}
+  ): Promise<ApiResponse<IComanagedAssociations[]>> {
     this.logger.info('Listing comanagedassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ComanagedAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

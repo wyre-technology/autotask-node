@@ -17,11 +17,11 @@ export interface IArticleToArticleAssociationsQuery {
 
 /**
  * ArticleToArticleAssociations entity class for Autotask API
- * 
+ *
  * Associations between articles
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ArticleToArticleAssociationsEntity.htm}
  */
 export class ArticleToArticleAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ArticleToArticleAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IArticleToArticleAssociations[]',
         endpoint: '/ArticleToArticleAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ArticleToArticleAssociations extends BaseEntity {
    * @param articleToArticleAssociations - The articletoarticleassociations data to create
    * @returns Promise with the created articletoarticleassociations
    */
-  async create(articleToArticleAssociations: IArticleToArticleAssociations): Promise<ApiResponse<IArticleToArticleAssociations>> {
-    this.logger.info('Creating articletoarticleassociations', { articleToArticleAssociations });
+  async create(
+    articleToArticleAssociations: IArticleToArticleAssociations
+  ): Promise<ApiResponse<IArticleToArticleAssociations>> {
+    this.logger.info('Creating articletoarticleassociations', {
+      articleToArticleAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, articleToArticleAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ArticleToArticleAssociations extends BaseEntity {
     this.logger.info('Getting articletoarticleassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ArticleToArticleAssociations extends BaseEntity {
     this.logger.info('Deleting articletoarticleassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ArticleToArticleAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of articletoarticleassociations
    */
-  async list(query: IArticleToArticleAssociationsQuery = {}): Promise<ApiResponse<IArticleToArticleAssociations[]>> {
+  async list(
+    query: IArticleToArticleAssociationsQuery = {}
+  ): Promise<ApiResponse<IArticleToArticleAssociations[]>> {
     this.logger.info('Listing articletoarticleassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ArticleToArticleAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -163,7 +163,7 @@ describe('CompanySiteConfigurations Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/CompanySiteConfigurations/1',
+        '/CompanySiteConfigurations',
         companySiteConfigurationsData
       );
     });
@@ -187,8 +187,8 @@ describe('CompanySiteConfigurations Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/CompanySiteConfigurations/1',
-        companySiteConfigurationsData
+        '/CompanySiteConfigurations',
+        { ...companySiteConfigurationsData, id: 1 }
       );
     });
   });

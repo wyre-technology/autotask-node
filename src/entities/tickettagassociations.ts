@@ -17,11 +17,11 @@ export interface ITicketTagAssociationsQuery {
 
 /**
  * TicketTagAssociations entity class for Autotask API
- * 
+ *
  * Tag associations for tickets
  * Supported Operations: GET, POST, DELETE
  * Category: ticketing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketTagAssociationsEntity.htm}
  */
 export class TicketTagAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class TicketTagAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketTagAssociations[]',
         endpoint: '/TicketTagAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class TicketTagAssociations extends BaseEntity {
    * @param ticketTagAssociations - The tickettagassociations data to create
    * @returns Promise with the created tickettagassociations
    */
-  async create(ticketTagAssociations: ITicketTagAssociations): Promise<ApiResponse<ITicketTagAssociations>> {
-    this.logger.info('Creating tickettagassociations', { ticketTagAssociations });
+  async create(
+    ticketTagAssociations: ITicketTagAssociations
+  ): Promise<ApiResponse<ITicketTagAssociations>> {
+    this.logger.info('Creating tickettagassociations', {
+      ticketTagAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketTagAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class TicketTagAssociations extends BaseEntity {
     this.logger.info('Getting tickettagassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class TicketTagAssociations extends BaseEntity {
     this.logger.info('Deleting tickettagassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class TicketTagAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of tickettagassociations
    */
-  async list(query: ITicketTagAssociationsQuery = {}): Promise<ApiResponse<ITicketTagAssociations[]>> {
+  async list(
+    query: ITicketTagAssociationsQuery = {}
+  ): Promise<ApiResponse<ITicketTagAssociations[]>> {
     this.logger.info('Listing tickettagassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class TicketTagAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

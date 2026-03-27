@@ -112,7 +112,7 @@ describe('Tags Entity', () => {
       const result = await setup.entity.update(1, tagsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.put).toHaveBeenCalledWith('/Tags/1', tagsData);
+      expect(setup.mockAxios.put).toHaveBeenCalledWith('/Tags', tagsData);
     });
   });
 
@@ -128,7 +128,10 @@ describe('Tags Entity', () => {
       const result = await setup.entity.patch(1, tagsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Tags/1', tagsData);
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Tags', {
+        ...tagsData,
+        id: 1,
+      });
     });
   });
 

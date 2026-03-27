@@ -17,11 +17,11 @@ export interface IConfigurationItemBillingProductAssociationsQuery {
 
 /**
  * ConfigurationItemBillingProductAssociations entity class for Autotask API
- * 
+ *
  * Associations between configuration items and billing products
  * Supported Operations: GET, POST, DELETE
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemBillingProductAssociationsEntity.htm}
  */
 export class ConfigurationItemBillingProductAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ConfigurationItemBillingProductAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemBillingProductAssociations[]',
         endpoint: '/ConfigurationItemBillingProductAssociations',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,18 @@ export class ConfigurationItemBillingProductAssociations extends BaseEntity {
    * @param configurationItemBillingProductAssociations - The configurationitembillingproductassociations data to create
    * @returns Promise with the created configurationitembillingproductassociations
    */
-  async create(configurationItemBillingProductAssociations: IConfigurationItemBillingProductAssociations): Promise<ApiResponse<IConfigurationItemBillingProductAssociations>> {
-    this.logger.info('Creating configurationitembillingproductassociations', { configurationItemBillingProductAssociations });
+  async create(
+    configurationItemBillingProductAssociations: IConfigurationItemBillingProductAssociations
+  ): Promise<ApiResponse<IConfigurationItemBillingProductAssociations>> {
+    this.logger.info('Creating configurationitembillingproductassociations', {
+      configurationItemBillingProductAssociations,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, configurationItemBillingProductAssociations),
+      async () =>
+        this.axios.post(
+          this.endpoint,
+          configurationItemBillingProductAssociations
+        ),
       this.endpoint,
       'POST'
     );
@@ -87,11 +95,15 @@ export class ConfigurationItemBillingProductAssociations extends BaseEntity {
    * @param id - The configurationitembillingproductassociations ID
    * @returns Promise with the configurationitembillingproductassociations data
    */
-  async get(id: number): Promise<ApiResponse<IConfigurationItemBillingProductAssociations>> {
-    this.logger.info('Getting configurationitembillingproductassociations', { id });
+  async get(
+    id: number
+  ): Promise<ApiResponse<IConfigurationItemBillingProductAssociations>> {
+    this.logger.info('Getting configurationitembillingproductassociations', {
+      id,
+    });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -102,10 +114,12 @@ export class ConfigurationItemBillingProductAssociations extends BaseEntity {
    * @returns Promise that resolves when deletion is complete
    */
   async delete(id: number): Promise<void> {
-    this.logger.info('Deleting configurationitembillingproductassociations', { id });
+    this.logger.info('Deleting configurationitembillingproductassociations', {
+      id,
+    });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,8 +129,12 @@ export class ConfigurationItemBillingProductAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitembillingproductassociations
    */
-  async list(query: IConfigurationItemBillingProductAssociationsQuery = {}): Promise<ApiResponse<IConfigurationItemBillingProductAssociations[]>> {
-    this.logger.info('Listing configurationitembillingproductassociations', { query });
+  async list(
+    query: IConfigurationItemBillingProductAssociationsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemBillingProductAssociations[]>> {
+    this.logger.info('Listing configurationitembillingproductassociations', {
+      query,
+    });
     const searchBody: Record<string, any> = {};
 
     // Set up basic filter if none provided
@@ -134,7 +152,11 @@ export class ConfigurationItemBillingProductAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

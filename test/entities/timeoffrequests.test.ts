@@ -130,7 +130,7 @@ describe('TimeOffRequests Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(setup.mockAxios.put).toHaveBeenCalledWith(
-        '/TimeOffRequests/1',
+        '/TimeOffRequests',
         timeOffRequestsData
       );
     });
@@ -148,10 +148,10 @@ describe('TimeOffRequests Entity', () => {
       const result = await setup.entity.patch(1, timeOffRequestsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith(
-        '/TimeOffRequests/1',
-        timeOffRequestsData
-      );
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/TimeOffRequests', {
+        ...timeOffRequestsData,
+        id: 1,
+      });
     });
   });
 

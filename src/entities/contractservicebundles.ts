@@ -17,11 +17,11 @@ export interface IContractServiceBundlesQuery {
 
 /**
  * ContractServiceBundles entity class for Autotask API
- * 
+ *
  * Service bundles within contracts
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractServiceBundlesEntity.htm}
  */
 export class ContractServiceBundles extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContractServiceBundles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractServiceBundles[]',
         endpoint: '/ContractServiceBundles',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class ContractServiceBundles extends BaseEntity {
    * @param contractServiceBundles - The contractservicebundles data to create
    * @returns Promise with the created contractservicebundles
    */
-  async create(contractServiceBundles: IContractServiceBundles): Promise<ApiResponse<IContractServiceBundles>> {
-    this.logger.info('Creating contractservicebundles', { contractServiceBundles });
+  async create(
+    contractServiceBundles: IContractServiceBundles
+  ): Promise<ApiResponse<IContractServiceBundles>> {
+    this.logger.info('Creating contractservicebundles', {
+      contractServiceBundles,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractServiceBundles),
       this.endpoint,
@@ -98,7 +102,7 @@ export class ContractServiceBundles extends BaseEntity {
     this.logger.info('Getting contractservicebundles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class ContractServiceBundles extends BaseEntity {
     id: number,
     contractServiceBundles: Partial<IContractServiceBundles>
   ): Promise<ApiResponse<IContractServiceBundles>> {
-    this.logger.info('Updating contractservicebundles', { id, contractServiceBundles });
+    this.logger.info('Updating contractservicebundles', {
+      id,
+      contractServiceBundles,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractServiceBundles),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractServiceBundles),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class ContractServiceBundles extends BaseEntity {
     id: number,
     contractServiceBundles: Partial<IContractServiceBundles>
   ): Promise<ApiResponse<IContractServiceBundles>> {
-    this.logger.info('Patching contractservicebundles', { id, contractServiceBundles });
+    this.logger.info('Patching contractservicebundles', {
+      id,
+      contractServiceBundles,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractServiceBundles),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(contractServiceBundles as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class ContractServiceBundles extends BaseEntity {
     this.logger.info('Deleting contractservicebundles', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class ContractServiceBundles extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractservicebundles
    */
-  async list(query: IContractServiceBundlesQuery = {}): Promise<ApiResponse<IContractServiceBundles[]>> {
+  async list(
+    query: IContractServiceBundlesQuery = {}
+  ): Promise<ApiResponse<IContractServiceBundles[]>> {
     this.logger.info('Listing contractservicebundles', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class ContractServiceBundles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

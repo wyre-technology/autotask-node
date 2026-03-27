@@ -17,11 +17,11 @@ export interface ITicketAdditionalContactsQuery {
 
 /**
  * TicketAdditionalContacts entity class for Autotask API
- * 
+ *
  * Additional contacts associated with tickets
  * Supported Operations: GET, POST, DELETE
  * Category: ticketing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketAdditionalContactsEntity.htm}
  */
 export class TicketAdditionalContacts extends BaseEntity {
@@ -64,7 +64,7 @@ export class TicketAdditionalContacts extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketAdditionalContacts[]',
         endpoint: '/TicketAdditionalContacts',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class TicketAdditionalContacts extends BaseEntity {
    * @param ticketAdditionalContacts - The ticketadditionalcontacts data to create
    * @returns Promise with the created ticketadditionalcontacts
    */
-  async create(ticketAdditionalContacts: ITicketAdditionalContacts): Promise<ApiResponse<ITicketAdditionalContacts>> {
-    this.logger.info('Creating ticketadditionalcontacts', { ticketAdditionalContacts });
+  async create(
+    ticketAdditionalContacts: ITicketAdditionalContacts
+  ): Promise<ApiResponse<ITicketAdditionalContacts>> {
+    this.logger.info('Creating ticketadditionalcontacts', {
+      ticketAdditionalContacts,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketAdditionalContacts),
       this.endpoint,
@@ -91,7 +95,7 @@ export class TicketAdditionalContacts extends BaseEntity {
     this.logger.info('Getting ticketadditionalcontacts', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class TicketAdditionalContacts extends BaseEntity {
     this.logger.info('Deleting ticketadditionalcontacts', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class TicketAdditionalContacts extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of ticketadditionalcontacts
    */
-  async list(query: ITicketAdditionalContactsQuery = {}): Promise<ApiResponse<ITicketAdditionalContacts[]>> {
+  async list(
+    query: ITicketAdditionalContactsQuery = {}
+  ): Promise<ApiResponse<ITicketAdditionalContacts[]>> {
     this.logger.info('Listing ticketadditionalcontacts', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class TicketAdditionalContacts extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

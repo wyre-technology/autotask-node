@@ -17,11 +17,11 @@ export interface IConfigurationItemTypesQuery {
 
 /**
  * ConfigurationItemTypes entity class for Autotask API
- * 
+ *
  * Types of configuration items
  * Supported Operations: GET
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemTypesEntity.htm}
  */
 export class ConfigurationItemTypes extends BaseEntity {
@@ -50,7 +50,7 @@ export class ConfigurationItemTypes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemTypes[]',
         endpoint: '/ConfigurationItemTypes',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class ConfigurationItemTypes extends BaseEntity {
     this.logger.info('Getting configurationitemtypes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class ConfigurationItemTypes extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemtypes
    */
-  async list(query: IConfigurationItemTypesQuery = {}): Promise<ApiResponse<IConfigurationItemTypes[]>> {
+  async list(
+    query: IConfigurationItemTypesQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemTypes[]>> {
     this.logger.info('Listing configurationitemtypes', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class ConfigurationItemTypes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

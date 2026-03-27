@@ -17,11 +17,11 @@ export interface IChangeRequestLinksQuery {
 
 /**
  * ChangeRequestLinks entity class for Autotask API
- * 
+ *
  * Links between change requests
  * Supported Operations: GET, POST, DELETE
  * Category: associations
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ChangeRequestLinksEntity.htm}
  */
 export class ChangeRequestLinks extends BaseEntity {
@@ -64,7 +64,7 @@ export class ChangeRequestLinks extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IChangeRequestLinks[]',
         endpoint: '/ChangeRequestLinks',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ChangeRequestLinks extends BaseEntity {
    * @param changeRequestLinks - The changerequestlinks data to create
    * @returns Promise with the created changerequestlinks
    */
-  async create(changeRequestLinks: IChangeRequestLinks): Promise<ApiResponse<IChangeRequestLinks>> {
+  async create(
+    changeRequestLinks: IChangeRequestLinks
+  ): Promise<ApiResponse<IChangeRequestLinks>> {
     this.logger.info('Creating changerequestlinks', { changeRequestLinks });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, changeRequestLinks),
@@ -91,7 +93,7 @@ export class ChangeRequestLinks extends BaseEntity {
     this.logger.info('Getting changerequestlinks', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class ChangeRequestLinks extends BaseEntity {
     this.logger.info('Deleting changerequestlinks', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class ChangeRequestLinks extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of changerequestlinks
    */
-  async list(query: IChangeRequestLinksQuery = {}): Promise<ApiResponse<IChangeRequestLinks[]>> {
+  async list(
+    query: IChangeRequestLinksQuery = {}
+  ): Promise<ApiResponse<IChangeRequestLinks[]>> {
     this.logger.info('Listing changerequestlinks', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class ChangeRequestLinks extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

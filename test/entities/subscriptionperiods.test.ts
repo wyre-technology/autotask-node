@@ -148,7 +148,7 @@ describe('SubscriptionPeriods Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/SubscriptionPeriods/1',
+        '/SubscriptionPeriods',
         subscriptionPeriodsData
       );
     });
@@ -169,10 +169,10 @@ describe('SubscriptionPeriods Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/SubscriptionPeriods/1',
-        subscriptionPeriodsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/SubscriptionPeriods', {
+        ...subscriptionPeriodsData,
+        id: 1,
+      });
     });
   });
 

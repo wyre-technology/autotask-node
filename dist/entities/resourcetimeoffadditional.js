@@ -52,7 +52,7 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IResourceTimeOffAdditional[]',
                 endpoint: '/ResourceTimeOffAdditional',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
      * @returns Promise with the created resourcetimeoffadditional
      */
     async create(resourceTimeOffAdditional) {
-        this.logger.info('Creating resourcetimeoffadditional', { resourceTimeOffAdditional });
+        this.logger.info('Creating resourcetimeoffadditional', {
+            resourceTimeOffAdditional,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, resourceTimeOffAdditional), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting resourcetimeoffadditional', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a resourcetimeoffadditional
@@ -80,8 +82,11 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
      * @returns Promise with the updated resourcetimeoffadditional
      */
     async update(id, resourceTimeOffAdditional) {
-        this.logger.info('Updating resourcetimeoffadditional', { id, resourceTimeOffAdditional });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, resourceTimeOffAdditional), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating resourcetimeoffadditional', {
+            id,
+            resourceTimeOffAdditional,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, resourceTimeOffAdditional), this.endpoint, 'PUT');
     }
     /**
      * Partially update a resourcetimeoffadditional
@@ -90,8 +95,14 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
      * @returns Promise with the updated resourcetimeoffadditional
      */
     async patch(id, resourceTimeOffAdditional) {
-        this.logger.info('Patching resourcetimeoffadditional', { id, resourceTimeOffAdditional });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, resourceTimeOffAdditional), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching resourcetimeoffadditional', {
+            id,
+            resourceTimeOffAdditional,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...resourceTimeOffAdditional,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a resourcetimeoffadditional
@@ -100,7 +111,7 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting resourcetimeoffadditional', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List resourcetimeoffadditional with optional filtering
@@ -126,7 +137,9 @@ class ResourceTimeOffAdditional extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

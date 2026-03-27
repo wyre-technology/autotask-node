@@ -17,11 +17,11 @@ export interface ICompanyLocationsQuery {
 
 /**
  * CompanyLocations entity class for Autotask API
- * 
+ *
  * Physical locations associated with companies
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/CompanyLocationsEntity.htm}
  */
 export class CompanyLocations extends BaseEntity {
@@ -71,7 +71,7 @@ export class CompanyLocations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ICompanyLocations[]',
         endpoint: '/CompanyLocations',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class CompanyLocations extends BaseEntity {
    * @param companyLocations - The companylocations data to create
    * @returns Promise with the created companylocations
    */
-  async create(companyLocations: ICompanyLocations): Promise<ApiResponse<ICompanyLocations>> {
+  async create(
+    companyLocations: ICompanyLocations
+  ): Promise<ApiResponse<ICompanyLocations>> {
     this.logger.info('Creating companylocations', { companyLocations });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, companyLocations),
@@ -98,7 +100,7 @@ export class CompanyLocations extends BaseEntity {
     this.logger.info('Getting companylocations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class CompanyLocations extends BaseEntity {
   ): Promise<ApiResponse<ICompanyLocations>> {
     this.logger.info('Updating companylocations', { id, companyLocations });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, companyLocations),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, companyLocations),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class CompanyLocations extends BaseEntity {
   ): Promise<ApiResponse<ICompanyLocations>> {
     this.logger.info('Patching companylocations', { id, companyLocations });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, companyLocations),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(companyLocations as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class CompanyLocations extends BaseEntity {
     this.logger.info('Deleting companylocations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class CompanyLocations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of companylocations
    */
-  async list(query: ICompanyLocationsQuery = {}): Promise<ApiResponse<ICompanyLocations[]>> {
+  async list(
+    query: ICompanyLocationsQuery = {}
+  ): Promise<ApiResponse<ICompanyLocations[]>> {
     this.logger.info('Listing companylocations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class CompanyLocations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

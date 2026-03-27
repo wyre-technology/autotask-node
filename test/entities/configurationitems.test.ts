@@ -139,7 +139,7 @@ describe('ConfigurationItems Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ConfigurationItems/1',
+        '/ConfigurationItems',
         configurationItemsData
       );
     });
@@ -157,10 +157,10 @@ describe('ConfigurationItems Entity', () => {
       const result = await configurationItems.patch(1, configurationItemsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ConfigurationItems/1',
-        configurationItemsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ConfigurationItems', {
+        ...configurationItemsData,
+        id: 1,
+      });
     });
   });
 });

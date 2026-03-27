@@ -17,11 +17,11 @@ export interface ITaskSecondaryResourcesQuery {
 
 /**
  * TaskSecondaryResources entity class for Autotask API
- * 
+ *
  * Secondary resource assignments for tasks
  * Supported Operations: GET, POST, DELETE
  * Category: tasks
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TaskSecondaryResourcesEntity.htm}
  */
 export class TaskSecondaryResources extends BaseEntity {
@@ -64,7 +64,7 @@ export class TaskSecondaryResources extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITaskSecondaryResources[]',
         endpoint: '/TaskSecondaryResources',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class TaskSecondaryResources extends BaseEntity {
    * @param taskSecondaryResources - The tasksecondaryresources data to create
    * @returns Promise with the created tasksecondaryresources
    */
-  async create(taskSecondaryResources: ITaskSecondaryResources): Promise<ApiResponse<ITaskSecondaryResources>> {
-    this.logger.info('Creating tasksecondaryresources', { taskSecondaryResources });
+  async create(
+    taskSecondaryResources: ITaskSecondaryResources
+  ): Promise<ApiResponse<ITaskSecondaryResources>> {
+    this.logger.info('Creating tasksecondaryresources', {
+      taskSecondaryResources,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, taskSecondaryResources),
       this.endpoint,
@@ -91,7 +95,7 @@ export class TaskSecondaryResources extends BaseEntity {
     this.logger.info('Getting tasksecondaryresources', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class TaskSecondaryResources extends BaseEntity {
     this.logger.info('Deleting tasksecondaryresources', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class TaskSecondaryResources extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of tasksecondaryresources
    */
-  async list(query: ITaskSecondaryResourcesQuery = {}): Promise<ApiResponse<ITaskSecondaryResources[]>> {
+  async list(
+    query: ITaskSecondaryResourcesQuery = {}
+  ): Promise<ApiResponse<ITaskSecondaryResources[]>> {
     this.logger.info('Listing tasksecondaryresources', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class TaskSecondaryResources extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

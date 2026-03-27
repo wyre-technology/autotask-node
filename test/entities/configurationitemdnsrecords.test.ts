@@ -163,7 +163,7 @@ describe('ConfigurationItemDnsRecords Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ConfigurationItemDnsRecords/1',
+        '/ConfigurationItemDnsRecords',
         configurationItemDnsRecordsData
       );
     });
@@ -187,8 +187,8 @@ describe('ConfigurationItemDnsRecords Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ConfigurationItemDnsRecords/1',
-        configurationItemDnsRecordsData
+        '/ConfigurationItemDnsRecords',
+        { ...configurationItemDnsRecordsData, id: 1 }
       );
     });
   });

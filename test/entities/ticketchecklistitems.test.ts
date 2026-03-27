@@ -154,7 +154,7 @@ describe('TicketChecklistItems Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/TicketChecklistItems/1',
+        '/TicketChecklistItems',
         ticketChecklistItemsData
       );
     });
@@ -175,10 +175,10 @@ describe('TicketChecklistItems Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/TicketChecklistItems/1',
-        ticketChecklistItemsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/TicketChecklistItems', {
+        ...ticketChecklistItemsData,
+        id: 1,
+      });
     });
   });
 });

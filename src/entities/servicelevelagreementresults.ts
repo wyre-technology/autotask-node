@@ -17,11 +17,11 @@ export interface IServiceLevelAgreementResultsQuery {
 
 /**
  * ServiceLevelAgreementResults entity class for Autotask API
- * 
+ *
  * Results and performance metrics for SLAs
  * Supported Operations: GET
  * Category: associations
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ServiceLevelAgreementResultsEntity.htm}
  */
 export class ServiceLevelAgreementResults extends BaseEntity {
@@ -50,7 +50,7 @@ export class ServiceLevelAgreementResults extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IServiceLevelAgreementResults[]',
         endpoint: '/ServiceLevelAgreementResults',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class ServiceLevelAgreementResults extends BaseEntity {
     this.logger.info('Getting servicelevelagreementresults', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class ServiceLevelAgreementResults extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of servicelevelagreementresults
    */
-  async list(query: IServiceLevelAgreementResultsQuery = {}): Promise<ApiResponse<IServiceLevelAgreementResults[]>> {
+  async list(
+    query: IServiceLevelAgreementResultsQuery = {}
+  ): Promise<ApiResponse<IServiceLevelAgreementResults[]>> {
     this.logger.info('Listing servicelevelagreementresults', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class ServiceLevelAgreementResults extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

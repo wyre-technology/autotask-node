@@ -20,7 +20,10 @@ export interface NoteQuery {
 export class Notes {
   private readonly endpoint = '/Notes';
 
-  constructor(private axios: AxiosInstance, private logger: winston.Logger) {}
+  constructor(
+    private axios: AxiosInstance,
+    private logger: winston.Logger
+  ) {}
 
   static getMetadata(): MethodMetadata[] {
     return [
@@ -62,7 +65,11 @@ export class Notes {
     ];
   }
 
-  private async requestWithRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Promise<T> {
+  private async requestWithRetry<T>(
+    fn: () => Promise<T>,
+    retries = 3,
+    delay = 500
+  ): Promise<T> {
     let attempt = 0;
     while (true) {
       try {
@@ -71,7 +78,9 @@ export class Notes {
         attempt++;
         this.logger.warn(`Request failed (attempt ${attempt}): ${err}`);
         if (attempt > retries) throw err;
-        await new Promise(res => setTimeout(res, delay * Math.pow(2, attempt - 1)));
+        await new Promise(res =>
+          setTimeout(res, delay * Math.pow(2, attempt - 1))
+        );
       }
     }
   }
@@ -95,7 +104,7 @@ export class Notes {
   async update(id: number, note: Partial<Note>): Promise<ApiResponse<Note>> {
     this.logger.info('Updating note', { id, note });
     return this.requestWithRetry(async () => {
-      const { data } = await this.axios.put(`${this.endpoint}/${id}`, note);
+      const { data } = await this.axios.put(this.endpoint, note);
       return { data };
     });
   }
@@ -119,4 +128,4 @@ export class Notes {
       return { data };
     });
   }
-} 
+}

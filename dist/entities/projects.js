@@ -64,7 +64,7 @@ class Projects extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting projects', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a projects
@@ -74,7 +74,7 @@ class Projects extends base_1.BaseEntity {
      */
     async update(id, projects) {
         this.logger.info('Updating projects', { id, projects });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, projects), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, projects), this.endpoint, 'PUT');
     }
     /**
      * Partially update a projects
@@ -84,7 +84,7 @@ class Projects extends base_1.BaseEntity {
      */
     async patch(id, projects) {
         this.logger.info('Patching projects', { id, projects });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, projects), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...projects, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a projects
@@ -93,7 +93,7 @@ class Projects extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting projects', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List projects with optional filtering
@@ -119,7 +119,9 @@ class Projects extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

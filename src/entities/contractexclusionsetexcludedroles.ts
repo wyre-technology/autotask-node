@@ -17,11 +17,11 @@ export interface IContractExclusionSetExcludedRolesQuery {
 
 /**
  * ContractExclusionSetExcludedRoles entity class for Autotask API
- * 
+ *
  * Excluded roles within contract exclusion sets
  * Supported Operations: GET, POST, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractExclusionSetExcludedRolesEntity.htm}
  */
 export class ContractExclusionSetExcludedRoles extends BaseEntity {
@@ -64,7 +64,7 @@ export class ContractExclusionSetExcludedRoles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractExclusionSetExcludedRoles[]',
         endpoint: '/ContractExclusionSetExcludedRoles',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,15 @@ export class ContractExclusionSetExcludedRoles extends BaseEntity {
    * @param contractExclusionSetExcludedRoles - The contractexclusionsetexcludedroles data to create
    * @returns Promise with the created contractexclusionsetexcludedroles
    */
-  async create(contractExclusionSetExcludedRoles: IContractExclusionSetExcludedRoles): Promise<ApiResponse<IContractExclusionSetExcludedRoles>> {
-    this.logger.info('Creating contractexclusionsetexcludedroles', { contractExclusionSetExcludedRoles });
+  async create(
+    contractExclusionSetExcludedRoles: IContractExclusionSetExcludedRoles
+  ): Promise<ApiResponse<IContractExclusionSetExcludedRoles>> {
+    this.logger.info('Creating contractexclusionsetexcludedroles', {
+      contractExclusionSetExcludedRoles,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, contractExclusionSetExcludedRoles),
+      async () =>
+        this.axios.post(this.endpoint, contractExclusionSetExcludedRoles),
       this.endpoint,
       'POST'
     );
@@ -87,11 +92,13 @@ export class ContractExclusionSetExcludedRoles extends BaseEntity {
    * @param id - The contractexclusionsetexcludedroles ID
    * @returns Promise with the contractexclusionsetexcludedroles data
    */
-  async get(id: number): Promise<ApiResponse<IContractExclusionSetExcludedRoles>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IContractExclusionSetExcludedRoles>> {
     this.logger.info('Getting contractexclusionsetexcludedroles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +112,7 @@ export class ContractExclusionSetExcludedRoles extends BaseEntity {
     this.logger.info('Deleting contractexclusionsetexcludedroles', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +122,9 @@ export class ContractExclusionSetExcludedRoles extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractexclusionsetexcludedroles
    */
-  async list(query: IContractExclusionSetExcludedRolesQuery = {}): Promise<ApiResponse<IContractExclusionSetExcludedRoles[]>> {
+  async list(
+    query: IContractExclusionSetExcludedRolesQuery = {}
+  ): Promise<ApiResponse<IContractExclusionSetExcludedRoles[]>> {
     this.logger.info('Listing contractexclusionsetexcludedroles', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +143,11 @@ export class ContractExclusionSetExcludedRoles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

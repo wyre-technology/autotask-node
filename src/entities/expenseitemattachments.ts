@@ -17,11 +17,11 @@ export interface IExpenseItemAttachmentsQuery {
 
 /**
  * ExpenseItemAttachments entity class for Autotask API
- * 
+ *
  * File attachments for expense items
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ExpenseItemAttachmentsEntity.htm}
  */
 export class ExpenseItemAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ExpenseItemAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IExpenseItemAttachments[]',
         endpoint: '/ExpenseItemAttachments',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ExpenseItemAttachments extends BaseEntity {
    * @param expenseItemAttachments - The expenseitemattachments data to create
    * @returns Promise with the created expenseitemattachments
    */
-  async create(expenseItemAttachments: IExpenseItemAttachments): Promise<ApiResponse<IExpenseItemAttachments>> {
-    this.logger.info('Creating expenseitemattachments', { expenseItemAttachments });
+  async create(
+    expenseItemAttachments: IExpenseItemAttachments
+  ): Promise<ApiResponse<IExpenseItemAttachments>> {
+    this.logger.info('Creating expenseitemattachments', {
+      expenseItemAttachments,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, expenseItemAttachments),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ExpenseItemAttachments extends BaseEntity {
     this.logger.info('Getting expenseitemattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ExpenseItemAttachments extends BaseEntity {
     this.logger.info('Deleting expenseitemattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ExpenseItemAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of expenseitemattachments
    */
-  async list(query: IExpenseItemAttachmentsQuery = {}): Promise<ApiResponse<IExpenseItemAttachments[]>> {
+  async list(
+    query: IExpenseItemAttachmentsQuery = {}
+  ): Promise<ApiResponse<IExpenseItemAttachments[]>> {
     this.logger.info('Listing expenseitemattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ExpenseItemAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

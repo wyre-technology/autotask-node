@@ -17,11 +17,11 @@ export interface IProjectAttachmentsQuery {
 
 /**
  * ProjectAttachments entity class for Autotask API
- * 
+ *
  * File attachments for projects
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ProjectAttachmentsEntity.htm}
  */
 export class ProjectAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ProjectAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IProjectAttachments[]',
         endpoint: '/ProjectAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ProjectAttachments extends BaseEntity {
    * @param projectAttachments - The projectattachments data to create
    * @returns Promise with the created projectattachments
    */
-  async create(projectAttachments: IProjectAttachments): Promise<ApiResponse<IProjectAttachments>> {
+  async create(
+    projectAttachments: IProjectAttachments
+  ): Promise<ApiResponse<IProjectAttachments>> {
     this.logger.info('Creating projectattachments', { projectAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, projectAttachments),
@@ -91,7 +93,7 @@ export class ProjectAttachments extends BaseEntity {
     this.logger.info('Getting projectattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class ProjectAttachments extends BaseEntity {
     this.logger.info('Deleting projectattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class ProjectAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of projectattachments
    */
-  async list(query: IProjectAttachmentsQuery = {}): Promise<ApiResponse<IProjectAttachments[]>> {
+  async list(
+    query: IProjectAttachmentsQuery = {}
+  ): Promise<ApiResponse<IProjectAttachments[]>> {
     this.logger.info('Listing projectattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class ProjectAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

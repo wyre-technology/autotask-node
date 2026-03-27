@@ -156,7 +156,7 @@ describe('KnowledgeBaseArticles Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/KnowledgeBaseArticles/1',
+        '/KnowledgeBaseArticles',
         knowledgeBaseArticlesData
       );
     });
@@ -179,10 +179,10 @@ describe('KnowledgeBaseArticles Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/KnowledgeBaseArticles/1',
-        knowledgeBaseArticlesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/KnowledgeBaseArticles', {
+        ...knowledgeBaseArticlesData,
+        id: 1,
+      });
     });
   });
 

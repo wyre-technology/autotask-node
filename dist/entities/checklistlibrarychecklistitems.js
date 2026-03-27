@@ -52,7 +52,7 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IChecklistLibraryChecklistItems[]',
                 endpoint: '/ChecklistLibraryChecklistItems',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
      * @returns Promise with the created checklistlibrarychecklistitems
      */
     async create(checklistLibraryChecklistItems) {
-        this.logger.info('Creating checklistlibrarychecklistitems', { checklistLibraryChecklistItems });
+        this.logger.info('Creating checklistlibrarychecklistitems', {
+            checklistLibraryChecklistItems,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, checklistLibraryChecklistItems), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting checklistlibrarychecklistitems', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a checklistlibrarychecklistitems
@@ -80,8 +82,11 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
      * @returns Promise with the updated checklistlibrarychecklistitems
      */
     async update(id, checklistLibraryChecklistItems) {
-        this.logger.info('Updating checklistlibrarychecklistitems', { id, checklistLibraryChecklistItems });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, checklistLibraryChecklistItems), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating checklistlibrarychecklistitems', {
+            id,
+            checklistLibraryChecklistItems,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, checklistLibraryChecklistItems), this.endpoint, 'PUT');
     }
     /**
      * Partially update a checklistlibrarychecklistitems
@@ -90,8 +95,14 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
      * @returns Promise with the updated checklistlibrarychecklistitems
      */
     async patch(id, checklistLibraryChecklistItems) {
-        this.logger.info('Patching checklistlibrarychecklistitems', { id, checklistLibraryChecklistItems });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, checklistLibraryChecklistItems), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching checklistlibrarychecklistitems', {
+            id,
+            checklistLibraryChecklistItems,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...checklistLibraryChecklistItems,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a checklistlibrarychecklistitems
@@ -100,7 +111,7 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting checklistlibrarychecklistitems', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List checklistlibrarychecklistitems with optional filtering
@@ -126,7 +137,9 @@ class ChecklistLibraryChecklistItems extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

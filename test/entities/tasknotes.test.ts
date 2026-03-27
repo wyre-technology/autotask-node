@@ -135,7 +135,7 @@ describe('TaskNotes Entity', () => {
       const result = await taskNotes.update(1, taskNotesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.put).toHaveBeenCalledWith('/TaskNotes/1', taskNotesData);
+      expect(mockAxios.put).toHaveBeenCalledWith('/TaskNotes', taskNotesData);
     });
   });
 
@@ -151,10 +151,10 @@ describe('TaskNotes Entity', () => {
       const result = await taskNotes.patch(1, taskNotesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/TaskNotes/1',
-        taskNotesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/TaskNotes', {
+        ...taskNotesData,
+        id: 1,
+      });
     });
   });
 });

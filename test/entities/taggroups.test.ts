@@ -135,7 +135,7 @@ describe('TagGroups Entity', () => {
       const result = await tagGroups.update(1, tagGroupsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.put).toHaveBeenCalledWith('/TagGroups/1', tagGroupsData);
+      expect(mockAxios.put).toHaveBeenCalledWith('/TagGroups', tagGroupsData);
     });
   });
 
@@ -151,10 +151,10 @@ describe('TagGroups Entity', () => {
       const result = await tagGroups.patch(1, tagGroupsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/TagGroups/1',
-        tagGroupsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/TagGroups', {
+        ...tagGroupsData,
+        id: 1,
+      });
     });
   });
 

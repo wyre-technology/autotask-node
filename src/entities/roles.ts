@@ -17,11 +17,11 @@ export interface IRolesQuery {
 
 /**
  * Roles entity class for Autotask API
- * 
+ *
  * System roles and permissions
  * Supported Operations: GET
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/RolesEntity.htm}
  */
 export class Roles extends BaseEntity {
@@ -50,7 +50,7 @@ export class Roles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IRoles[]',
         endpoint: '/Roles',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class Roles extends BaseEntity {
     this.logger.info('Getting roles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -92,7 +92,11 @@ export class Roles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -52,7 +52,7 @@ class ProductTiers extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IProductTiers[]',
                 endpoint: '/ProductTiers',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ProductTiers extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting producttiers', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a producttiers
@@ -81,7 +81,7 @@ class ProductTiers extends base_1.BaseEntity {
      */
     async update(id, productTiers) {
         this.logger.info('Updating producttiers', { id, productTiers });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, productTiers), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, productTiers), this.endpoint, 'PUT');
     }
     /**
      * Partially update a producttiers
@@ -91,7 +91,7 @@ class ProductTiers extends base_1.BaseEntity {
      */
     async patch(id, productTiers) {
         this.logger.info('Patching producttiers', { id, productTiers });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, productTiers), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...productTiers, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a producttiers
@@ -100,7 +100,7 @@ class ProductTiers extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting producttiers', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List producttiers with optional filtering
@@ -126,7 +126,9 @@ class ProductTiers extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

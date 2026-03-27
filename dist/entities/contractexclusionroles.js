@@ -45,7 +45,7 @@ class ContractExclusionRoles extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractExclusionRoles[]',
                 endpoint: '/ContractExclusionRoles',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class ContractExclusionRoles extends base_1.BaseEntity {
      * @returns Promise with the created contractexclusionroles
      */
     async create(contractExclusionRoles) {
-        this.logger.info('Creating contractexclusionroles', { contractExclusionRoles });
+        this.logger.info('Creating contractexclusionroles', {
+            contractExclusionRoles,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, contractExclusionRoles), this.endpoint, 'POST');
     }
     /**
@@ -64,7 +66,7 @@ class ContractExclusionRoles extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractexclusionroles', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Delete a contractexclusionroles
@@ -73,7 +75,7 @@ class ContractExclusionRoles extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractexclusionroles', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractexclusionroles with optional filtering
@@ -99,7 +101,9 @@ class ContractExclusionRoles extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

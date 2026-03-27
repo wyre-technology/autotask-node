@@ -17,11 +17,11 @@ export interface ITicketChangeRequestApprovalsQuery {
 
 /**
  * TicketChangeRequestApprovals entity class for Autotask API
- * 
+ *
  * Approvals for ticket change requests
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: ticketing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketChangeRequestApprovalsEntity.htm}
  */
 export class TicketChangeRequestApprovals extends BaseEntity {
@@ -64,7 +64,7 @@ export class TicketChangeRequestApprovals extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketChangeRequestApprovals[]',
         endpoint: '/TicketChangeRequestApprovals',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class TicketChangeRequestApprovals extends BaseEntity {
    * @param ticketChangeRequestApprovals - The ticketchangerequestapprovals data to create
    * @returns Promise with the created ticketchangerequestapprovals
    */
-  async create(ticketChangeRequestApprovals: ITicketChangeRequestApprovals): Promise<ApiResponse<ITicketChangeRequestApprovals>> {
-    this.logger.info('Creating ticketchangerequestapprovals', { ticketChangeRequestApprovals });
+  async create(
+    ticketChangeRequestApprovals: ITicketChangeRequestApprovals
+  ): Promise<ApiResponse<ITicketChangeRequestApprovals>> {
+    this.logger.info('Creating ticketchangerequestapprovals', {
+      ticketChangeRequestApprovals,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketChangeRequestApprovals),
       this.endpoint,
@@ -91,7 +95,7 @@ export class TicketChangeRequestApprovals extends BaseEntity {
     this.logger.info('Getting ticketchangerequestapprovals', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -106,10 +110,13 @@ export class TicketChangeRequestApprovals extends BaseEntity {
     id: number,
     ticketChangeRequestApprovals: Partial<ITicketChangeRequestApprovals>
   ): Promise<ApiResponse<ITicketChangeRequestApprovals>> {
-    this.logger.info('Updating ticketchangerequestapprovals', { id, ticketChangeRequestApprovals });
+    this.logger.info('Updating ticketchangerequestapprovals', {
+      id,
+      ticketChangeRequestApprovals,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, ticketChangeRequestApprovals),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, ticketChangeRequestApprovals),
+      this.endpoint,
       'PUT'
     );
   }
@@ -124,10 +131,17 @@ export class TicketChangeRequestApprovals extends BaseEntity {
     id: number,
     ticketChangeRequestApprovals: Partial<ITicketChangeRequestApprovals>
   ): Promise<ApiResponse<ITicketChangeRequestApprovals>> {
-    this.logger.info('Patching ticketchangerequestapprovals', { id, ticketChangeRequestApprovals });
+    this.logger.info('Patching ticketchangerequestapprovals', {
+      id,
+      ticketChangeRequestApprovals,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, ticketChangeRequestApprovals),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(ticketChangeRequestApprovals as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +151,9 @@ export class TicketChangeRequestApprovals extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of ticketchangerequestapprovals
    */
-  async list(query: ITicketChangeRequestApprovalsQuery = {}): Promise<ApiResponse<ITicketChangeRequestApprovals[]>> {
+  async list(
+    query: ITicketChangeRequestApprovalsQuery = {}
+  ): Promise<ApiResponse<ITicketChangeRequestApprovals[]>> {
     this.logger.info('Listing ticketchangerequestapprovals', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +172,11 @@ export class TicketChangeRequestApprovals extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

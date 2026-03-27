@@ -17,11 +17,11 @@ export interface IResourceRoleQueuesQuery {
 
 /**
  * ResourceRoleQueues entity class for Autotask API
- * 
+ *
  * Queue assignments for resource roles
  * Supported Operations: GET, POST, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceRoleQueuesEntity.htm}
  */
 export class ResourceRoleQueues extends BaseEntity {
@@ -64,7 +64,7 @@ export class ResourceRoleQueues extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceRoleQueues[]',
         endpoint: '/ResourceRoleQueues',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ResourceRoleQueues extends BaseEntity {
    * @param resourceRoleQueues - The resourcerolequeues data to create
    * @returns Promise with the created resourcerolequeues
    */
-  async create(resourceRoleQueues: IResourceRoleQueues): Promise<ApiResponse<IResourceRoleQueues>> {
+  async create(
+    resourceRoleQueues: IResourceRoleQueues
+  ): Promise<ApiResponse<IResourceRoleQueues>> {
     this.logger.info('Creating resourcerolequeues', { resourceRoleQueues });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceRoleQueues),
@@ -91,7 +93,7 @@ export class ResourceRoleQueues extends BaseEntity {
     this.logger.info('Getting resourcerolequeues', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class ResourceRoleQueues extends BaseEntity {
     this.logger.info('Deleting resourcerolequeues', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class ResourceRoleQueues extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourcerolequeues
    */
-  async list(query: IResourceRoleQueuesQuery = {}): Promise<ApiResponse<IResourceRoleQueues[]>> {
+  async list(
+    query: IResourceRoleQueuesQuery = {}
+  ): Promise<ApiResponse<IResourceRoleQueues[]>> {
     this.logger.info('Listing resourcerolequeues', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class ResourceRoleQueues extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

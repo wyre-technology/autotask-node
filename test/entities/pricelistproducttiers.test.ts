@@ -156,7 +156,7 @@ describe('PriceListProductTiers Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/PriceListProductTiers/1',
+        '/PriceListProductTiers',
         priceListProductTiersData
       );
     });
@@ -179,10 +179,10 @@ describe('PriceListProductTiers Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/PriceListProductTiers/1',
-        priceListProductTiersData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/PriceListProductTiers', {
+        ...priceListProductTiersData,
+        id: 1,
+      });
     });
   });
 

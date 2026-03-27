@@ -115,7 +115,7 @@ export class Accounts extends BaseEntity {
     this.logger.info('Getting account', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -126,8 +126,8 @@ export class Accounts extends BaseEntity {
   ): Promise<ApiResponse<Account>> {
     this.logger.info('Updating account', { id, account });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, account),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, account),
+      this.endpoint,
       'PUT'
     );
   }
@@ -136,7 +136,7 @@ export class Accounts extends BaseEntity {
     this.logger.info('Deleting account', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -144,15 +144,15 @@ export class Accounts extends BaseEntity {
   async list(query: AccountQuery = {}): Promise<ApiResponse<Account[]>> {
     this.logger.info('Listing accounts', { query });
     const searchBody: Record<string, any> = {};
-    
+
     // Ensure there's a filter - Autotask API requires a filter
     if (!query.filter || Object.keys(query.filter).length === 0) {
       searchBody.filter = [
         {
-          "op": "gte",
-          "field": "id",
-          "value": 0
-        }
+          op: 'gte',
+          field: 'id',
+          value: 0,
+        },
       ];
     } else {
       // If filter is provided as an object, convert to array format expected by API
@@ -160,7 +160,11 @@ export class Accounts extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({
@@ -181,13 +185,13 @@ export class Accounts extends BaseEntity {
         searchBody.filter = query.filter;
       }
     }
-    
+
     if (query.sort) searchBody.sort = query.sort;
     if (query.page) searchBody.page = query.page;
     if (query.pageSize) searchBody.maxRecords = query.pageSize;
-    
+
     this.logger.info('Listing accounts with search body', { searchBody });
-    
+
     return this.executeQueryRequest(
       async () => this.axios.post(`${this.endpoint}/query`, searchBody),
       `${this.endpoint}/query`,

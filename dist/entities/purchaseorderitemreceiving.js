@@ -45,7 +45,7 @@ class PurchaseOrderItemReceiving extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IPurchaseOrderItemReceiving[]',
                 endpoint: '/PurchaseOrderItemReceiving',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class PurchaseOrderItemReceiving extends base_1.BaseEntity {
      * @returns Promise with the created purchaseorderitemreceiving
      */
     async create(purchaseOrderItemReceiving) {
-        this.logger.info('Creating purchaseorderitemreceiving', { purchaseOrderItemReceiving });
+        this.logger.info('Creating purchaseorderitemreceiving', {
+            purchaseOrderItemReceiving,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, purchaseOrderItemReceiving), this.endpoint, 'POST');
     }
     /**
@@ -64,7 +66,7 @@ class PurchaseOrderItemReceiving extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting purchaseorderitemreceiving', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a purchaseorderitemreceiving
@@ -73,8 +75,11 @@ class PurchaseOrderItemReceiving extends base_1.BaseEntity {
      * @returns Promise with the updated purchaseorderitemreceiving
      */
     async update(id, purchaseOrderItemReceiving) {
-        this.logger.info('Updating purchaseorderitemreceiving', { id, purchaseOrderItemReceiving });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, purchaseOrderItemReceiving), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating purchaseorderitemreceiving', {
+            id,
+            purchaseOrderItemReceiving,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, purchaseOrderItemReceiving), this.endpoint, 'PUT');
     }
     /**
      * Partially update a purchaseorderitemreceiving
@@ -83,8 +88,14 @@ class PurchaseOrderItemReceiving extends base_1.BaseEntity {
      * @returns Promise with the updated purchaseorderitemreceiving
      */
     async patch(id, purchaseOrderItemReceiving) {
-        this.logger.info('Patching purchaseorderitemreceiving', { id, purchaseOrderItemReceiving });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, purchaseOrderItemReceiving), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching purchaseorderitemreceiving', {
+            id,
+            purchaseOrderItemReceiving,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...purchaseOrderItemReceiving,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * List purchaseorderitemreceiving with optional filtering
@@ -110,7 +121,9 @@ class PurchaseOrderItemReceiving extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

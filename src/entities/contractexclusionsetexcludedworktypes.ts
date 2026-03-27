@@ -17,11 +17,11 @@ export interface IContractExclusionSetExcludedWorkTypesQuery {
 
 /**
  * ContractExclusionSetExcludedWorkTypes entity class for Autotask API
- * 
+ *
  * Excluded work types within contract exclusion sets
  * Supported Operations: GET, POST, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractExclusionSetExcludedWorkTypesEntity.htm}
  */
 export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
@@ -64,7 +64,7 @@ export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractExclusionSetExcludedWorkTypes[]',
         endpoint: '/ContractExclusionSetExcludedWorkTypes',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,15 @@ export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
    * @param contractExclusionSetExcludedWorkTypes - The contractexclusionsetexcludedworktypes data to create
    * @returns Promise with the created contractexclusionsetexcludedworktypes
    */
-  async create(contractExclusionSetExcludedWorkTypes: IContractExclusionSetExcludedWorkTypes): Promise<ApiResponse<IContractExclusionSetExcludedWorkTypes>> {
-    this.logger.info('Creating contractexclusionsetexcludedworktypes', { contractExclusionSetExcludedWorkTypes });
+  async create(
+    contractExclusionSetExcludedWorkTypes: IContractExclusionSetExcludedWorkTypes
+  ): Promise<ApiResponse<IContractExclusionSetExcludedWorkTypes>> {
+    this.logger.info('Creating contractexclusionsetexcludedworktypes', {
+      contractExclusionSetExcludedWorkTypes,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, contractExclusionSetExcludedWorkTypes),
+      async () =>
+        this.axios.post(this.endpoint, contractExclusionSetExcludedWorkTypes),
       this.endpoint,
       'POST'
     );
@@ -87,11 +92,13 @@ export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
    * @param id - The contractexclusionsetexcludedworktypes ID
    * @returns Promise with the contractexclusionsetexcludedworktypes data
    */
-  async get(id: number): Promise<ApiResponse<IContractExclusionSetExcludedWorkTypes>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IContractExclusionSetExcludedWorkTypes>> {
     this.logger.info('Getting contractexclusionsetexcludedworktypes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +112,7 @@ export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
     this.logger.info('Deleting contractexclusionsetexcludedworktypes', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,8 +122,12 @@ export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractexclusionsetexcludedworktypes
    */
-  async list(query: IContractExclusionSetExcludedWorkTypesQuery = {}): Promise<ApiResponse<IContractExclusionSetExcludedWorkTypes[]>> {
-    this.logger.info('Listing contractexclusionsetexcludedworktypes', { query });
+  async list(
+    query: IContractExclusionSetExcludedWorkTypesQuery = {}
+  ): Promise<ApiResponse<IContractExclusionSetExcludedWorkTypes[]>> {
+    this.logger.info('Listing contractexclusionsetexcludedworktypes', {
+      query,
+    });
     const searchBody: Record<string, any> = {};
 
     // Set up basic filter if none provided
@@ -134,7 +145,11 @@ export class ContractExclusionSetExcludedWorkTypes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

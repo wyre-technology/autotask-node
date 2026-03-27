@@ -17,11 +17,11 @@ export interface IExpenseReportAttachmentsQuery {
 
 /**
  * ExpenseReportAttachments entity class for Autotask API
- * 
+ *
  * File attachments for expense reports
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ExpenseReportAttachmentsEntity.htm}
  */
 export class ExpenseReportAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ExpenseReportAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IExpenseReportAttachments[]',
         endpoint: '/ExpenseReportAttachments',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ExpenseReportAttachments extends BaseEntity {
    * @param expenseReportAttachments - The expensereportattachments data to create
    * @returns Promise with the created expensereportattachments
    */
-  async create(expenseReportAttachments: IExpenseReportAttachments): Promise<ApiResponse<IExpenseReportAttachments>> {
-    this.logger.info('Creating expensereportattachments', { expenseReportAttachments });
+  async create(
+    expenseReportAttachments: IExpenseReportAttachments
+  ): Promise<ApiResponse<IExpenseReportAttachments>> {
+    this.logger.info('Creating expensereportattachments', {
+      expenseReportAttachments,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, expenseReportAttachments),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ExpenseReportAttachments extends BaseEntity {
     this.logger.info('Getting expensereportattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ExpenseReportAttachments extends BaseEntity {
     this.logger.info('Deleting expensereportattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ExpenseReportAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of expensereportattachments
    */
-  async list(query: IExpenseReportAttachmentsQuery = {}): Promise<ApiResponse<IExpenseReportAttachments[]>> {
+  async list(
+    query: IExpenseReportAttachmentsQuery = {}
+  ): Promise<ApiResponse<IExpenseReportAttachments[]>> {
     this.logger.info('Listing expensereportattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ExpenseReportAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

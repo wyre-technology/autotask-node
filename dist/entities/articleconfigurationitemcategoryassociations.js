@@ -45,7 +45,7 @@ class ArticleConfigurationItemCategoryAssociations extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IArticleConfigurationItemCategoryAssociations[]',
                 endpoint: '/ArticleConfigurationItemCategoryAssociations',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class ArticleConfigurationItemCategoryAssociations extends base_1.BaseEntity {
      * @returns Promise with the created articleconfigurationitemcategoryassociations
      */
     async create(articleConfigurationItemCategoryAssociations) {
-        this.logger.info('Creating articleconfigurationitemcategoryassociations', { articleConfigurationItemCategoryAssociations });
+        this.logger.info('Creating articleconfigurationitemcategoryassociations', {
+            articleConfigurationItemCategoryAssociations,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, articleConfigurationItemCategoryAssociations), this.endpoint, 'POST');
     }
     /**
@@ -63,8 +65,10 @@ class ArticleConfigurationItemCategoryAssociations extends base_1.BaseEntity {
      * @returns Promise with the articleconfigurationitemcategoryassociations data
      */
     async get(id) {
-        this.logger.info('Getting articleconfigurationitemcategoryassociations', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        this.logger.info('Getting articleconfigurationitemcategoryassociations', {
+            id,
+        });
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Delete a articleconfigurationitemcategoryassociations
@@ -72,8 +76,10 @@ class ArticleConfigurationItemCategoryAssociations extends base_1.BaseEntity {
      * @returns Promise that resolves when deletion is complete
      */
     async delete(id) {
-        this.logger.info('Deleting articleconfigurationitemcategoryassociations', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        this.logger.info('Deleting articleconfigurationitemcategoryassociations', {
+            id,
+        });
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List articleconfigurationitemcategoryassociations with optional filtering
@@ -81,7 +87,9 @@ class ArticleConfigurationItemCategoryAssociations extends base_1.BaseEntity {
      * @returns Promise with array of articleconfigurationitemcategoryassociations
      */
     async list(query = {}) {
-        this.logger.info('Listing articleconfigurationitemcategoryassociations', { query });
+        this.logger.info('Listing articleconfigurationitemcategoryassociations', {
+            query,
+        });
         const searchBody = {};
         // Set up basic filter if none provided
         if (!query.filter || Object.keys(query.filter).length === 0) {
@@ -99,7 +107,9 @@ class ArticleConfigurationItemCategoryAssociations extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

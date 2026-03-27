@@ -17,11 +17,11 @@ export interface IResourceRolesQuery {
 
 /**
  * ResourceRoles entity class for Autotask API
- * 
+ *
  * Role assignments for resources
  * Supported Operations: GET, POST, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceRolesEntity.htm}
  */
 export class ResourceRoles extends BaseEntity {
@@ -64,7 +64,7 @@ export class ResourceRoles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceRoles[]',
         endpoint: '/ResourceRoles',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ResourceRoles extends BaseEntity {
    * @param resourceRoles - The resourceroles data to create
    * @returns Promise with the created resourceroles
    */
-  async create(resourceRoles: IResourceRoles): Promise<ApiResponse<IResourceRoles>> {
+  async create(
+    resourceRoles: IResourceRoles
+  ): Promise<ApiResponse<IResourceRoles>> {
     this.logger.info('Creating resourceroles', { resourceRoles });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceRoles),
@@ -91,7 +93,7 @@ export class ResourceRoles extends BaseEntity {
     this.logger.info('Getting resourceroles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class ResourceRoles extends BaseEntity {
     this.logger.info('Deleting resourceroles', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class ResourceRoles extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourceroles
    */
-  async list(query: IResourceRolesQuery = {}): Promise<ApiResponse<IResourceRoles[]>> {
+  async list(
+    query: IResourceRolesQuery = {}
+  ): Promise<ApiResponse<IResourceRoles[]>> {
     this.logger.info('Listing resourceroles', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class ResourceRoles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

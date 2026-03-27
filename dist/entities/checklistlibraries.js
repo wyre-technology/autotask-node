@@ -52,7 +52,7 @@ class ChecklistLibraries extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IChecklistLibraries[]',
                 endpoint: '/ChecklistLibraries',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ChecklistLibraries extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting checklistlibraries', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a checklistlibraries
@@ -81,7 +81,7 @@ class ChecklistLibraries extends base_1.BaseEntity {
      */
     async update(id, checklistLibraries) {
         this.logger.info('Updating checklistlibraries', { id, checklistLibraries });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, checklistLibraries), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, checklistLibraries), this.endpoint, 'PUT');
     }
     /**
      * Partially update a checklistlibraries
@@ -91,7 +91,7 @@ class ChecklistLibraries extends base_1.BaseEntity {
      */
     async patch(id, checklistLibraries) {
         this.logger.info('Patching checklistlibraries', { id, checklistLibraries });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, checklistLibraries), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...checklistLibraries, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a checklistlibraries
@@ -100,7 +100,7 @@ class ChecklistLibraries extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting checklistlibraries', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List checklistlibraries with optional filtering
@@ -126,7 +126,9 @@ class ChecklistLibraries extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

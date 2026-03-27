@@ -17,11 +17,11 @@ export interface IInvoiceTemplatesQuery {
 
 /**
  * InvoiceTemplates entity class for Autotask API
- * 
+ *
  * Templates for generating invoices
  * Supported Operations: GET
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/InvoiceTemplatesEntity.htm}
  */
 export class InvoiceTemplates extends BaseEntity {
@@ -50,7 +50,7 @@ export class InvoiceTemplates extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IInvoiceTemplates[]',
         endpoint: '/InvoiceTemplates',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class InvoiceTemplates extends BaseEntity {
     this.logger.info('Getting invoicetemplates', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class InvoiceTemplates extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of invoicetemplates
    */
-  async list(query: IInvoiceTemplatesQuery = {}): Promise<ApiResponse<IInvoiceTemplates[]>> {
+  async list(
+    query: IInvoiceTemplatesQuery = {}
+  ): Promise<ApiResponse<IInvoiceTemplates[]>> {
     this.logger.info('Listing invoicetemplates', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class InvoiceTemplates extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

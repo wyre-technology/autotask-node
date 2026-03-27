@@ -17,11 +17,11 @@ export interface IConfigurationItemsQuery {
 
 /**
  * ConfigurationItems entity class for Autotask API
- * 
+ *
  * Configuration items and assets
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemsEntity.htm}
  */
 export class ConfigurationItems extends BaseEntity {
@@ -64,7 +64,7 @@ export class ConfigurationItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItems[]',
         endpoint: '/ConfigurationItems',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ConfigurationItems extends BaseEntity {
    * @param configurationItems - The configurationitems data to create
    * @returns Promise with the created configurationitems
    */
-  async create(configurationItems: IConfigurationItems): Promise<ApiResponse<IConfigurationItems>> {
+  async create(
+    configurationItems: IConfigurationItems
+  ): Promise<ApiResponse<IConfigurationItems>> {
     this.logger.info('Creating configurationitems', { configurationItems });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, configurationItems),
@@ -91,7 +93,7 @@ export class ConfigurationItems extends BaseEntity {
     this.logger.info('Getting configurationitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +110,8 @@ export class ConfigurationItems extends BaseEntity {
   ): Promise<ApiResponse<IConfigurationItems>> {
     this.logger.info('Updating configurationitems', { id, configurationItems });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, configurationItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, configurationItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +128,9 @@ export class ConfigurationItems extends BaseEntity {
   ): Promise<ApiResponse<IConfigurationItems>> {
     this.logger.info('Patching configurationitems', { id, configurationItems });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, configurationItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(configurationItems as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +140,9 @@ export class ConfigurationItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitems
    */
-  async list(query: IConfigurationItemsQuery = {}): Promise<ApiResponse<IConfigurationItems[]>> {
+  async list(
+    query: IConfigurationItemsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItems[]>> {
     this.logger.info('Listing configurationitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +161,11 @@ export class ConfigurationItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

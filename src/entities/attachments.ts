@@ -20,7 +20,10 @@ export interface AttachmentQuery {
 export class Attachments {
   private readonly endpoint = '/Attachments';
 
-  constructor(private axios: AxiosInstance, private logger: winston.Logger) {}
+  constructor(
+    private axios: AxiosInstance,
+    private logger: winston.Logger
+  ) {}
 
   static getMetadata(): MethodMetadata[] {
     return [
@@ -62,7 +65,11 @@ export class Attachments {
     ];
   }
 
-  private async requestWithRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Promise<T> {
+  private async requestWithRetry<T>(
+    fn: () => Promise<T>,
+    retries = 3,
+    delay = 500
+  ): Promise<T> {
     let attempt = 0;
     while (true) {
       try {
@@ -71,7 +78,9 @@ export class Attachments {
         attempt++;
         this.logger.warn(`Request failed (attempt ${attempt}): ${err}`);
         if (attempt > retries) throw err;
-        await new Promise(res => setTimeout(res, delay * Math.pow(2, attempt - 1)));
+        await new Promise(res =>
+          setTimeout(res, delay * Math.pow(2, attempt - 1))
+        );
       }
     }
   }
@@ -92,10 +101,13 @@ export class Attachments {
     });
   }
 
-  async update(id: number, attachment: Partial<Attachment>): Promise<ApiResponse<Attachment>> {
+  async update(
+    id: number,
+    attachment: Partial<Attachment>
+  ): Promise<ApiResponse<Attachment>> {
     this.logger.info('Updating attachment', { id, attachment });
     return this.requestWithRetry(async () => {
-      const { data } = await this.axios.put(`${this.endpoint}/${id}`, attachment);
+      const { data } = await this.axios.put(this.endpoint, attachment);
       return { data };
     });
   }
@@ -119,4 +131,4 @@ export class Attachments {
       return { data };
     });
   }
-} 
+}

@@ -52,7 +52,7 @@ class PriceListServiceBundles extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IPriceListServiceBundles[]',
                 endpoint: '/PriceListServiceBundles',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class PriceListServiceBundles extends base_1.BaseEntity {
      * @returns Promise with the created pricelistservicebundles
      */
     async create(priceListServiceBundles) {
-        this.logger.info('Creating pricelistservicebundles', { priceListServiceBundles });
+        this.logger.info('Creating pricelistservicebundles', {
+            priceListServiceBundles,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, priceListServiceBundles), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class PriceListServiceBundles extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting pricelistservicebundles', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a pricelistservicebundles
@@ -80,8 +82,11 @@ class PriceListServiceBundles extends base_1.BaseEntity {
      * @returns Promise with the updated pricelistservicebundles
      */
     async update(id, priceListServiceBundles) {
-        this.logger.info('Updating pricelistservicebundles', { id, priceListServiceBundles });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, priceListServiceBundles), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating pricelistservicebundles', {
+            id,
+            priceListServiceBundles,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, priceListServiceBundles), this.endpoint, 'PUT');
     }
     /**
      * Partially update a pricelistservicebundles
@@ -90,8 +95,14 @@ class PriceListServiceBundles extends base_1.BaseEntity {
      * @returns Promise with the updated pricelistservicebundles
      */
     async patch(id, priceListServiceBundles) {
-        this.logger.info('Patching pricelistservicebundles', { id, priceListServiceBundles });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, priceListServiceBundles), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching pricelistservicebundles', {
+            id,
+            priceListServiceBundles,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...priceListServiceBundles,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a pricelistservicebundles
@@ -100,7 +111,7 @@ class PriceListServiceBundles extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting pricelistservicebundles', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List pricelistservicebundles with optional filtering
@@ -126,7 +137,9 @@ class PriceListServiceBundles extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

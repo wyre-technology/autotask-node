@@ -17,11 +17,11 @@ export interface IProductTiersQuery {
 
 /**
  * ProductTiers entity class for Autotask API
- * 
+ *
  * Pricing tiers for products
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: inventory
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ProductTiersEntity.htm}
  */
 export class ProductTiers extends BaseEntity {
@@ -71,7 +71,7 @@ export class ProductTiers extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IProductTiers[]',
         endpoint: '/ProductTiers',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ProductTiers extends BaseEntity {
    * @param productTiers - The producttiers data to create
    * @returns Promise with the created producttiers
    */
-  async create(productTiers: IProductTiers): Promise<ApiResponse<IProductTiers>> {
+  async create(
+    productTiers: IProductTiers
+  ): Promise<ApiResponse<IProductTiers>> {
     this.logger.info('Creating producttiers', { productTiers });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, productTiers),
@@ -98,7 +100,7 @@ export class ProductTiers extends BaseEntity {
     this.logger.info('Getting producttiers', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ProductTiers extends BaseEntity {
   ): Promise<ApiResponse<IProductTiers>> {
     this.logger.info('Updating producttiers', { id, productTiers });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, productTiers),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, productTiers),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ProductTiers extends BaseEntity {
   ): Promise<ApiResponse<IProductTiers>> {
     this.logger.info('Patching producttiers', { id, productTiers });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, productTiers),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(productTiers as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ProductTiers extends BaseEntity {
     this.logger.info('Deleting producttiers', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ProductTiers extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of producttiers
    */
-  async list(query: IProductTiersQuery = {}): Promise<ApiResponse<IProductTiers[]>> {
+  async list(
+    query: IProductTiersQuery = {}
+  ): Promise<ApiResponse<IProductTiers[]>> {
     this.logger.info('Listing producttiers', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ProductTiers extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

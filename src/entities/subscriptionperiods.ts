@@ -17,11 +17,11 @@ export interface ISubscriptionPeriodsQuery {
 
 /**
  * SubscriptionPeriods entity class for Autotask API
- * 
+ *
  * Billing periods for subscriptions
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/SubscriptionPeriodsEntity.htm}
  */
 export class SubscriptionPeriods extends BaseEntity {
@@ -71,7 +71,7 @@ export class SubscriptionPeriods extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ISubscriptionPeriods[]',
         endpoint: '/SubscriptionPeriods',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class SubscriptionPeriods extends BaseEntity {
    * @param subscriptionPeriods - The subscriptionperiods data to create
    * @returns Promise with the created subscriptionperiods
    */
-  async create(subscriptionPeriods: ISubscriptionPeriods): Promise<ApiResponse<ISubscriptionPeriods>> {
+  async create(
+    subscriptionPeriods: ISubscriptionPeriods
+  ): Promise<ApiResponse<ISubscriptionPeriods>> {
     this.logger.info('Creating subscriptionperiods', { subscriptionPeriods });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, subscriptionPeriods),
@@ -98,7 +100,7 @@ export class SubscriptionPeriods extends BaseEntity {
     this.logger.info('Getting subscriptionperiods', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +115,13 @@ export class SubscriptionPeriods extends BaseEntity {
     id: number,
     subscriptionPeriods: Partial<ISubscriptionPeriods>
   ): Promise<ApiResponse<ISubscriptionPeriods>> {
-    this.logger.info('Updating subscriptionperiods', { id, subscriptionPeriods });
+    this.logger.info('Updating subscriptionperiods', {
+      id,
+      subscriptionPeriods,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, subscriptionPeriods),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, subscriptionPeriods),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +136,17 @@ export class SubscriptionPeriods extends BaseEntity {
     id: number,
     subscriptionPeriods: Partial<ISubscriptionPeriods>
   ): Promise<ApiResponse<ISubscriptionPeriods>> {
-    this.logger.info('Patching subscriptionperiods', { id, subscriptionPeriods });
+    this.logger.info('Patching subscriptionperiods', {
+      id,
+      subscriptionPeriods,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, subscriptionPeriods),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(subscriptionPeriods as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +160,7 @@ export class SubscriptionPeriods extends BaseEntity {
     this.logger.info('Deleting subscriptionperiods', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +170,9 @@ export class SubscriptionPeriods extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of subscriptionperiods
    */
-  async list(query: ISubscriptionPeriodsQuery = {}): Promise<ApiResponse<ISubscriptionPeriods[]>> {
+  async list(
+    query: ISubscriptionPeriodsQuery = {}
+  ): Promise<ApiResponse<ISubscriptionPeriods[]>> {
     this.logger.info('Listing subscriptionperiods', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +191,11 @@ export class SubscriptionPeriods extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

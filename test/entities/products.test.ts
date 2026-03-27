@@ -120,7 +120,7 @@ describe('Products Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(setup.mockAxios.put).toHaveBeenCalledWith(
-        '/Products/1',
+        '/Products',
         productsData
       );
     });
@@ -138,10 +138,10 @@ describe('Products Entity', () => {
       const result = await setup.entity.patch(1, productsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith(
-        '/Products/1',
-        productsData
-      );
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Products', {
+        ...productsData,
+        id: 1,
+      });
     });
   });
 });

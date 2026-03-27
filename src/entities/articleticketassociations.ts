@@ -17,11 +17,11 @@ export interface IArticleTicketAssociationsQuery {
 
 /**
  * ArticleTicketAssociations entity class for Autotask API
- * 
+ *
  * Associations between articles and tickets
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ArticleTicketAssociationsEntity.htm}
  */
 export class ArticleTicketAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ArticleTicketAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IArticleTicketAssociations[]',
         endpoint: '/ArticleTicketAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ArticleTicketAssociations extends BaseEntity {
    * @param articleTicketAssociations - The articleticketassociations data to create
    * @returns Promise with the created articleticketassociations
    */
-  async create(articleTicketAssociations: IArticleTicketAssociations): Promise<ApiResponse<IArticleTicketAssociations>> {
-    this.logger.info('Creating articleticketassociations', { articleTicketAssociations });
+  async create(
+    articleTicketAssociations: IArticleTicketAssociations
+  ): Promise<ApiResponse<IArticleTicketAssociations>> {
+    this.logger.info('Creating articleticketassociations', {
+      articleTicketAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, articleTicketAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ArticleTicketAssociations extends BaseEntity {
     this.logger.info('Getting articleticketassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ArticleTicketAssociations extends BaseEntity {
     this.logger.info('Deleting articleticketassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ArticleTicketAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of articleticketassociations
    */
-  async list(query: IArticleTicketAssociationsQuery = {}): Promise<ApiResponse<IArticleTicketAssociations[]>> {
+  async list(
+    query: IArticleTicketAssociationsQuery = {}
+  ): Promise<ApiResponse<IArticleTicketAssociations[]>> {
     this.logger.info('Listing articleticketassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ArticleTicketAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

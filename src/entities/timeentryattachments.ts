@@ -17,11 +17,11 @@ export interface ITimeEntryAttachmentsQuery {
 
 /**
  * TimeEntryAttachments entity class for Autotask API
- * 
+ *
  * File attachments for time entries
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TimeEntryAttachmentsEntity.htm}
  */
 export class TimeEntryAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class TimeEntryAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITimeEntryAttachments[]',
         endpoint: '/TimeEntryAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class TimeEntryAttachments extends BaseEntity {
    * @param timeEntryAttachments - The timeentryattachments data to create
    * @returns Promise with the created timeentryattachments
    */
-  async create(timeEntryAttachments: ITimeEntryAttachments): Promise<ApiResponse<ITimeEntryAttachments>> {
+  async create(
+    timeEntryAttachments: ITimeEntryAttachments
+  ): Promise<ApiResponse<ITimeEntryAttachments>> {
     this.logger.info('Creating timeentryattachments', { timeEntryAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, timeEntryAttachments),
@@ -91,7 +93,7 @@ export class TimeEntryAttachments extends BaseEntity {
     this.logger.info('Getting timeentryattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class TimeEntryAttachments extends BaseEntity {
     this.logger.info('Deleting timeentryattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class TimeEntryAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of timeentryattachments
    */
-  async list(query: ITimeEntryAttachmentsQuery = {}): Promise<ApiResponse<ITimeEntryAttachments[]>> {
+  async list(
+    query: ITimeEntryAttachmentsQuery = {}
+  ): Promise<ApiResponse<ITimeEntryAttachments[]>> {
     this.logger.info('Listing timeentryattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class TimeEntryAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

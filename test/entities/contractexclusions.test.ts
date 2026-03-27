@@ -144,7 +144,7 @@ describe('ContractExclusions Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ContractExclusions/1',
+        '/ContractExclusions',
         contractExclusionData
       );
     });
@@ -162,10 +162,10 @@ describe('ContractExclusions Entity', () => {
       const result = await contractExclusions.patch(1, contractExclusionData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ContractExclusions/1',
-        contractExclusionData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ContractExclusions', {
+        ...contractExclusionData,
+        id: 1,
+      });
     });
   });
 });

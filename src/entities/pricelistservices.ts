@@ -17,11 +17,11 @@ export interface IPriceListServicesQuery {
 
 /**
  * PriceListServices entity class for Autotask API
- * 
+ *
  * Services in price lists
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: pricing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PriceListServicesEntity.htm}
  */
 export class PriceListServices extends BaseEntity {
@@ -71,7 +71,7 @@ export class PriceListServices extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPriceListServices[]',
         endpoint: '/PriceListServices',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class PriceListServices extends BaseEntity {
    * @param priceListServices - The pricelistservices data to create
    * @returns Promise with the created pricelistservices
    */
-  async create(priceListServices: IPriceListServices): Promise<ApiResponse<IPriceListServices>> {
+  async create(
+    priceListServices: IPriceListServices
+  ): Promise<ApiResponse<IPriceListServices>> {
     this.logger.info('Creating pricelistservices', { priceListServices });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, priceListServices),
@@ -98,7 +100,7 @@ export class PriceListServices extends BaseEntity {
     this.logger.info('Getting pricelistservices', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class PriceListServices extends BaseEntity {
   ): Promise<ApiResponse<IPriceListServices>> {
     this.logger.info('Updating pricelistservices', { id, priceListServices });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, priceListServices),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, priceListServices),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class PriceListServices extends BaseEntity {
   ): Promise<ApiResponse<IPriceListServices>> {
     this.logger.info('Patching pricelistservices', { id, priceListServices });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, priceListServices),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(priceListServices as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class PriceListServices extends BaseEntity {
     this.logger.info('Deleting pricelistservices', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class PriceListServices extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of pricelistservices
    */
-  async list(query: IPriceListServicesQuery = {}): Promise<ApiResponse<IPriceListServices[]>> {
+  async list(
+    query: IPriceListServicesQuery = {}
+  ): Promise<ApiResponse<IPriceListServices[]>> {
     this.logger.info('Listing pricelistservices', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class PriceListServices extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

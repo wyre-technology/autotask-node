@@ -52,7 +52,7 @@ class Skills extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ISkills[]',
                 endpoint: '/Skills',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class Skills extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting skills', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a skills
@@ -81,7 +81,7 @@ class Skills extends base_1.BaseEntity {
      */
     async update(id, skills) {
         this.logger.info('Updating skills', { id, skills });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, skills), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, skills), this.endpoint, 'PUT');
     }
     /**
      * Partially update a skills
@@ -91,7 +91,7 @@ class Skills extends base_1.BaseEntity {
      */
     async patch(id, skills) {
         this.logger.info('Patching skills', { id, skills });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, skills), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...skills, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a skills
@@ -100,7 +100,7 @@ class Skills extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting skills', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List skills with optional filtering
@@ -126,7 +126,9 @@ class Skills extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

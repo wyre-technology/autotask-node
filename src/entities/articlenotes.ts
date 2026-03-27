@@ -17,11 +17,11 @@ export interface IArticleNotesQuery {
 
 /**
  * ArticleNotes entity class for Autotask API
- * 
+ *
  * Notes for knowledge base articles
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: notes
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ArticleNotesEntity.htm}
  */
 export class ArticleNotes extends BaseEntity {
@@ -64,7 +64,7 @@ export class ArticleNotes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IArticleNotes[]',
         endpoint: '/ArticleNotes',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ArticleNotes extends BaseEntity {
    * @param articleNotes - The articlenotes data to create
    * @returns Promise with the created articlenotes
    */
-  async create(articleNotes: IArticleNotes): Promise<ApiResponse<IArticleNotes>> {
+  async create(
+    articleNotes: IArticleNotes
+  ): Promise<ApiResponse<IArticleNotes>> {
     this.logger.info('Creating articlenotes', { articleNotes });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, articleNotes),
@@ -91,7 +93,7 @@ export class ArticleNotes extends BaseEntity {
     this.logger.info('Getting articlenotes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +110,8 @@ export class ArticleNotes extends BaseEntity {
   ): Promise<ApiResponse<IArticleNotes>> {
     this.logger.info('Updating articlenotes', { id, articleNotes });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, articleNotes),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, articleNotes),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +128,9 @@ export class ArticleNotes extends BaseEntity {
   ): Promise<ApiResponse<IArticleNotes>> {
     this.logger.info('Patching articlenotes', { id, articleNotes });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, articleNotes),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(articleNotes as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +140,9 @@ export class ArticleNotes extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of articlenotes
    */
-  async list(query: IArticleNotesQuery = {}): Promise<ApiResponse<IArticleNotes[]>> {
+  async list(
+    query: IArticleNotesQuery = {}
+  ): Promise<ApiResponse<IArticleNotes[]>> {
     this.logger.info('Listing articlenotes', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +161,11 @@ export class ArticleNotes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

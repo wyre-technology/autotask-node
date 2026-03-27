@@ -52,7 +52,7 @@ class ContractServices extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractServices[]',
                 endpoint: '/ContractServices',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ContractServices extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractservices', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a contractservices
@@ -81,7 +81,7 @@ class ContractServices extends base_1.BaseEntity {
      */
     async update(id, contractServices) {
         this.logger.info('Updating contractservices', { id, contractServices });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, contractServices), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, contractServices), this.endpoint, 'PUT');
     }
     /**
      * Partially update a contractservices
@@ -91,7 +91,7 @@ class ContractServices extends base_1.BaseEntity {
      */
     async patch(id, contractServices) {
         this.logger.info('Patching contractservices', { id, contractServices });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, contractServices), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...contractServices, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a contractservices
@@ -100,7 +100,7 @@ class ContractServices extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractservices', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractservices with optional filtering
@@ -126,7 +126,9 @@ class ContractServices extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

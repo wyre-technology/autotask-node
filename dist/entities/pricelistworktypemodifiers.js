@@ -52,7 +52,7 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IPriceListWorkTypeModifiers[]',
                 endpoint: '/PriceListWorkTypeModifiers',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
      * @returns Promise with the created pricelistworktypemodifiers
      */
     async create(priceListWorkTypeModifiers) {
-        this.logger.info('Creating pricelistworktypemodifiers', { priceListWorkTypeModifiers });
+        this.logger.info('Creating pricelistworktypemodifiers', {
+            priceListWorkTypeModifiers,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, priceListWorkTypeModifiers), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting pricelistworktypemodifiers', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a pricelistworktypemodifiers
@@ -80,8 +82,11 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
      * @returns Promise with the updated pricelistworktypemodifiers
      */
     async update(id, priceListWorkTypeModifiers) {
-        this.logger.info('Updating pricelistworktypemodifiers', { id, priceListWorkTypeModifiers });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, priceListWorkTypeModifiers), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating pricelistworktypemodifiers', {
+            id,
+            priceListWorkTypeModifiers,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, priceListWorkTypeModifiers), this.endpoint, 'PUT');
     }
     /**
      * Partially update a pricelistworktypemodifiers
@@ -90,8 +95,14 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
      * @returns Promise with the updated pricelistworktypemodifiers
      */
     async patch(id, priceListWorkTypeModifiers) {
-        this.logger.info('Patching pricelistworktypemodifiers', { id, priceListWorkTypeModifiers });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, priceListWorkTypeModifiers), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching pricelistworktypemodifiers', {
+            id,
+            priceListWorkTypeModifiers,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...priceListWorkTypeModifiers,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a pricelistworktypemodifiers
@@ -100,7 +111,7 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting pricelistworktypemodifiers', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List pricelistworktypemodifiers with optional filtering
@@ -126,7 +137,9 @@ class PriceListWorkTypeModifiers extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

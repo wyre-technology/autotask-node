@@ -170,7 +170,7 @@ describe('ConfigurationItemSslSubjectAlternativeName Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ConfigurationItemSslSubjectAlternativeName/1',
+        '/ConfigurationItemSslSubjectAlternativeName',
         configurationItemSslSubjectAlternativeNameData
       );
     });
@@ -197,8 +197,8 @@ describe('ConfigurationItemSslSubjectAlternativeName Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ConfigurationItemSslSubjectAlternativeName/1',
-        configurationItemSslSubjectAlternativeNameData
+        '/ConfigurationItemSslSubjectAlternativeName',
+        { ...configurationItemSslSubjectAlternativeNameData, id: 1 }
       );
     });
   });

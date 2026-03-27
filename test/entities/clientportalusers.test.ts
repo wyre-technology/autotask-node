@@ -139,7 +139,7 @@ describe('ClientPortalUsers Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ClientPortalUsers/1',
+        '/ClientPortalUsers',
         clientPortalUsersData
       );
     });
@@ -157,10 +157,10 @@ describe('ClientPortalUsers Entity', () => {
       const result = await clientPortalUsers.patch(1, clientPortalUsersData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ClientPortalUsers/1',
-        clientPortalUsersData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ClientPortalUsers', {
+        ...clientPortalUsersData,
+        id: 1,
+      });
     });
   });
 

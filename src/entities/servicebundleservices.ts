@@ -17,11 +17,11 @@ export interface IServiceBundleServicesQuery {
 
 /**
  * ServiceBundleServices entity class for Autotask API
- * 
+ *
  * Services within service bundles
  * Supported Operations: GET, POST, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ServiceBundleServicesEntity.htm}
  */
 export class ServiceBundleServices extends BaseEntity {
@@ -64,7 +64,7 @@ export class ServiceBundleServices extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IServiceBundleServices[]',
         endpoint: '/ServiceBundleServices',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ServiceBundleServices extends BaseEntity {
    * @param serviceBundleServices - The servicebundleservices data to create
    * @returns Promise with the created servicebundleservices
    */
-  async create(serviceBundleServices: IServiceBundleServices): Promise<ApiResponse<IServiceBundleServices>> {
-    this.logger.info('Creating servicebundleservices', { serviceBundleServices });
+  async create(
+    serviceBundleServices: IServiceBundleServices
+  ): Promise<ApiResponse<IServiceBundleServices>> {
+    this.logger.info('Creating servicebundleservices', {
+      serviceBundleServices,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, serviceBundleServices),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ServiceBundleServices extends BaseEntity {
     this.logger.info('Getting servicebundleservices', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ServiceBundleServices extends BaseEntity {
     this.logger.info('Deleting servicebundleservices', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ServiceBundleServices extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of servicebundleservices
    */
-  async list(query: IServiceBundleServicesQuery = {}): Promise<ApiResponse<IServiceBundleServices[]>> {
+  async list(
+    query: IServiceBundleServicesQuery = {}
+  ): Promise<ApiResponse<IServiceBundleServices[]>> {
     this.logger.info('Listing servicebundleservices', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ServiceBundleServices extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

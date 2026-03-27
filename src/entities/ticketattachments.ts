@@ -17,11 +17,11 @@ export interface ITicketAttachmentsQuery {
 
 /**
  * TicketAttachments entity class for Autotask API
- * 
+ *
  * File attachments for tickets
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketAttachmentsEntity.htm}
  */
 export class TicketAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class TicketAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketAttachments[]',
         endpoint: '/TicketAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class TicketAttachments extends BaseEntity {
    * @param ticketAttachments - The ticketattachments data to create
    * @returns Promise with the created ticketattachments
    */
-  async create(ticketAttachments: ITicketAttachments): Promise<ApiResponse<ITicketAttachments>> {
+  async create(
+    ticketAttachments: ITicketAttachments
+  ): Promise<ApiResponse<ITicketAttachments>> {
     this.logger.info('Creating ticketattachments', { ticketAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketAttachments),
@@ -91,7 +93,7 @@ export class TicketAttachments extends BaseEntity {
     this.logger.info('Getting ticketattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class TicketAttachments extends BaseEntity {
     this.logger.info('Deleting ticketattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class TicketAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of ticketattachments
    */
-  async list(query: ITicketAttachmentsQuery = {}): Promise<ApiResponse<ITicketAttachments[]>> {
+  async list(
+    query: ITicketAttachmentsQuery = {}
+  ): Promise<ApiResponse<ITicketAttachments[]>> {
     this.logger.info('Listing ticketattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class TicketAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

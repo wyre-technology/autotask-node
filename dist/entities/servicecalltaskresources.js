@@ -45,7 +45,7 @@ class ServiceCallTaskResources extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IServiceCallTaskResources[]',
                 endpoint: '/ServiceCallTaskResources',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class ServiceCallTaskResources extends base_1.BaseEntity {
      * @returns Promise with the created servicecalltaskresources
      */
     async create(serviceCallTaskResources) {
-        this.logger.info('Creating servicecalltaskresources', { serviceCallTaskResources });
+        this.logger.info('Creating servicecalltaskresources', {
+            serviceCallTaskResources,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, serviceCallTaskResources), this.endpoint, 'POST');
     }
     /**
@@ -64,7 +66,7 @@ class ServiceCallTaskResources extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting servicecalltaskresources', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Delete a servicecalltaskresources
@@ -73,7 +75,7 @@ class ServiceCallTaskResources extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting servicecalltaskresources', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List servicecalltaskresources with optional filtering
@@ -99,7 +101,9 @@ class ServiceCallTaskResources extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

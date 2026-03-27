@@ -17,11 +17,11 @@ export interface IUserDefinedFieldDefinitionsQuery {
 
 /**
  * UserDefinedFieldDefinitions entity class for Autotask API
- * 
+ *
  * Definitions for user-defined fields
  * Supported Operations: GET
  * Category: user_defined
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/UserDefinedFieldDefinitionsEntity.htm}
  */
 export class UserDefinedFieldDefinitions extends BaseEntity {
@@ -50,7 +50,7 @@ export class UserDefinedFieldDefinitions extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IUserDefinedFieldDefinitions[]',
         endpoint: '/UserDefinedFieldDefinitions',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class UserDefinedFieldDefinitions extends BaseEntity {
     this.logger.info('Getting userdefinedfielddefinitions', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class UserDefinedFieldDefinitions extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of userdefinedfielddefinitions
    */
-  async list(query: IUserDefinedFieldDefinitionsQuery = {}): Promise<ApiResponse<IUserDefinedFieldDefinitions[]>> {
+  async list(
+    query: IUserDefinedFieldDefinitionsQuery = {}
+  ): Promise<ApiResponse<IUserDefinedFieldDefinitions[]>> {
     this.logger.info('Listing userdefinedfielddefinitions', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class UserDefinedFieldDefinitions extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -52,7 +52,7 @@ class InternalLocations extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IInternalLocations[]',
                 endpoint: '/InternalLocations',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class InternalLocations extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting internallocations', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a internallocations
@@ -81,7 +81,7 @@ class InternalLocations extends base_1.BaseEntity {
      */
     async update(id, internalLocations) {
         this.logger.info('Updating internallocations', { id, internalLocations });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, internalLocations), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, internalLocations), this.endpoint, 'PUT');
     }
     /**
      * Partially update a internallocations
@@ -91,7 +91,7 @@ class InternalLocations extends base_1.BaseEntity {
      */
     async patch(id, internalLocations) {
         this.logger.info('Patching internallocations', { id, internalLocations });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, internalLocations), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...internalLocations, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a internallocations
@@ -100,7 +100,7 @@ class InternalLocations extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting internallocations', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List internallocations with optional filtering
@@ -126,7 +126,9 @@ class InternalLocations extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

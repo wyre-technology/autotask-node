@@ -78,7 +78,7 @@ class Expenses {
     async update(id, expense) {
         this.logger.info('Updating expense', { id, expense });
         return this.requestWithRetry(async () => {
-            const { data } = await this.axios.put(`${this.endpoint}/${id}`, expense);
+            const { data } = await this.axios.put(this.endpoint, expense);
             return { data };
         });
     }

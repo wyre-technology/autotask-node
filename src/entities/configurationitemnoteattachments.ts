@@ -17,11 +17,11 @@ export interface IConfigurationItemNoteAttachmentsQuery {
 
 /**
  * ConfigurationItemNoteAttachments entity class for Autotask API
- * 
+ *
  * File attachments for configuration item notes
  * Supported Operations: GET, POST, DELETE
  * Category: notes
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemNoteAttachmentsEntity.htm}
  */
 export class ConfigurationItemNoteAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ConfigurationItemNoteAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemNoteAttachments[]',
         endpoint: '/ConfigurationItemNoteAttachments',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,15 @@ export class ConfigurationItemNoteAttachments extends BaseEntity {
    * @param configurationItemNoteAttachments - The configurationitemnoteattachments data to create
    * @returns Promise with the created configurationitemnoteattachments
    */
-  async create(configurationItemNoteAttachments: IConfigurationItemNoteAttachments): Promise<ApiResponse<IConfigurationItemNoteAttachments>> {
-    this.logger.info('Creating configurationitemnoteattachments', { configurationItemNoteAttachments });
+  async create(
+    configurationItemNoteAttachments: IConfigurationItemNoteAttachments
+  ): Promise<ApiResponse<IConfigurationItemNoteAttachments>> {
+    this.logger.info('Creating configurationitemnoteattachments', {
+      configurationItemNoteAttachments,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, configurationItemNoteAttachments),
+      async () =>
+        this.axios.post(this.endpoint, configurationItemNoteAttachments),
       this.endpoint,
       'POST'
     );
@@ -87,11 +92,13 @@ export class ConfigurationItemNoteAttachments extends BaseEntity {
    * @param id - The configurationitemnoteattachments ID
    * @returns Promise with the configurationitemnoteattachments data
    */
-  async get(id: number): Promise<ApiResponse<IConfigurationItemNoteAttachments>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IConfigurationItemNoteAttachments>> {
     this.logger.info('Getting configurationitemnoteattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +112,7 @@ export class ConfigurationItemNoteAttachments extends BaseEntity {
     this.logger.info('Deleting configurationitemnoteattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +122,9 @@ export class ConfigurationItemNoteAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemnoteattachments
    */
-  async list(query: IConfigurationItemNoteAttachmentsQuery = {}): Promise<ApiResponse<IConfigurationItemNoteAttachments[]>> {
+  async list(
+    query: IConfigurationItemNoteAttachmentsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemNoteAttachments[]>> {
     this.logger.info('Listing configurationitemnoteattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +143,11 @@ export class ConfigurationItemNoteAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

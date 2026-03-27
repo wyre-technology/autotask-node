@@ -17,11 +17,11 @@ export interface IInventoryItemsQuery {
 
 /**
  * InventoryItems entity class for Autotask API
- * 
+ *
  * Items in inventory
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: inventory
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/InventoryItemsEntity.htm}
  */
 export class InventoryItems extends BaseEntity {
@@ -71,7 +71,7 @@ export class InventoryItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IInventoryItems[]',
         endpoint: '/InventoryItems',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class InventoryItems extends BaseEntity {
    * @param inventoryItems - The inventoryitems data to create
    * @returns Promise with the created inventoryitems
    */
-  async create(inventoryItems: IInventoryItems): Promise<ApiResponse<IInventoryItems>> {
+  async create(
+    inventoryItems: IInventoryItems
+  ): Promise<ApiResponse<IInventoryItems>> {
     this.logger.info('Creating inventoryitems', { inventoryItems });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, inventoryItems),
@@ -98,7 +100,7 @@ export class InventoryItems extends BaseEntity {
     this.logger.info('Getting inventoryitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class InventoryItems extends BaseEntity {
   ): Promise<ApiResponse<IInventoryItems>> {
     this.logger.info('Updating inventoryitems', { id, inventoryItems });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, inventoryItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, inventoryItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class InventoryItems extends BaseEntity {
   ): Promise<ApiResponse<IInventoryItems>> {
     this.logger.info('Patching inventoryitems', { id, inventoryItems });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, inventoryItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(inventoryItems as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class InventoryItems extends BaseEntity {
     this.logger.info('Deleting inventoryitems', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class InventoryItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of inventoryitems
    */
-  async list(query: IInventoryItemsQuery = {}): Promise<ApiResponse<IInventoryItems[]>> {
+  async list(
+    query: IInventoryItemsQuery = {}
+  ): Promise<ApiResponse<IInventoryItems[]>> {
     this.logger.info('Listing inventoryitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class InventoryItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

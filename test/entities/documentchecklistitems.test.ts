@@ -156,7 +156,7 @@ describe('DocumentChecklistItems Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/DocumentChecklistItems/1',
+        '/DocumentChecklistItems',
         documentChecklistItemsData
       );
     });
@@ -179,10 +179,10 @@ describe('DocumentChecklistItems Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/DocumentChecklistItems/1',
-        documentChecklistItemsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/DocumentChecklistItems', {
+        ...documentChecklistItemsData,
+        id: 1,
+      });
     });
   });
 

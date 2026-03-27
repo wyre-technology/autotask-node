@@ -17,11 +17,11 @@ export interface IKnowledgeBaseCategoriesQuery {
 
 /**
  * KnowledgeBaseCategories entity class for Autotask API
- * 
+ *
  * Categories for knowledge base articles
  * Supported Operations: GET
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/KnowledgeBaseCategoriesEntity.htm}
  */
 export class KnowledgeBaseCategories extends BaseEntity {
@@ -50,7 +50,7 @@ export class KnowledgeBaseCategories extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IKnowledgeBaseCategories[]',
         endpoint: '/KnowledgeBaseCategories',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class KnowledgeBaseCategories extends BaseEntity {
     this.logger.info('Getting knowledgebasecategories', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class KnowledgeBaseCategories extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of knowledgebasecategories
    */
-  async list(query: IKnowledgeBaseCategoriesQuery = {}): Promise<ApiResponse<IKnowledgeBaseCategories[]>> {
+  async list(
+    query: IKnowledgeBaseCategoriesQuery = {}
+  ): Promise<ApiResponse<IKnowledgeBaseCategories[]>> {
     this.logger.info('Listing knowledgebasecategories', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class KnowledgeBaseCategories extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

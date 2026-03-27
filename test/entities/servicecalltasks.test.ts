@@ -139,7 +139,7 @@ describe('ServiceCallTasks Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ServiceCallTasks/1',
+        '/ServiceCallTasks',
         serviceCallTasksData
       );
     });
@@ -157,10 +157,10 @@ describe('ServiceCallTasks Entity', () => {
       const result = await serviceCallTasks.patch(1, serviceCallTasksData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ServiceCallTasks/1',
-        serviceCallTasksData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ServiceCallTasks', {
+        ...serviceCallTasksData,
+        id: 1,
+      });
     });
   });
 

@@ -52,7 +52,7 @@ class ChangeOrderCharges extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IChangeOrderCharges[]',
                 endpoint: '/ChangeOrderCharges',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ChangeOrderCharges extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting changeordercharges', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a changeordercharges
@@ -81,7 +81,7 @@ class ChangeOrderCharges extends base_1.BaseEntity {
      */
     async update(id, changeOrderCharges) {
         this.logger.info('Updating changeordercharges', { id, changeOrderCharges });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, changeOrderCharges), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, changeOrderCharges), this.endpoint, 'PUT');
     }
     /**
      * Partially update a changeordercharges
@@ -91,7 +91,7 @@ class ChangeOrderCharges extends base_1.BaseEntity {
      */
     async patch(id, changeOrderCharges) {
         this.logger.info('Patching changeordercharges', { id, changeOrderCharges });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, changeOrderCharges), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...changeOrderCharges, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a changeordercharges
@@ -100,7 +100,7 @@ class ChangeOrderCharges extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting changeordercharges', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List changeordercharges with optional filtering
@@ -126,7 +126,9 @@ class ChangeOrderCharges extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

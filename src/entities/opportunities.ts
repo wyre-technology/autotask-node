@@ -17,11 +17,11 @@ export interface IOpportunitiesQuery {
 
 /**
  * Opportunities entity class for Autotask API
- * 
+ *
  * Sales opportunities and pipeline
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: core
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/OpportunitiesEntity.htm}
  */
 export class Opportunities extends BaseEntity {
@@ -64,7 +64,7 @@ export class Opportunities extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IOpportunities[]',
         endpoint: '/Opportunities',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class Opportunities extends BaseEntity {
    * @param opportunities - The opportunities data to create
    * @returns Promise with the created opportunities
    */
-  async create(opportunities: IOpportunities): Promise<ApiResponse<IOpportunities>> {
+  async create(
+    opportunities: IOpportunities
+  ): Promise<ApiResponse<IOpportunities>> {
     this.logger.info('Creating opportunities', { opportunities });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, opportunities),
@@ -91,7 +93,7 @@ export class Opportunities extends BaseEntity {
     this.logger.info('Getting opportunities', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +110,8 @@ export class Opportunities extends BaseEntity {
   ): Promise<ApiResponse<IOpportunities>> {
     this.logger.info('Updating opportunities', { id, opportunities });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, opportunities),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, opportunities),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +128,9 @@ export class Opportunities extends BaseEntity {
   ): Promise<ApiResponse<IOpportunities>> {
     this.logger.info('Patching opportunities', { id, opportunities });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, opportunities),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(opportunities as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +140,9 @@ export class Opportunities extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of opportunities
    */
-  async list(query: IOpportunitiesQuery = {}): Promise<ApiResponse<IOpportunities[]>> {
+  async list(
+    query: IOpportunitiesQuery = {}
+  ): Promise<ApiResponse<IOpportunities[]>> {
     this.logger.info('Listing opportunities', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +161,11 @@ export class Opportunities extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

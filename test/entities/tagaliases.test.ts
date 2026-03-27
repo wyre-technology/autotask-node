@@ -138,10 +138,7 @@ describe('TagAliases Entity', () => {
       const result = await tagAliases.update(1, tagAliasesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.put).toHaveBeenCalledWith(
-        '/TagAliases/1',
-        tagAliasesData
-      );
+      expect(mockAxios.put).toHaveBeenCalledWith('/TagAliases', tagAliasesData);
     });
   });
 
@@ -157,10 +154,10 @@ describe('TagAliases Entity', () => {
       const result = await tagAliases.patch(1, tagAliasesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/TagAliases/1',
-        tagAliasesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/TagAliases', {
+        ...tagAliasesData,
+        id: 1,
+      });
     });
   });
 

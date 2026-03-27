@@ -139,7 +139,7 @@ describe('InternalLocations Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/InternalLocations/1',
+        '/InternalLocations',
         internalLocationsData
       );
     });
@@ -157,10 +157,10 @@ describe('InternalLocations Entity', () => {
       const result = await internalLocations.patch(1, internalLocationsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/InternalLocations/1',
-        internalLocationsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/InternalLocations', {
+        ...internalLocationsData,
+        id: 1,
+      });
     });
   });
 

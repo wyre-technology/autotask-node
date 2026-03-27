@@ -78,7 +78,7 @@ class Notes {
     async update(id, note) {
         this.logger.info('Updating note', { id, note });
         return this.requestWithRetry(async () => {
-            const { data } = await this.axios.put(`${this.endpoint}/${id}`, note);
+            const { data } = await this.axios.put(this.endpoint, note);
             return { data };
         });
     }

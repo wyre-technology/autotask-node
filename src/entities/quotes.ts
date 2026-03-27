@@ -91,7 +91,7 @@ export class Quotes extends BaseEntity {
     this.logger.info('Getting quotes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +108,8 @@ export class Quotes extends BaseEntity {
   ): Promise<ApiResponse<IQuotes>> {
     this.logger.info('Updating quotes', { id, quotes });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, quotes),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, quotes),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +126,8 @@ export class Quotes extends BaseEntity {
   ): Promise<ApiResponse<IQuotes>> {
     this.logger.info('Patching quotes', { id, quotes });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, quotes),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.patch(this.endpoint, { ...(quotes as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -156,7 +156,11 @@ export class Quotes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({
@@ -183,8 +187,7 @@ export class Quotes extends BaseEntity {
     if (query.pageSize) searchBody.maxRecords = query.pageSize;
 
     return this.executeQueryRequest(
-      async () =>
-        this.axios.post(`${this.endpoint}/query`, searchBody),
+      async () => this.axios.post(`${this.endpoint}/query`, searchBody),
       `${this.endpoint}/query`,
       'POST'
     );

@@ -17,16 +17,16 @@ export interface ContractExclusionQuery {
 
 /**
  * ContractExclusions entity class for Autotask API
- * 
+ *
  * Provides CRUD operations for contractexclusions
  * Supported Operations: GET, POST, PUT, PATCH
- * 
+ *
  * Capabilities:
  * - UDFs: Not supported
  * - Webhooks: Not supported
  * - Child Collections: No
  * - Impersonation: Not supported
- * 
+ *
  * @see {@link https://autotask.net/help/developerhelp/content/apis/rest/Entities/ContractExclusionsEntity.htm}
  */
 export class ContractExclusions extends BaseEntity {
@@ -69,7 +69,7 @@ export class ContractExclusions extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ContractExclusion[]',
         endpoint: '/ContractExclusions',
-      }
+      },
     ];
   }
 
@@ -78,7 +78,9 @@ export class ContractExclusions extends BaseEntity {
    * @param contractExclusion - The contractexclusion data to create
    * @returns Promise with the created contractexclusion
    */
-  async create(contractExclusion: ContractExclusion): Promise<ApiResponse<ContractExclusion>> {
+  async create(
+    contractExclusion: ContractExclusion
+  ): Promise<ApiResponse<ContractExclusion>> {
     this.logger.info('Creating contractexclusion', { contractExclusion });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractExclusion),
@@ -96,7 +98,7 @@ export class ContractExclusions extends BaseEntity {
     this.logger.info('Getting contractexclusion', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,8 +115,8 @@ export class ContractExclusions extends BaseEntity {
   ): Promise<ApiResponse<ContractExclusion>> {
     this.logger.info('Updating contractexclusion', { id, contractExclusion });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractExclusion),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractExclusion),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,8 +133,9 @@ export class ContractExclusions extends BaseEntity {
   ): Promise<ApiResponse<ContractExclusion>> {
     this.logger.info('Patching contractexclusion', { id, contractExclusion });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractExclusion),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(contractExclusion as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -142,7 +145,9 @@ export class ContractExclusions extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractexclusions
    */
-  async list(query: ContractExclusionQuery = {}): Promise<ApiResponse<ContractExclusion[]>> {
+  async list(
+    query: ContractExclusionQuery = {}
+  ): Promise<ApiResponse<ContractExclusion[]>> {
     this.logger.info('Listing contractexclusions', { query });
     const searchBody: Record<string, any> = {};
 
@@ -161,7 +166,11 @@ export class ContractExclusions extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

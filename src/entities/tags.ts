@@ -17,11 +17,11 @@ export interface ITagsQuery {
 
 /**
  * Tags entity class for Autotask API
- * 
+ *
  * Tags for categorizing and organizing data
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: tags
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TagsEntity.htm}
  */
 export class Tags extends BaseEntity {
@@ -71,7 +71,7 @@ export class Tags extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITags[]',
         endpoint: '/Tags',
-      }
+      },
     ];
   }
 
@@ -98,7 +98,7 @@ export class Tags extends BaseEntity {
     this.logger.info('Getting tags', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -109,14 +109,11 @@ export class Tags extends BaseEntity {
    * @param tags - The updated tags data
    * @returns Promise with the updated tags
    */
-  async update(
-    id: number,
-    tags: Partial<ITags>
-  ): Promise<ApiResponse<ITags>> {
+  async update(id: number, tags: Partial<ITags>): Promise<ApiResponse<ITags>> {
     this.logger.info('Updating tags', { id, tags });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, tags),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, tags),
+      this.endpoint,
       'PUT'
     );
   }
@@ -127,14 +124,11 @@ export class Tags extends BaseEntity {
    * @param tags - The partial tags data to update
    * @returns Promise with the updated tags
    */
-  async patch(
-    id: number,
-    tags: Partial<ITags>
-  ): Promise<ApiResponse<ITags>> {
+  async patch(id: number, tags: Partial<ITags>): Promise<ApiResponse<ITags>> {
     this.logger.info('Patching tags', { id, tags });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, tags),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.patch(this.endpoint, { ...(tags as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +142,7 @@ export class Tags extends BaseEntity {
     this.logger.info('Deleting tags', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -177,7 +171,11 @@ export class Tags extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

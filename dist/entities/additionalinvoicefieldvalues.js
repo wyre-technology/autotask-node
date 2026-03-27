@@ -45,7 +45,7 @@ class AdditionalInvoiceFieldValues extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IAdditionalInvoiceFieldValues[]',
                 endpoint: '/AdditionalInvoiceFieldValues',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class AdditionalInvoiceFieldValues extends base_1.BaseEntity {
      * @returns Promise with the created additionalinvoicefieldvalues
      */
     async create(additionalInvoiceFieldValues) {
-        this.logger.info('Creating additionalinvoicefieldvalues', { additionalInvoiceFieldValues });
+        this.logger.info('Creating additionalinvoicefieldvalues', {
+            additionalInvoiceFieldValues,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, additionalInvoiceFieldValues), this.endpoint, 'POST');
     }
     /**
@@ -64,7 +66,7 @@ class AdditionalInvoiceFieldValues extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting additionalinvoicefieldvalues', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a additionalinvoicefieldvalues
@@ -73,8 +75,11 @@ class AdditionalInvoiceFieldValues extends base_1.BaseEntity {
      * @returns Promise with the updated additionalinvoicefieldvalues
      */
     async update(id, additionalInvoiceFieldValues) {
-        this.logger.info('Updating additionalinvoicefieldvalues', { id, additionalInvoiceFieldValues });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, additionalInvoiceFieldValues), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating additionalinvoicefieldvalues', {
+            id,
+            additionalInvoiceFieldValues,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, additionalInvoiceFieldValues), this.endpoint, 'PUT');
     }
     /**
      * Partially update a additionalinvoicefieldvalues
@@ -83,8 +88,14 @@ class AdditionalInvoiceFieldValues extends base_1.BaseEntity {
      * @returns Promise with the updated additionalinvoicefieldvalues
      */
     async patch(id, additionalInvoiceFieldValues) {
-        this.logger.info('Patching additionalinvoicefieldvalues', { id, additionalInvoiceFieldValues });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, additionalInvoiceFieldValues), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching additionalinvoicefieldvalues', {
+            id,
+            additionalInvoiceFieldValues,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...additionalInvoiceFieldValues,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * List additionalinvoicefieldvalues with optional filtering
@@ -110,7 +121,9 @@ class AdditionalInvoiceFieldValues extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

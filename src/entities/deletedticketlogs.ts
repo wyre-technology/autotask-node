@@ -17,11 +17,11 @@ export interface IDeletedTicketLogsQuery {
 
 /**
  * DeletedTicketLogs entity class for Autotask API
- * 
+ *
  * Audit logs for deleted tickets
  * Supported Operations: GET
  * Category: logs
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DeletedTicketLogsEntity.htm}
  */
 export class DeletedTicketLogs extends BaseEntity {
@@ -50,7 +50,7 @@ export class DeletedTicketLogs extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDeletedTicketLogs[]',
         endpoint: '/DeletedTicketLogs',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class DeletedTicketLogs extends BaseEntity {
     this.logger.info('Getting deletedticketlogs', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class DeletedTicketLogs extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of deletedticketlogs
    */
-  async list(query: IDeletedTicketLogsQuery = {}): Promise<ApiResponse<IDeletedTicketLogs[]>> {
+  async list(
+    query: IDeletedTicketLogsQuery = {}
+  ): Promise<ApiResponse<IDeletedTicketLogs[]>> {
     this.logger.info('Listing deletedticketlogs', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class DeletedTicketLogs extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -17,11 +17,11 @@ export interface ISalesOrdersQuery {
 
 /**
  * SalesOrders entity class for Autotask API
- * 
+ *
  * Customer sales orders
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: sales
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/SalesOrdersEntity.htm}
  */
 export class SalesOrders extends BaseEntity {
@@ -64,7 +64,7 @@ export class SalesOrders extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ISalesOrders[]',
         endpoint: '/SalesOrders',
-      }
+      },
     ];
   }
 
@@ -91,7 +91,7 @@ export class SalesOrders extends BaseEntity {
     this.logger.info('Getting salesorders', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +108,8 @@ export class SalesOrders extends BaseEntity {
   ): Promise<ApiResponse<ISalesOrders>> {
     this.logger.info('Updating salesorders', { id, salesOrders });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, salesOrders),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, salesOrders),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +126,9 @@ export class SalesOrders extends BaseEntity {
   ): Promise<ApiResponse<ISalesOrders>> {
     this.logger.info('Patching salesorders', { id, salesOrders });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, salesOrders),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(salesOrders as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +138,9 @@ export class SalesOrders extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of salesorders
    */
-  async list(query: ISalesOrdersQuery = {}): Promise<ApiResponse<ISalesOrders[]>> {
+  async list(
+    query: ISalesOrdersQuery = {}
+  ): Promise<ApiResponse<ISalesOrders[]>> {
     this.logger.info('Listing salesorders', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +159,11 @@ export class SalesOrders extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

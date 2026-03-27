@@ -163,7 +163,7 @@ describe('AdditionalInvoiceFieldValues Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/AdditionalInvoiceFieldValues/1',
+        '/AdditionalInvoiceFieldValues',
         additionalInvoiceFieldValuesData
       );
     });
@@ -187,8 +187,8 @@ describe('AdditionalInvoiceFieldValues Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/AdditionalInvoiceFieldValues/1',
-        additionalInvoiceFieldValuesData
+        '/AdditionalInvoiceFieldValues',
+        { ...additionalInvoiceFieldValuesData, id: 1 }
       );
     });
   });

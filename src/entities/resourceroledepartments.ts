@@ -17,11 +17,11 @@ export interface IResourceRoleDepartmentsQuery {
 
 /**
  * ResourceRoleDepartments entity class for Autotask API
- * 
+ *
  * Department assignments for resource roles
  * Supported Operations: GET, POST, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceRoleDepartmentsEntity.htm}
  */
 export class ResourceRoleDepartments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ResourceRoleDepartments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceRoleDepartments[]',
         endpoint: '/ResourceRoleDepartments',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ResourceRoleDepartments extends BaseEntity {
    * @param resourceRoleDepartments - The resourceroledepartments data to create
    * @returns Promise with the created resourceroledepartments
    */
-  async create(resourceRoleDepartments: IResourceRoleDepartments): Promise<ApiResponse<IResourceRoleDepartments>> {
-    this.logger.info('Creating resourceroledepartments', { resourceRoleDepartments });
+  async create(
+    resourceRoleDepartments: IResourceRoleDepartments
+  ): Promise<ApiResponse<IResourceRoleDepartments>> {
+    this.logger.info('Creating resourceroledepartments', {
+      resourceRoleDepartments,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceRoleDepartments),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ResourceRoleDepartments extends BaseEntity {
     this.logger.info('Getting resourceroledepartments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ResourceRoleDepartments extends BaseEntity {
     this.logger.info('Deleting resourceroledepartments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ResourceRoleDepartments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourceroledepartments
    */
-  async list(query: IResourceRoleDepartmentsQuery = {}): Promise<ApiResponse<IResourceRoleDepartments[]>> {
+  async list(
+    query: IResourceRoleDepartmentsQuery = {}
+  ): Promise<ApiResponse<IResourceRoleDepartments[]>> {
     this.logger.info('Listing resourceroledepartments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ResourceRoleDepartments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

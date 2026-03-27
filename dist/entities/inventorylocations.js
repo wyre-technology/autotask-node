@@ -52,7 +52,7 @@ class InventoryLocations extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IInventoryLocations[]',
                 endpoint: '/InventoryLocations',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class InventoryLocations extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting inventorylocations', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a inventorylocations
@@ -81,7 +81,7 @@ class InventoryLocations extends base_1.BaseEntity {
      */
     async update(id, inventoryLocations) {
         this.logger.info('Updating inventorylocations', { id, inventoryLocations });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, inventoryLocations), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, inventoryLocations), this.endpoint, 'PUT');
     }
     /**
      * Partially update a inventorylocations
@@ -91,7 +91,7 @@ class InventoryLocations extends base_1.BaseEntity {
      */
     async patch(id, inventoryLocations) {
         this.logger.info('Patching inventorylocations', { id, inventoryLocations });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, inventoryLocations), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...inventoryLocations, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a inventorylocations
@@ -100,7 +100,7 @@ class InventoryLocations extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting inventorylocations', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List inventorylocations with optional filtering
@@ -126,7 +126,9 @@ class InventoryLocations extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

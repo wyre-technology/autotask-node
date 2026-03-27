@@ -161,7 +161,7 @@ describe('PriceListServiceBundles Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/PriceListServiceBundles/1',
+        '/PriceListServiceBundles',
         priceListServiceBundlesData
       );
     });
@@ -184,10 +184,10 @@ describe('PriceListServiceBundles Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/PriceListServiceBundles/1',
-        priceListServiceBundlesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/PriceListServiceBundles', {
+        ...priceListServiceBundlesData,
+        id: 1,
+      });
     });
   });
 

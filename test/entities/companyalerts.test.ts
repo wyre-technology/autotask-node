@@ -139,7 +139,7 @@ describe('CompanyAlerts Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/CompanyAlerts/1',
+        '/CompanyAlerts',
         companyAlertsData
       );
     });
@@ -157,10 +157,10 @@ describe('CompanyAlerts Entity', () => {
       const result = await companyAlerts.patch(1, companyAlertsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/CompanyAlerts/1',
-        companyAlertsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/CompanyAlerts', {
+        ...companyAlertsData,
+        id: 1,
+      });
     });
   });
 

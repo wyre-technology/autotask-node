@@ -17,11 +17,11 @@ export interface IDocumentChecklistItemsQuery {
 
 /**
  * DocumentChecklistItems entity class for Autotask API
- * 
+ *
  * Checklist items for documents
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentChecklistItemsEntity.htm}
  */
 export class DocumentChecklistItems extends BaseEntity {
@@ -71,7 +71,7 @@ export class DocumentChecklistItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentChecklistItems[]',
         endpoint: '/DocumentChecklistItems',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class DocumentChecklistItems extends BaseEntity {
    * @param documentChecklistItems - The documentchecklistitems data to create
    * @returns Promise with the created documentchecklistitems
    */
-  async create(documentChecklistItems: IDocumentChecklistItems): Promise<ApiResponse<IDocumentChecklistItems>> {
-    this.logger.info('Creating documentchecklistitems', { documentChecklistItems });
+  async create(
+    documentChecklistItems: IDocumentChecklistItems
+  ): Promise<ApiResponse<IDocumentChecklistItems>> {
+    this.logger.info('Creating documentchecklistitems', {
+      documentChecklistItems,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, documentChecklistItems),
       this.endpoint,
@@ -98,7 +102,7 @@ export class DocumentChecklistItems extends BaseEntity {
     this.logger.info('Getting documentchecklistitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class DocumentChecklistItems extends BaseEntity {
     id: number,
     documentChecklistItems: Partial<IDocumentChecklistItems>
   ): Promise<ApiResponse<IDocumentChecklistItems>> {
-    this.logger.info('Updating documentchecklistitems', { id, documentChecklistItems });
+    this.logger.info('Updating documentchecklistitems', {
+      id,
+      documentChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, documentChecklistItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, documentChecklistItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class DocumentChecklistItems extends BaseEntity {
     id: number,
     documentChecklistItems: Partial<IDocumentChecklistItems>
   ): Promise<ApiResponse<IDocumentChecklistItems>> {
-    this.logger.info('Patching documentchecklistitems', { id, documentChecklistItems });
+    this.logger.info('Patching documentchecklistitems', {
+      id,
+      documentChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, documentChecklistItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(documentChecklistItems as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class DocumentChecklistItems extends BaseEntity {
     this.logger.info('Deleting documentchecklistitems', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class DocumentChecklistItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentchecklistitems
    */
-  async list(query: IDocumentChecklistItemsQuery = {}): Promise<ApiResponse<IDocumentChecklistItems[]>> {
+  async list(
+    query: IDocumentChecklistItemsQuery = {}
+  ): Promise<ApiResponse<IDocumentChecklistItems[]>> {
     this.logger.info('Listing documentchecklistitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class DocumentChecklistItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

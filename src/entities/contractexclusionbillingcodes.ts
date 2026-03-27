@@ -17,11 +17,11 @@ export interface IContractExclusionBillingCodesQuery {
 
 /**
  * ContractExclusionBillingCodes entity class for Autotask API
- * 
+ *
  * Billing codes excluded from contracts
  * Supported Operations: GET, POST, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractExclusionBillingCodesEntity.htm}
  */
 export class ContractExclusionBillingCodes extends BaseEntity {
@@ -64,7 +64,7 @@ export class ContractExclusionBillingCodes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractExclusionBillingCodes[]',
         endpoint: '/ContractExclusionBillingCodes',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ContractExclusionBillingCodes extends BaseEntity {
    * @param contractExclusionBillingCodes - The contractexclusionbillingcodes data to create
    * @returns Promise with the created contractexclusionbillingcodes
    */
-  async create(contractExclusionBillingCodes: IContractExclusionBillingCodes): Promise<ApiResponse<IContractExclusionBillingCodes>> {
-    this.logger.info('Creating contractexclusionbillingcodes', { contractExclusionBillingCodes });
+  async create(
+    contractExclusionBillingCodes: IContractExclusionBillingCodes
+  ): Promise<ApiResponse<IContractExclusionBillingCodes>> {
+    this.logger.info('Creating contractexclusionbillingcodes', {
+      contractExclusionBillingCodes,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractExclusionBillingCodes),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ContractExclusionBillingCodes extends BaseEntity {
     this.logger.info('Getting contractexclusionbillingcodes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ContractExclusionBillingCodes extends BaseEntity {
     this.logger.info('Deleting contractexclusionbillingcodes', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ContractExclusionBillingCodes extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractexclusionbillingcodes
    */
-  async list(query: IContractExclusionBillingCodesQuery = {}): Promise<ApiResponse<IContractExclusionBillingCodes[]>> {
+  async list(
+    query: IContractExclusionBillingCodesQuery = {}
+  ): Promise<ApiResponse<IContractExclusionBillingCodes[]>> {
     this.logger.info('Listing contractexclusionbillingcodes', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ContractExclusionBillingCodes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

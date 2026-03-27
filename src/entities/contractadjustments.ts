@@ -17,16 +17,16 @@ export interface ContractAdjustmentQuery {
 
 /**
  * ContractAdjustments entity class for Autotask API
- * 
+ *
  * Provides CRUD operations for contractadjustments
  * Supported Operations: GET, POST, PUT, PATCH
- * 
+ *
  * Capabilities:
  * - UDFs: Not supported
  * - Webhooks: Not supported
  * - Child Collections: No
  * - Impersonation: Not supported
- * 
+ *
  * @see {@link https://autotask.net/help/developerhelp/content/apis/rest/Entities/ContractAdjustmentsEntity.htm}
  */
 export class ContractAdjustments extends BaseEntity {
@@ -69,7 +69,7 @@ export class ContractAdjustments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ContractAdjustment[]',
         endpoint: '/ContractAdjustments',
-      }
+      },
     ];
   }
 
@@ -78,7 +78,9 @@ export class ContractAdjustments extends BaseEntity {
    * @param contractAdjustment - The contractadjustment data to create
    * @returns Promise with the created contractadjustment
    */
-  async create(contractAdjustment: ContractAdjustment): Promise<ApiResponse<ContractAdjustment>> {
+  async create(
+    contractAdjustment: ContractAdjustment
+  ): Promise<ApiResponse<ContractAdjustment>> {
     this.logger.info('Creating contractadjustment', { contractAdjustment });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractAdjustment),
@@ -96,7 +98,7 @@ export class ContractAdjustments extends BaseEntity {
     this.logger.info('Getting contractadjustment', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,8 +115,8 @@ export class ContractAdjustments extends BaseEntity {
   ): Promise<ApiResponse<ContractAdjustment>> {
     this.logger.info('Updating contractadjustment', { id, contractAdjustment });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractAdjustment),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractAdjustment),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,8 +133,9 @@ export class ContractAdjustments extends BaseEntity {
   ): Promise<ApiResponse<ContractAdjustment>> {
     this.logger.info('Patching contractadjustment', { id, contractAdjustment });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractAdjustment),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(contractAdjustment as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -142,7 +145,9 @@ export class ContractAdjustments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractadjustments
    */
-  async list(query: ContractAdjustmentQuery = {}): Promise<ApiResponse<ContractAdjustment[]>> {
+  async list(
+    query: ContractAdjustmentQuery = {}
+  ): Promise<ApiResponse<ContractAdjustment[]>> {
     this.logger.info('Listing contractadjustments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -161,7 +166,11 @@ export class ContractAdjustments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

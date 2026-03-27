@@ -66,7 +66,7 @@ class ProjectNotes extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting projectnotes', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a projectnotes
@@ -76,7 +76,7 @@ class ProjectNotes extends base_1.BaseEntity {
      */
     async update(id, projectNotes) {
         this.logger.info('Updating projectnotes', { id, projectNotes });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, projectNotes), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, projectNotes), this.endpoint, 'PUT');
     }
     /**
      * Partially update a projectnotes
@@ -86,7 +86,7 @@ class ProjectNotes extends base_1.BaseEntity {
      */
     async patch(id, projectNotes) {
         this.logger.info('Patching projectnotes', { id, projectNotes });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, projectNotes), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...projectNotes, id }), this.endpoint, 'PATCH');
     }
     /**
      * List projectnotes with optional filtering

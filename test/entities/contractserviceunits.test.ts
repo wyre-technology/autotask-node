@@ -154,7 +154,7 @@ describe('ContractServiceUnits Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ContractServiceUnits/1',
+        '/ContractServiceUnits',
         contractServiceUnitsData
       );
     });
@@ -175,10 +175,10 @@ describe('ContractServiceUnits Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ContractServiceUnits/1',
-        contractServiceUnitsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ContractServiceUnits', {
+        ...contractServiceUnitsData,
+        id: 1,
+      });
     });
   });
 

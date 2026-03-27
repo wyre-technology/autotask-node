@@ -52,7 +52,7 @@ class TagAliases extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ITagAliases[]',
                 endpoint: '/TagAliases',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class TagAliases extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting tagaliases', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a tagaliases
@@ -81,7 +81,7 @@ class TagAliases extends base_1.BaseEntity {
      */
     async update(id, tagAliases) {
         this.logger.info('Updating tagaliases', { id, tagAliases });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, tagAliases), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, tagAliases), this.endpoint, 'PUT');
     }
     /**
      * Partially update a tagaliases
@@ -91,7 +91,7 @@ class TagAliases extends base_1.BaseEntity {
      */
     async patch(id, tagAliases) {
         this.logger.info('Patching tagaliases', { id, tagAliases });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, tagAliases), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...tagAliases, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a tagaliases
@@ -100,7 +100,7 @@ class TagAliases extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting tagaliases', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List tagaliases with optional filtering
@@ -126,7 +126,9 @@ class TagAliases extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

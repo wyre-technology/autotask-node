@@ -26,7 +26,10 @@ export declare class TimeEntries extends BaseEntity {
     constructor(axios: AxiosInstance, logger: winston.Logger, requestHandler?: RequestHandler);
     static getMetadata(): MethodMetadata[];
     /**
-     * Create a new time entry under a ticket
+     * Create a new time entry scoped to a ticket.
+     * Uses the direct /TimeEntries endpoint with ticketID in the body,
+     * as the Autotask REST API does not support the parent-child URL
+     * pattern (/Tickets/{id}/TimeEntries) for creating time entries.
      * @param ticketId - The parent ticket ID
      * @param timeEntries - The time entry data to create
      * @returns Promise with the created time entry

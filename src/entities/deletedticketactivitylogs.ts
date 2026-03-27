@@ -17,11 +17,11 @@ export interface IDeletedTicketActivityLogsQuery {
 
 /**
  * DeletedTicketActivityLogs entity class for Autotask API
- * 
+ *
  * Audit logs for deleted ticket activities
  * Supported Operations: GET
  * Category: logs
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DeletedTicketActivityLogsEntity.htm}
  */
 export class DeletedTicketActivityLogs extends BaseEntity {
@@ -50,7 +50,7 @@ export class DeletedTicketActivityLogs extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDeletedTicketActivityLogs[]',
         endpoint: '/DeletedTicketActivityLogs',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class DeletedTicketActivityLogs extends BaseEntity {
     this.logger.info('Getting deletedticketactivitylogs', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class DeletedTicketActivityLogs extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of deletedticketactivitylogs
    */
-  async list(query: IDeletedTicketActivityLogsQuery = {}): Promise<ApiResponse<IDeletedTicketActivityLogs[]>> {
+  async list(
+    query: IDeletedTicketActivityLogsQuery = {}
+  ): Promise<ApiResponse<IDeletedTicketActivityLogs[]>> {
     this.logger.info('Listing deletedticketactivitylogs', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class DeletedTicketActivityLogs extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

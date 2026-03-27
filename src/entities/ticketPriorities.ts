@@ -93,7 +93,7 @@ export class TicketPriorities extends BaseEntity {
     this.logger.info('Getting ticket priority', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -153,8 +153,8 @@ export class TicketPriorities extends BaseEntity {
   ): Promise<ApiResponse<TicketPriority>> {
     this.logger.info('Updating ticket priority', { id, data });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, data),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, data),
+      this.endpoint,
       'PUT'
     );
   }
@@ -168,7 +168,7 @@ export class TicketPriorities extends BaseEntity {
     this.logger.info('Deleting ticket priority', { id });
     return this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }

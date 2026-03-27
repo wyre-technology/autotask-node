@@ -52,7 +52,7 @@ class ContractRates extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractRates[]',
                 endpoint: '/ContractRates',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ContractRates extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractrates', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a contractrates
@@ -81,7 +81,7 @@ class ContractRates extends base_1.BaseEntity {
      */
     async update(id, contractRates) {
         this.logger.info('Updating contractrates', { id, contractRates });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, contractRates), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, contractRates), this.endpoint, 'PUT');
     }
     /**
      * Partially update a contractrates
@@ -91,7 +91,7 @@ class ContractRates extends base_1.BaseEntity {
      */
     async patch(id, contractRates) {
         this.logger.info('Patching contractrates', { id, contractRates });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, contractRates), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...contractRates, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a contractrates
@@ -100,7 +100,7 @@ class ContractRates extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractrates', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractrates with optional filtering
@@ -126,7 +126,9 @@ class ContractRates extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

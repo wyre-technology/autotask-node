@@ -17,11 +17,11 @@ export interface IChangeOrderChargesQuery {
 
 /**
  * ChangeOrderCharges entity class for Autotask API
- * 
+ *
  * Charges for change orders
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ChangeOrderChargesEntity.htm}
  */
 export class ChangeOrderCharges extends BaseEntity {
@@ -71,7 +71,7 @@ export class ChangeOrderCharges extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IChangeOrderCharges[]',
         endpoint: '/ChangeOrderCharges',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ChangeOrderCharges extends BaseEntity {
    * @param changeOrderCharges - The changeordercharges data to create
    * @returns Promise with the created changeordercharges
    */
-  async create(changeOrderCharges: IChangeOrderCharges): Promise<ApiResponse<IChangeOrderCharges>> {
+  async create(
+    changeOrderCharges: IChangeOrderCharges
+  ): Promise<ApiResponse<IChangeOrderCharges>> {
     this.logger.info('Creating changeordercharges', { changeOrderCharges });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, changeOrderCharges),
@@ -98,7 +100,7 @@ export class ChangeOrderCharges extends BaseEntity {
     this.logger.info('Getting changeordercharges', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ChangeOrderCharges extends BaseEntity {
   ): Promise<ApiResponse<IChangeOrderCharges>> {
     this.logger.info('Updating changeordercharges', { id, changeOrderCharges });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, changeOrderCharges),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, changeOrderCharges),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ChangeOrderCharges extends BaseEntity {
   ): Promise<ApiResponse<IChangeOrderCharges>> {
     this.logger.info('Patching changeordercharges', { id, changeOrderCharges });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, changeOrderCharges),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(changeOrderCharges as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ChangeOrderCharges extends BaseEntity {
     this.logger.info('Deleting changeordercharges', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ChangeOrderCharges extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of changeordercharges
    */
-  async list(query: IChangeOrderChargesQuery = {}): Promise<ApiResponse<IChangeOrderCharges[]>> {
+  async list(
+    query: IChangeOrderChargesQuery = {}
+  ): Promise<ApiResponse<IChangeOrderCharges[]>> {
     this.logger.info('Listing changeordercharges', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ChangeOrderCharges extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -52,7 +52,7 @@ class ContractRetainers extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractRetainers[]',
                 endpoint: '/ContractRetainers',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class ContractRetainers extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractretainers', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a contractretainers
@@ -81,7 +81,7 @@ class ContractRetainers extends base_1.BaseEntity {
      */
     async update(id, contractRetainers) {
         this.logger.info('Updating contractretainers', { id, contractRetainers });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, contractRetainers), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, contractRetainers), this.endpoint, 'PUT');
     }
     /**
      * Partially update a contractretainers
@@ -91,7 +91,7 @@ class ContractRetainers extends base_1.BaseEntity {
      */
     async patch(id, contractRetainers) {
         this.logger.info('Patching contractretainers', { id, contractRetainers });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, contractRetainers), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...contractRetainers, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a contractretainers
@@ -100,7 +100,7 @@ class ContractRetainers extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractretainers', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractretainers with optional filtering
@@ -126,7 +126,9 @@ class ContractRetainers extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

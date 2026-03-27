@@ -17,11 +17,11 @@ export interface IHolidaySetsQuery {
 
 /**
  * HolidaySets entity class for Autotask API
- * 
+ *
  * Sets of holidays for different regions
  * Supported Operations: GET
  * Category: time
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/HolidaySetsEntity.htm}
  */
 export class HolidaySets extends BaseEntity {
@@ -50,7 +50,7 @@ export class HolidaySets extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IHolidaySets[]',
         endpoint: '/HolidaySets',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class HolidaySets extends BaseEntity {
     this.logger.info('Getting holidaysets', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class HolidaySets extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of holidaysets
    */
-  async list(query: IHolidaySetsQuery = {}): Promise<ApiResponse<IHolidaySets[]>> {
+  async list(
+    query: IHolidaySetsQuery = {}
+  ): Promise<ApiResponse<IHolidaySets[]>> {
     this.logger.info('Listing holidaysets', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class HolidaySets extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

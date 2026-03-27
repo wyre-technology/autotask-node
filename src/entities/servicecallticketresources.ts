@@ -17,11 +17,11 @@ export interface IServiceCallTicketResourcesQuery {
 
 /**
  * ServiceCallTicketResources entity class for Autotask API
- * 
+ *
  * Resource assignments for service call tickets
  * Supported Operations: GET, POST, DELETE
  * Category: service_calls
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ServiceCallTicketResourceEntity.htm}
  */
 export class ServiceCallTicketResources extends BaseEntity {
@@ -64,7 +64,7 @@ export class ServiceCallTicketResources extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IServiceCallTicketResources[]',
         endpoint: '/ServiceCallTicketResources',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ServiceCallTicketResources extends BaseEntity {
    * @param serviceCallTicketResources - The servicecallticketresources data to create
    * @returns Promise with the created servicecallticketresources
    */
-  async create(serviceCallTicketResources: IServiceCallTicketResources): Promise<ApiResponse<IServiceCallTicketResources>> {
-    this.logger.info('Creating servicecallticketresources', { serviceCallTicketResources });
+  async create(
+    serviceCallTicketResources: IServiceCallTicketResources
+  ): Promise<ApiResponse<IServiceCallTicketResources>> {
+    this.logger.info('Creating servicecallticketresources', {
+      serviceCallTicketResources,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, serviceCallTicketResources),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ServiceCallTicketResources extends BaseEntity {
     this.logger.info('Getting servicecallticketresources', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ServiceCallTicketResources extends BaseEntity {
     this.logger.info('Deleting servicecallticketresources', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ServiceCallTicketResources extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of servicecallticketresources
    */
-  async list(query: IServiceCallTicketResourcesQuery = {}): Promise<ApiResponse<IServiceCallTicketResources[]>> {
+  async list(
+    query: IServiceCallTicketResourcesQuery = {}
+  ): Promise<ApiResponse<IServiceCallTicketResources[]>> {
     this.logger.info('Listing servicecallticketresources', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ServiceCallTicketResources extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({
