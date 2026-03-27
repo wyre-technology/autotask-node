@@ -52,7 +52,7 @@ class TagGroups extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ITagGroups[]',
                 endpoint: '/TagGroups',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class TagGroups extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting taggroups', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a taggroups
@@ -81,7 +81,7 @@ class TagGroups extends base_1.BaseEntity {
      */
     async update(id, tagGroups) {
         this.logger.info('Updating taggroups', { id, tagGroups });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, tagGroups), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, tagGroups), this.endpoint, 'PUT');
     }
     /**
      * Partially update a taggroups
@@ -91,7 +91,7 @@ class TagGroups extends base_1.BaseEntity {
      */
     async patch(id, tagGroups) {
         this.logger.info('Patching taggroups', { id, tagGroups });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, tagGroups), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...tagGroups, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a taggroups
@@ -100,7 +100,7 @@ class TagGroups extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting taggroups', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List taggroups with optional filtering
@@ -126,7 +126,9 @@ class TagGroups extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

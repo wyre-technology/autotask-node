@@ -45,7 +45,7 @@ class ConfigurationItemNotes extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IConfigurationItemNotes[]',
                 endpoint: '/ConfigurationItemNotes',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class ConfigurationItemNotes extends base_1.BaseEntity {
      * @returns Promise with the created configurationitemnotes
      */
     async create(configurationItemNotes) {
-        this.logger.info('Creating configurationitemnotes', { configurationItemNotes });
+        this.logger.info('Creating configurationitemnotes', {
+            configurationItemNotes,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, configurationItemNotes), this.endpoint, 'POST');
     }
     /**
@@ -64,7 +66,7 @@ class ConfigurationItemNotes extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting configurationitemnotes', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a configurationitemnotes
@@ -73,8 +75,11 @@ class ConfigurationItemNotes extends base_1.BaseEntity {
      * @returns Promise with the updated configurationitemnotes
      */
     async update(id, configurationItemNotes) {
-        this.logger.info('Updating configurationitemnotes', { id, configurationItemNotes });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, configurationItemNotes), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating configurationitemnotes', {
+            id,
+            configurationItemNotes,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, configurationItemNotes), this.endpoint, 'PUT');
     }
     /**
      * Partially update a configurationitemnotes
@@ -83,8 +88,14 @@ class ConfigurationItemNotes extends base_1.BaseEntity {
      * @returns Promise with the updated configurationitemnotes
      */
     async patch(id, configurationItemNotes) {
-        this.logger.info('Patching configurationitemnotes', { id, configurationItemNotes });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, configurationItemNotes), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching configurationitemnotes', {
+            id,
+            configurationItemNotes,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...configurationItemNotes,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * List configurationitemnotes with optional filtering
@@ -110,7 +121,9 @@ class ConfigurationItemNotes extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

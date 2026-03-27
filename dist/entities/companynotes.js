@@ -66,7 +66,7 @@ class CompanyNotes extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting companynotes', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a companynotes
@@ -76,7 +76,7 @@ class CompanyNotes extends base_1.BaseEntity {
      */
     async update(id, companyNotes) {
         this.logger.info('Updating companynotes', { id, companyNotes });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, companyNotes), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, companyNotes), this.endpoint, 'PUT');
     }
     /**
      * Partially update a companynotes
@@ -86,7 +86,7 @@ class CompanyNotes extends base_1.BaseEntity {
      */
     async patch(id, companyNotes) {
         this.logger.info('Patching companynotes', { id, companyNotes });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, companyNotes), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...companyNotes, id }), this.endpoint, 'PATCH');
     }
     /**
      * List companynotes with optional filtering

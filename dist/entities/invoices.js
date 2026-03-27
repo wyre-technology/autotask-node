@@ -64,7 +64,7 @@ class Invoices extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting invoices', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a invoices
@@ -74,7 +74,7 @@ class Invoices extends base_1.BaseEntity {
      */
     async update(id, invoices) {
         this.logger.info('Updating invoices', { id, invoices });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, invoices), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, invoices), this.endpoint, 'PUT');
     }
     /**
      * Partially update a invoices
@@ -84,7 +84,7 @@ class Invoices extends base_1.BaseEntity {
      */
     async patch(id, invoices) {
         this.logger.info('Patching invoices', { id, invoices });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, invoices), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...invoices, id }), this.endpoint, 'PATCH');
     }
     /**
      * List invoices with optional filtering
@@ -110,7 +110,9 @@ class Invoices extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

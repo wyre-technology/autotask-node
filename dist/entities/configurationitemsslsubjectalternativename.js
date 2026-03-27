@@ -52,7 +52,7 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IConfigurationItemSslSubjectAlternativeName[]',
                 endpoint: '/ConfigurationItemSslSubjectAlternativeName',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
      * @returns Promise with the created configurationitemsslsubjectalternativename
      */
     async create(configurationItemSslSubjectAlternativeName) {
-        this.logger.info('Creating configurationitemsslsubjectalternativename', { configurationItemSslSubjectAlternativeName });
+        this.logger.info('Creating configurationitemsslsubjectalternativename', {
+            configurationItemSslSubjectAlternativeName,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, configurationItemSslSubjectAlternativeName), this.endpoint, 'POST');
     }
     /**
@@ -70,8 +72,10 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
      * @returns Promise with the configurationitemsslsubjectalternativename data
      */
     async get(id) {
-        this.logger.info('Getting configurationitemsslsubjectalternativename', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        this.logger.info('Getting configurationitemsslsubjectalternativename', {
+            id,
+        });
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a configurationitemsslsubjectalternativename
@@ -80,8 +84,11 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
      * @returns Promise with the updated configurationitemsslsubjectalternativename
      */
     async update(id, configurationItemSslSubjectAlternativeName) {
-        this.logger.info('Updating configurationitemsslsubjectalternativename', { id, configurationItemSslSubjectAlternativeName });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, configurationItemSslSubjectAlternativeName), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating configurationitemsslsubjectalternativename', {
+            id,
+            configurationItemSslSubjectAlternativeName,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, configurationItemSslSubjectAlternativeName), this.endpoint, 'PUT');
     }
     /**
      * Partially update a configurationitemsslsubjectalternativename
@@ -90,8 +97,14 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
      * @returns Promise with the updated configurationitemsslsubjectalternativename
      */
     async patch(id, configurationItemSslSubjectAlternativeName) {
-        this.logger.info('Patching configurationitemsslsubjectalternativename', { id, configurationItemSslSubjectAlternativeName });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, configurationItemSslSubjectAlternativeName), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching configurationitemsslsubjectalternativename', {
+            id,
+            configurationItemSslSubjectAlternativeName,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...configurationItemSslSubjectAlternativeName,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a configurationitemsslsubjectalternativename
@@ -99,8 +112,10 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
      * @returns Promise that resolves when deletion is complete
      */
     async delete(id) {
-        this.logger.info('Deleting configurationitemsslsubjectalternativename', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        this.logger.info('Deleting configurationitemsslsubjectalternativename', {
+            id,
+        });
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List configurationitemsslsubjectalternativename with optional filtering
@@ -108,7 +123,9 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
      * @returns Promise with array of configurationitemsslsubjectalternativename
      */
     async list(query = {}) {
-        this.logger.info('Listing configurationitemsslsubjectalternativename', { query });
+        this.logger.info('Listing configurationitemsslsubjectalternativename', {
+            query,
+        });
         const searchBody = {};
         // Set up basic filter if none provided
         if (!query.filter || Object.keys(query.filter).length === 0) {
@@ -126,7 +143,9 @@ class ConfigurationItemSslSubjectAlternativeName extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

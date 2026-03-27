@@ -45,7 +45,7 @@ class TicketChecklistItems extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ITicketChecklistItems[]',
                 endpoint: '/TicketChecklistItems',
-            }
+            },
         ];
     }
     /**
@@ -64,7 +64,7 @@ class TicketChecklistItems extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting ticketchecklistitems', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a ticketchecklistitems
@@ -73,8 +73,11 @@ class TicketChecklistItems extends base_1.BaseEntity {
      * @returns Promise with the updated ticketchecklistitems
      */
     async update(id, ticketChecklistItems) {
-        this.logger.info('Updating ticketchecklistitems', { id, ticketChecklistItems });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, ticketChecklistItems), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating ticketchecklistitems', {
+            id,
+            ticketChecklistItems,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, ticketChecklistItems), this.endpoint, 'PUT');
     }
     /**
      * Partially update a ticketchecklistitems
@@ -83,8 +86,14 @@ class TicketChecklistItems extends base_1.BaseEntity {
      * @returns Promise with the updated ticketchecklistitems
      */
     async patch(id, ticketChecklistItems) {
-        this.logger.info('Patching ticketchecklistitems', { id, ticketChecklistItems });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, ticketChecklistItems), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching ticketchecklistitems', {
+            id,
+            ticketChecklistItems,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...ticketChecklistItems,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * List ticketchecklistitems with optional filtering
@@ -110,7 +119,9 @@ class TicketChecklistItems extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

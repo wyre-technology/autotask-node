@@ -52,7 +52,7 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IKnowledgeBaseArticles[]',
                 endpoint: '/KnowledgeBaseArticles',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
      * @returns Promise with the created knowledgebasearticles
      */
     async create(knowledgeBaseArticles) {
-        this.logger.info('Creating knowledgebasearticles', { knowledgeBaseArticles });
+        this.logger.info('Creating knowledgebasearticles', {
+            knowledgeBaseArticles,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, knowledgeBaseArticles), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting knowledgebasearticles', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a knowledgebasearticles
@@ -80,8 +82,11 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
      * @returns Promise with the updated knowledgebasearticles
      */
     async update(id, knowledgeBaseArticles) {
-        this.logger.info('Updating knowledgebasearticles', { id, knowledgeBaseArticles });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, knowledgeBaseArticles), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating knowledgebasearticles', {
+            id,
+            knowledgeBaseArticles,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, knowledgeBaseArticles), this.endpoint, 'PUT');
     }
     /**
      * Partially update a knowledgebasearticles
@@ -90,8 +95,14 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
      * @returns Promise with the updated knowledgebasearticles
      */
     async patch(id, knowledgeBaseArticles) {
-        this.logger.info('Patching knowledgebasearticles', { id, knowledgeBaseArticles });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, knowledgeBaseArticles), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching knowledgebasearticles', {
+            id,
+            knowledgeBaseArticles,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...knowledgeBaseArticles,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a knowledgebasearticles
@@ -100,7 +111,7 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting knowledgebasearticles', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List knowledgebasearticles with optional filtering
@@ -126,7 +137,9 @@ class KnowledgeBaseArticles extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

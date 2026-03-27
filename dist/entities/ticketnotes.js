@@ -66,7 +66,7 @@ class TicketNotes extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting ticketnotes', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a ticketnotes
@@ -76,7 +76,7 @@ class TicketNotes extends base_1.BaseEntity {
      */
     async update(id, ticketNotes) {
         this.logger.info('Updating ticketnotes', { id, ticketNotes });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, ticketNotes), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, ticketNotes), this.endpoint, 'PUT');
     }
     /**
      * Partially update a ticketnotes
@@ -86,7 +86,7 @@ class TicketNotes extends base_1.BaseEntity {
      */
     async patch(id, ticketNotes) {
         this.logger.info('Patching ticketnotes', { id, ticketNotes });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, ticketNotes), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...ticketNotes, id }), this.endpoint, 'PATCH');
     }
     /**
      * List ticketnotes with optional filtering

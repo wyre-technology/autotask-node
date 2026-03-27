@@ -64,7 +64,7 @@ class Quotes extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting quotes', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a quotes
@@ -74,7 +74,7 @@ class Quotes extends base_1.BaseEntity {
      */
     async update(id, quotes) {
         this.logger.info('Updating quotes', { id, quotes });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, quotes), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, quotes), this.endpoint, 'PUT');
     }
     /**
      * Partially update a quotes
@@ -84,7 +84,7 @@ class Quotes extends base_1.BaseEntity {
      */
     async patch(id, quotes) {
         this.logger.info('Patching quotes', { id, quotes });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, quotes), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...quotes, id }), this.endpoint, 'PATCH');
     }
     /**
      * List quotes with optional filtering
@@ -110,7 +110,9 @@ class Quotes extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

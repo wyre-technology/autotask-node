@@ -52,7 +52,7 @@ class CompanyTeams extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ICompanyTeams[]',
                 endpoint: '/CompanyTeams',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class CompanyTeams extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting companyteams', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a companyteams
@@ -81,7 +81,7 @@ class CompanyTeams extends base_1.BaseEntity {
      */
     async update(id, companyTeams) {
         this.logger.info('Updating companyteams', { id, companyTeams });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, companyTeams), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, companyTeams), this.endpoint, 'PUT');
     }
     /**
      * Partially update a companyteams
@@ -91,7 +91,7 @@ class CompanyTeams extends base_1.BaseEntity {
      */
     async patch(id, companyTeams) {
         this.logger.info('Patching companyteams', { id, companyTeams });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, companyTeams), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...companyTeams, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a companyteams
@@ -100,7 +100,7 @@ class CompanyTeams extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting companyteams', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List companyteams with optional filtering
@@ -126,7 +126,9 @@ class CompanyTeams extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

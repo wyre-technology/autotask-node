@@ -45,7 +45,7 @@ class TicketChangeRequestApprovals extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'ITicketChangeRequestApprovals[]',
                 endpoint: '/TicketChangeRequestApprovals',
-            }
+            },
         ];
     }
     /**
@@ -54,7 +54,9 @@ class TicketChangeRequestApprovals extends base_1.BaseEntity {
      * @returns Promise with the created ticketchangerequestapprovals
      */
     async create(ticketChangeRequestApprovals) {
-        this.logger.info('Creating ticketchangerequestapprovals', { ticketChangeRequestApprovals });
+        this.logger.info('Creating ticketchangerequestapprovals', {
+            ticketChangeRequestApprovals,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, ticketChangeRequestApprovals), this.endpoint, 'POST');
     }
     /**
@@ -64,7 +66,7 @@ class TicketChangeRequestApprovals extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting ticketchangerequestapprovals', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a ticketchangerequestapprovals
@@ -73,8 +75,11 @@ class TicketChangeRequestApprovals extends base_1.BaseEntity {
      * @returns Promise with the updated ticketchangerequestapprovals
      */
     async update(id, ticketChangeRequestApprovals) {
-        this.logger.info('Updating ticketchangerequestapprovals', { id, ticketChangeRequestApprovals });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, ticketChangeRequestApprovals), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating ticketchangerequestapprovals', {
+            id,
+            ticketChangeRequestApprovals,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, ticketChangeRequestApprovals), this.endpoint, 'PUT');
     }
     /**
      * Partially update a ticketchangerequestapprovals
@@ -83,8 +88,14 @@ class TicketChangeRequestApprovals extends base_1.BaseEntity {
      * @returns Promise with the updated ticketchangerequestapprovals
      */
     async patch(id, ticketChangeRequestApprovals) {
-        this.logger.info('Patching ticketchangerequestapprovals', { id, ticketChangeRequestApprovals });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, ticketChangeRequestApprovals), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching ticketchangerequestapprovals', {
+            id,
+            ticketChangeRequestApprovals,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...ticketChangeRequestApprovals,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * List ticketchangerequestapprovals with optional filtering
@@ -110,7 +121,9 @@ class TicketChangeRequestApprovals extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

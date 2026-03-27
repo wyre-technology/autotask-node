@@ -64,7 +64,7 @@ class TicketPriorities extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting ticket priority', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * List ticket priorities with optional filtering
@@ -104,7 +104,7 @@ class TicketPriorities extends base_1.BaseEntity {
      */
     async update(id, data) {
         this.logger.info('Updating ticket priority', { id, data });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, data), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, data), this.endpoint, 'PUT');
     }
     /**
      * Delete a ticket priority
@@ -113,7 +113,7 @@ class TicketPriorities extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting ticket priority', { id });
-        return this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        return this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
 }
 exports.TicketPriorities = TicketPriorities;

@@ -64,7 +64,7 @@ class TicketSources extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting ticket source', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * List ticket sources with optional filtering
@@ -104,7 +104,7 @@ class TicketSources extends base_1.BaseEntity {
      */
     async update(id, data) {
         this.logger.info('Updating ticket source', { id, data });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, data), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, data), this.endpoint, 'PUT');
     }
     /**
      * Delete a ticket source
@@ -113,7 +113,7 @@ class TicketSources extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting ticket source', { id });
-        return this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        return this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
 }
 exports.TicketSources = TicketSources;

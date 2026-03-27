@@ -56,15 +56,20 @@ class TimeEntries extends base_1.BaseEntity {
         ];
     }
     /**
-     * Create a new time entry under a ticket
+     * Create a new time entry scoped to a ticket.
+     * Uses the direct /TimeEntries endpoint with ticketID in the body,
+     * as the Autotask REST API does not support the parent-child URL
+     * pattern (/Tickets/{id}/TimeEntries) for creating time entries.
      * @param ticketId - The parent ticket ID
      * @param timeEntries - The time entry data to create
      * @returns Promise with the created time entry
      */
     async create(ticketId, timeEntries) {
-        const createEndpoint = `/Tickets/${ticketId}/TimeEntries`;
         this.logger.info('Creating timeentries', { ticketId, timeEntries });
-        return this.executeRequest(async () => this.axios.post(createEndpoint, timeEntries), createEndpoint, 'POST');
+        return this.executeRequest(async () => this.axios.post(this.endpoint, {
+            ...timeEntries,
+            ticketID: ticketId,
+        }), this.endpoint, 'POST');
     }
     /**
      * Create a time entry directly (not scoped to a parent entity).
@@ -84,7 +89,7 @@ class TimeEntries extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting timeentries', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a timeentries
@@ -94,7 +99,7 @@ class TimeEntries extends base_1.BaseEntity {
      */
     async update(id, timeEntries) {
         this.logger.info('Updating timeentries', { id, timeEntries });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, timeEntries), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, timeEntries), this.endpoint, 'PUT');
     }
     /**
      * Partially update a timeentries
@@ -104,7 +109,7 @@ class TimeEntries extends base_1.BaseEntity {
      */
     async patch(id, timeEntries) {
         this.logger.info('Patching timeentries', { id, timeEntries });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, timeEntries), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...timeEntries, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a timeentries
@@ -113,7 +118,7 @@ class TimeEntries extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting timeentries', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List timeentries with optional filtering

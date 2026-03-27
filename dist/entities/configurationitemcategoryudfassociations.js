@@ -31,7 +31,7 @@ class ConfigurationItemCategoryUdfAssociations extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IConfigurationItemCategoryUdfAssociations[]',
                 endpoint: '/ConfigurationItemCategoryUdfAssociations',
-            }
+            },
         ];
     }
     /**
@@ -40,8 +40,10 @@ class ConfigurationItemCategoryUdfAssociations extends base_1.BaseEntity {
      * @returns Promise with the configurationitemcategoryudfassociations data
      */
     async get(id) {
-        this.logger.info('Getting configurationitemcategoryudfassociations', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        this.logger.info('Getting configurationitemcategoryudfassociations', {
+            id,
+        });
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * List configurationitemcategoryudfassociations with optional filtering
@@ -49,7 +51,9 @@ class ConfigurationItemCategoryUdfAssociations extends base_1.BaseEntity {
      * @returns Promise with array of configurationitemcategoryudfassociations
      */
     async list(query = {}) {
-        this.logger.info('Listing configurationitemcategoryudfassociations', { query });
+        this.logger.info('Listing configurationitemcategoryudfassociations', {
+            query,
+        });
         const searchBody = {};
         // Set up basic filter if none provided
         if (!query.filter || Object.keys(query.filter).length === 0) {
@@ -67,7 +71,9 @@ class ConfigurationItemCategoryUdfAssociations extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

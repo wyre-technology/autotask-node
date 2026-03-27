@@ -78,7 +78,7 @@ class Attachments {
     async update(id, attachment) {
         this.logger.info('Updating attachment', { id, attachment });
         return this.requestWithRetry(async () => {
-            const { data } = await this.axios.put(`${this.endpoint}/${id}`, attachment);
+            const { data } = await this.axios.put(this.endpoint, attachment);
             return { data };
         });
     }

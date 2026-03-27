@@ -45,7 +45,7 @@ class PurchaseOrders extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IPurchaseOrders[]',
                 endpoint: '/PurchaseOrders',
-            }
+            },
         ];
     }
     /**
@@ -64,7 +64,7 @@ class PurchaseOrders extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting purchaseorders', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a purchaseorders
@@ -74,7 +74,7 @@ class PurchaseOrders extends base_1.BaseEntity {
      */
     async update(id, purchaseOrders) {
         this.logger.info('Updating purchaseorders', { id, purchaseOrders });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, purchaseOrders), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, purchaseOrders), this.endpoint, 'PUT');
     }
     /**
      * Partially update a purchaseorders
@@ -84,7 +84,7 @@ class PurchaseOrders extends base_1.BaseEntity {
      */
     async patch(id, purchaseOrders) {
         this.logger.info('Patching purchaseorders', { id, purchaseOrders });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, purchaseOrders), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...purchaseOrders, id }), this.endpoint, 'PATCH');
     }
     /**
      * List purchaseorders with optional filtering
@@ -110,7 +110,9 @@ class PurchaseOrders extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

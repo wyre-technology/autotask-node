@@ -75,7 +75,7 @@ class TicketsEnhanced extends queryableEntity_1.QueryableEntity {
     }
     async update(id, ticket) {
         this.logger.info('Updating ticket', { id, ticket });
-        const response = await this.axios.put(`${this.endpoint}/${id}`, ticket);
+        const response = await this.axios.put(this.endpoint, ticket);
         return { data: response.data };
     }
     async delete(id) {
@@ -101,7 +101,9 @@ class TicketsEnhanced extends queryableEntity_1.QueryableEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

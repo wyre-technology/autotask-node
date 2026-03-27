@@ -52,7 +52,7 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractServiceAdjustments[]',
                 endpoint: '/ContractServiceAdjustments',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
      * @returns Promise with the created contractserviceadjustments
      */
     async create(contractServiceAdjustments) {
-        this.logger.info('Creating contractserviceadjustments', { contractServiceAdjustments });
+        this.logger.info('Creating contractserviceadjustments', {
+            contractServiceAdjustments,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, contractServiceAdjustments), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractserviceadjustments', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a contractserviceadjustments
@@ -80,8 +82,11 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
      * @returns Promise with the updated contractserviceadjustments
      */
     async update(id, contractServiceAdjustments) {
-        this.logger.info('Updating contractserviceadjustments', { id, contractServiceAdjustments });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, contractServiceAdjustments), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating contractserviceadjustments', {
+            id,
+            contractServiceAdjustments,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, contractServiceAdjustments), this.endpoint, 'PUT');
     }
     /**
      * Partially update a contractserviceadjustments
@@ -90,8 +95,14 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
      * @returns Promise with the updated contractserviceadjustments
      */
     async patch(id, contractServiceAdjustments) {
-        this.logger.info('Patching contractserviceadjustments', { id, contractServiceAdjustments });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, contractServiceAdjustments), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching contractserviceadjustments', {
+            id,
+            contractServiceAdjustments,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...contractServiceAdjustments,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a contractserviceadjustments
@@ -100,7 +111,7 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractserviceadjustments', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractserviceadjustments with optional filtering
@@ -126,7 +137,9 @@ class ContractServiceAdjustments extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

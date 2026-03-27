@@ -52,7 +52,7 @@ class PriceListServices extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IPriceListServices[]',
                 endpoint: '/PriceListServices',
-            }
+            },
         ];
     }
     /**
@@ -71,7 +71,7 @@ class PriceListServices extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting pricelistservices', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a pricelistservices
@@ -81,7 +81,7 @@ class PriceListServices extends base_1.BaseEntity {
      */
     async update(id, priceListServices) {
         this.logger.info('Updating pricelistservices', { id, priceListServices });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, priceListServices), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, priceListServices), this.endpoint, 'PUT');
     }
     /**
      * Partially update a pricelistservices
@@ -91,7 +91,7 @@ class PriceListServices extends base_1.BaseEntity {
      */
     async patch(id, priceListServices) {
         this.logger.info('Patching pricelistservices', { id, priceListServices });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, priceListServices), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...priceListServices, id }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a pricelistservices
@@ -100,7 +100,7 @@ class PriceListServices extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting pricelistservices', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List pricelistservices with optional filtering
@@ -126,7 +126,9 @@ class PriceListServices extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

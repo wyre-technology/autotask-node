@@ -52,7 +52,7 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
                 optionalParams: ['filter', 'sort', 'page', 'pageSize'],
                 returnType: 'IContractServiceBundleAdjustments[]',
                 endpoint: '/ContractServiceBundleAdjustments',
-            }
+            },
         ];
     }
     /**
@@ -61,7 +61,9 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
      * @returns Promise with the created contractservicebundleadjustments
      */
     async create(contractServiceBundleAdjustments) {
-        this.logger.info('Creating contractservicebundleadjustments', { contractServiceBundleAdjustments });
+        this.logger.info('Creating contractservicebundleadjustments', {
+            contractServiceBundleAdjustments,
+        });
         return this.executeRequest(async () => this.axios.post(this.endpoint, contractServiceBundleAdjustments), this.endpoint, 'POST');
     }
     /**
@@ -71,7 +73,7 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting contractservicebundleadjustments', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a contractservicebundleadjustments
@@ -80,8 +82,11 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
      * @returns Promise with the updated contractservicebundleadjustments
      */
     async update(id, contractServiceBundleAdjustments) {
-        this.logger.info('Updating contractservicebundleadjustments', { id, contractServiceBundleAdjustments });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, contractServiceBundleAdjustments), `${this.endpoint}/${id}`, 'PUT');
+        this.logger.info('Updating contractservicebundleadjustments', {
+            id,
+            contractServiceBundleAdjustments,
+        });
+        return this.executeRequest(async () => this.axios.put(this.endpoint, contractServiceBundleAdjustments), this.endpoint, 'PUT');
     }
     /**
      * Partially update a contractservicebundleadjustments
@@ -90,8 +95,14 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
      * @returns Promise with the updated contractservicebundleadjustments
      */
     async patch(id, contractServiceBundleAdjustments) {
-        this.logger.info('Patching contractservicebundleadjustments', { id, contractServiceBundleAdjustments });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, contractServiceBundleAdjustments), `${this.endpoint}/${id}`, 'PATCH');
+        this.logger.info('Patching contractservicebundleadjustments', {
+            id,
+            contractServiceBundleAdjustments,
+        });
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, {
+            ...contractServiceBundleAdjustments,
+            id,
+        }), this.endpoint, 'PATCH');
     }
     /**
      * Delete a contractservicebundleadjustments
@@ -100,7 +111,7 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
      */
     async delete(id) {
         this.logger.info('Deleting contractservicebundleadjustments', { id });
-        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'DELETE');
+        await this.executeRequest(async () => this.axios.delete(`${this.endpoint}/${id}`), this.endpoint, 'DELETE');
     }
     /**
      * List contractservicebundleadjustments with optional filtering
@@ -126,7 +137,9 @@ class ContractServiceBundleAdjustments extends base_1.BaseEntity {
                 const filterArray = [];
                 for (const [field, value] of Object.entries(query.filter)) {
                     // Handle nested objects like { id: { gte: 0 } }
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    if (typeof value === 'object' &&
+                        value !== null &&
+                        !Array.isArray(value)) {
                         // Extract operator and value from nested object
                         const [op, val] = Object.entries(value)[0];
                         filterArray.push({

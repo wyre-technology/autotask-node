@@ -99,7 +99,7 @@ class QuoteItems extends base_1.BaseEntity {
      */
     async get(id) {
         this.logger.info('Getting quoteitems', { id });
-        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), `${this.endpoint}/${id}`, 'GET');
+        return this.executeRequest(async () => this.axios.get(`${this.endpoint}/${id}`), this.endpoint, 'GET');
     }
     /**
      * Update a quoteitems
@@ -109,7 +109,7 @@ class QuoteItems extends base_1.BaseEntity {
      */
     async update(id, quoteItems) {
         this.logger.info('Updating quoteitems', { id, quoteItems });
-        return this.executeRequest(async () => this.axios.put(`${this.endpoint}/${id}`, quoteItems), `${this.endpoint}/${id}`, 'PUT');
+        return this.executeRequest(async () => this.axios.put(this.endpoint, quoteItems), this.endpoint, 'PUT');
     }
     /**
      * Partially update a quoteitems
@@ -119,7 +119,7 @@ class QuoteItems extends base_1.BaseEntity {
      */
     async patch(id, quoteItems) {
         this.logger.info('Patching quoteitems', { id, quoteItems });
-        return this.executeRequest(async () => this.axios.patch(`${this.endpoint}/${id}`, quoteItems), `${this.endpoint}/${id}`, 'PATCH');
+        return this.executeRequest(async () => this.axios.patch(this.endpoint, { ...quoteItems, id }), this.endpoint, 'PATCH');
     }
     async delete(quoteIdOrItemId, itemId) {
         let deleteEndpoint;
