@@ -156,7 +156,7 @@ describe('ConfigurationItemNotes Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ConfigurationItemNotes/1',
+        '/ConfigurationItemNotes',
         configurationItemNotesData
       );
     });
@@ -179,10 +179,10 @@ describe('ConfigurationItemNotes Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ConfigurationItemNotes/1',
-        configurationItemNotesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ConfigurationItemNotes', {
+        ...configurationItemNotesData,
+        id: 1,
+      });
     });
   });
 });

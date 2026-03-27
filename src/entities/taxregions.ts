@@ -17,11 +17,11 @@ export interface ITaxRegionsQuery {
 
 /**
  * TaxRegions entity class for Autotask API
- * 
+ *
  * Geographic regions for tax purposes
  * Supported Operations: GET
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TaxRegionsEntity.htm}
  */
 export class TaxRegions extends BaseEntity {
@@ -50,7 +50,7 @@ export class TaxRegions extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITaxRegions[]',
         endpoint: '/TaxRegions',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class TaxRegions extends BaseEntity {
     this.logger.info('Getting taxregions', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class TaxRegions extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of taxregions
    */
-  async list(query: ITaxRegionsQuery = {}): Promise<ApiResponse<ITaxRegions[]>> {
+  async list(
+    query: ITaxRegionsQuery = {}
+  ): Promise<ApiResponse<ITaxRegions[]>> {
     this.logger.info('Listing taxregions', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class TaxRegions extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

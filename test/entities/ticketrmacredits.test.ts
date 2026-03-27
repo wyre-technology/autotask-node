@@ -139,7 +139,7 @@ describe('TicketRmaCredits Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/TicketRmaCredits/1',
+        '/TicketRmaCredits',
         ticketRmaCreditsData
       );
     });
@@ -157,10 +157,10 @@ describe('TicketRmaCredits Entity', () => {
       const result = await ticketRmaCredits.patch(1, ticketRmaCreditsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/TicketRmaCredits/1',
-        ticketRmaCreditsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/TicketRmaCredits', {
+        ...ticketRmaCreditsData,
+        id: 1,
+      });
     });
   });
 

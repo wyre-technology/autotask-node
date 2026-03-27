@@ -17,11 +17,11 @@ export interface IArticleTagAssociationsQuery {
 
 /**
  * ArticleTagAssociations entity class for Autotask API
- * 
+ *
  * Tag associations for articles
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ArticleTagAssociationsEntity.htm}
  */
 export class ArticleTagAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ArticleTagAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IArticleTagAssociations[]',
         endpoint: '/ArticleTagAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ArticleTagAssociations extends BaseEntity {
    * @param articleTagAssociations - The articletagassociations data to create
    * @returns Promise with the created articletagassociations
    */
-  async create(articleTagAssociations: IArticleTagAssociations): Promise<ApiResponse<IArticleTagAssociations>> {
-    this.logger.info('Creating articletagassociations', { articleTagAssociations });
+  async create(
+    articleTagAssociations: IArticleTagAssociations
+  ): Promise<ApiResponse<IArticleTagAssociations>> {
+    this.logger.info('Creating articletagassociations', {
+      articleTagAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, articleTagAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ArticleTagAssociations extends BaseEntity {
     this.logger.info('Getting articletagassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ArticleTagAssociations extends BaseEntity {
     this.logger.info('Deleting articletagassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ArticleTagAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of articletagassociations
    */
-  async list(query: IArticleTagAssociationsQuery = {}): Promise<ApiResponse<IArticleTagAssociations[]>> {
+  async list(
+    query: IArticleTagAssociationsQuery = {}
+  ): Promise<ApiResponse<IArticleTagAssociations[]>> {
     this.logger.info('Listing articletagassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ArticleTagAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

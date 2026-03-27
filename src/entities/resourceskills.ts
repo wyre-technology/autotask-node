@@ -17,11 +17,11 @@ export interface IResourceSkillsQuery {
 
 /**
  * ResourceSkills entity class for Autotask API
- * 
+ *
  * Skills associated with resources
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceSkillsEntity.htm}
  */
 export class ResourceSkills extends BaseEntity {
@@ -71,7 +71,7 @@ export class ResourceSkills extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceSkills[]',
         endpoint: '/ResourceSkills',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ResourceSkills extends BaseEntity {
    * @param resourceSkills - The resourceskills data to create
    * @returns Promise with the created resourceskills
    */
-  async create(resourceSkills: IResourceSkills): Promise<ApiResponse<IResourceSkills>> {
+  async create(
+    resourceSkills: IResourceSkills
+  ): Promise<ApiResponse<IResourceSkills>> {
     this.logger.info('Creating resourceskills', { resourceSkills });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceSkills),
@@ -98,7 +100,7 @@ export class ResourceSkills extends BaseEntity {
     this.logger.info('Getting resourceskills', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ResourceSkills extends BaseEntity {
   ): Promise<ApiResponse<IResourceSkills>> {
     this.logger.info('Updating resourceskills', { id, resourceSkills });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, resourceSkills),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, resourceSkills),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ResourceSkills extends BaseEntity {
   ): Promise<ApiResponse<IResourceSkills>> {
     this.logger.info('Patching resourceskills', { id, resourceSkills });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, resourceSkills),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(resourceSkills as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ResourceSkills extends BaseEntity {
     this.logger.info('Deleting resourceskills', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ResourceSkills extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourceskills
    */
-  async list(query: IResourceSkillsQuery = {}): Promise<ApiResponse<IResourceSkills[]>> {
+  async list(
+    query: IResourceSkillsQuery = {}
+  ): Promise<ApiResponse<IResourceSkills[]>> {
     this.logger.info('Listing resourceskills', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ResourceSkills extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

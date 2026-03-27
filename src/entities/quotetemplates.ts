@@ -17,11 +17,11 @@ export interface IQuoteTemplatesQuery {
 
 /**
  * QuoteTemplates entity class for Autotask API
- * 
+ *
  * Templates for generating quotes
  * Supported Operations: GET
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/QuoteTemplatesEntity.htm}
  */
 export class QuoteTemplates extends BaseEntity {
@@ -50,7 +50,7 @@ export class QuoteTemplates extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IQuoteTemplates[]',
         endpoint: '/QuoteTemplates',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class QuoteTemplates extends BaseEntity {
     this.logger.info('Getting quotetemplates', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class QuoteTemplates extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of quotetemplates
    */
-  async list(query: IQuoteTemplatesQuery = {}): Promise<ApiResponse<IQuoteTemplates[]>> {
+  async list(
+    query: IQuoteTemplatesQuery = {}
+  ): Promise<ApiResponse<IQuoteTemplates[]>> {
     this.logger.info('Listing quotetemplates', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class QuoteTemplates extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

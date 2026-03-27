@@ -17,11 +17,11 @@ export interface IBillingCodesQuery {
 
 /**
  * BillingCodes entity class for Autotask API
- * 
+ *
  * Billing codes for time and expense tracking
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/BillingCodesEntity.htm}
  */
 export class BillingCodes extends BaseEntity {
@@ -64,7 +64,7 @@ export class BillingCodes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IBillingCodes[]',
         endpoint: '/BillingCodes',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class BillingCodes extends BaseEntity {
    * @param billingCodes - The billingcodes data to create
    * @returns Promise with the created billingcodes
    */
-  async create(billingCodes: IBillingCodes): Promise<ApiResponse<IBillingCodes>> {
+  async create(
+    billingCodes: IBillingCodes
+  ): Promise<ApiResponse<IBillingCodes>> {
     this.logger.info('Creating billingcodes', { billingCodes });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, billingCodes),
@@ -91,7 +93,7 @@ export class BillingCodes extends BaseEntity {
     this.logger.info('Getting billingcodes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +110,8 @@ export class BillingCodes extends BaseEntity {
   ): Promise<ApiResponse<IBillingCodes>> {
     this.logger.info('Updating billingcodes', { id, billingCodes });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, billingCodes),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, billingCodes),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +128,9 @@ export class BillingCodes extends BaseEntity {
   ): Promise<ApiResponse<IBillingCodes>> {
     this.logger.info('Patching billingcodes', { id, billingCodes });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, billingCodes),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(billingCodes as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +140,9 @@ export class BillingCodes extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of billingcodes
    */
-  async list(query: IBillingCodesQuery = {}): Promise<ApiResponse<IBillingCodes[]>> {
+  async list(
+    query: IBillingCodesQuery = {}
+  ): Promise<ApiResponse<IBillingCodes[]>> {
     this.logger.info('Listing billingcodes', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +161,11 @@ export class BillingCodes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

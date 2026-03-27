@@ -17,11 +17,11 @@ export interface ICompanySiteConfigurationsQuery {
 
 /**
  * CompanySiteConfigurations entity class for Autotask API
- * 
+ *
  * Site configurations for companies
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/CompanySiteConfigurationsEntity.htm}
  */
 export class CompanySiteConfigurations extends BaseEntity {
@@ -71,7 +71,7 @@ export class CompanySiteConfigurations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ICompanySiteConfigurations[]',
         endpoint: '/CompanySiteConfigurations',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class CompanySiteConfigurations extends BaseEntity {
    * @param companySiteConfigurations - The companysiteconfigurations data to create
    * @returns Promise with the created companysiteconfigurations
    */
-  async create(companySiteConfigurations: ICompanySiteConfigurations): Promise<ApiResponse<ICompanySiteConfigurations>> {
-    this.logger.info('Creating companysiteconfigurations', { companySiteConfigurations });
+  async create(
+    companySiteConfigurations: ICompanySiteConfigurations
+  ): Promise<ApiResponse<ICompanySiteConfigurations>> {
+    this.logger.info('Creating companysiteconfigurations', {
+      companySiteConfigurations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, companySiteConfigurations),
       this.endpoint,
@@ -98,7 +102,7 @@ export class CompanySiteConfigurations extends BaseEntity {
     this.logger.info('Getting companysiteconfigurations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class CompanySiteConfigurations extends BaseEntity {
     id: number,
     companySiteConfigurations: Partial<ICompanySiteConfigurations>
   ): Promise<ApiResponse<ICompanySiteConfigurations>> {
-    this.logger.info('Updating companysiteconfigurations', { id, companySiteConfigurations });
+    this.logger.info('Updating companysiteconfigurations', {
+      id,
+      companySiteConfigurations,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, companySiteConfigurations),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, companySiteConfigurations),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class CompanySiteConfigurations extends BaseEntity {
     id: number,
     companySiteConfigurations: Partial<ICompanySiteConfigurations>
   ): Promise<ApiResponse<ICompanySiteConfigurations>> {
-    this.logger.info('Patching companysiteconfigurations', { id, companySiteConfigurations });
+    this.logger.info('Patching companysiteconfigurations', {
+      id,
+      companySiteConfigurations,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, companySiteConfigurations),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(companySiteConfigurations as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class CompanySiteConfigurations extends BaseEntity {
     this.logger.info('Deleting companysiteconfigurations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class CompanySiteConfigurations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of companysiteconfigurations
    */
-  async list(query: ICompanySiteConfigurationsQuery = {}): Promise<ApiResponse<ICompanySiteConfigurations[]>> {
+  async list(
+    query: ICompanySiteConfigurationsQuery = {}
+  ): Promise<ApiResponse<ICompanySiteConfigurations[]>> {
     this.logger.info('Listing companysiteconfigurations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class CompanySiteConfigurations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

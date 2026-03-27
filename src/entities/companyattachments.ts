@@ -17,11 +17,11 @@ export interface ICompanyAttachmentsQuery {
 
 /**
  * CompanyAttachments entity class for Autotask API
- * 
+ *
  * File attachments for companies
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/CompanyAttachmentsEntity.htm}
  */
 export class CompanyAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class CompanyAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ICompanyAttachments[]',
         endpoint: '/CompanyAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class CompanyAttachments extends BaseEntity {
    * @param companyAttachments - The companyattachments data to create
    * @returns Promise with the created companyattachments
    */
-  async create(companyAttachments: ICompanyAttachments): Promise<ApiResponse<ICompanyAttachments>> {
+  async create(
+    companyAttachments: ICompanyAttachments
+  ): Promise<ApiResponse<ICompanyAttachments>> {
     this.logger.info('Creating companyattachments', { companyAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, companyAttachments),
@@ -91,7 +93,7 @@ export class CompanyAttachments extends BaseEntity {
     this.logger.info('Getting companyattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class CompanyAttachments extends BaseEntity {
     this.logger.info('Deleting companyattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class CompanyAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of companyattachments
    */
-  async list(query: ICompanyAttachmentsQuery = {}): Promise<ApiResponse<ICompanyAttachments[]>> {
+  async list(
+    query: ICompanyAttachmentsQuery = {}
+  ): Promise<ApiResponse<ICompanyAttachments[]>> {
     this.logger.info('Listing companyattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class CompanyAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

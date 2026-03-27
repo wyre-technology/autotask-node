@@ -163,7 +163,7 @@ describe('TicketChangeRequestApprovals Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/TicketChangeRequestApprovals/1',
+        '/TicketChangeRequestApprovals',
         ticketChangeRequestApprovalsData
       );
     });
@@ -187,8 +187,8 @@ describe('TicketChangeRequestApprovals Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/TicketChangeRequestApprovals/1',
-        ticketChangeRequestApprovalsData
+        '/TicketChangeRequestApprovals',
+        { ...ticketChangeRequestApprovalsData, id: 1 }
       );
     });
   });

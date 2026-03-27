@@ -17,11 +17,11 @@ export interface IDocumentCategoriesQuery {
 
 /**
  * DocumentCategories entity class for Autotask API
- * 
+ *
  * Categories for organizing documents
  * Supported Operations: GET
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentCategoriesEntity.htm}
  */
 export class DocumentCategories extends BaseEntity {
@@ -50,7 +50,7 @@ export class DocumentCategories extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentCategories[]',
         endpoint: '/DocumentCategories',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class DocumentCategories extends BaseEntity {
     this.logger.info('Getting documentcategories', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class DocumentCategories extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentcategories
    */
-  async list(query: IDocumentCategoriesQuery = {}): Promise<ApiResponse<IDocumentCategories[]>> {
+  async list(
+    query: IDocumentCategoriesQuery = {}
+  ): Promise<ApiResponse<IDocumentCategories[]>> {
     this.logger.info('Listing documentcategories', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class DocumentCategories extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

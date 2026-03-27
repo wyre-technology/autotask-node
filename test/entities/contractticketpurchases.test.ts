@@ -161,7 +161,7 @@ describe('ContractTicketPurchases Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ContractTicketPurchases/1',
+        '/ContractTicketPurchases',
         contractTicketPurchasesData
       );
     });
@@ -184,10 +184,10 @@ describe('ContractTicketPurchases Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ContractTicketPurchases/1',
-        contractTicketPurchasesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ContractTicketPurchases', {
+        ...contractTicketPurchasesData,
+        id: 1,
+      });
     });
   });
 

@@ -17,11 +17,11 @@ export interface IDocumentAttachmentsQuery {
 
 /**
  * DocumentAttachments entity class for Autotask API
- * 
+ *
  * File attachments for documents
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentAttachmentsEntity.htm}
  */
 export class DocumentAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class DocumentAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentAttachments[]',
         endpoint: '/DocumentAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class DocumentAttachments extends BaseEntity {
    * @param documentAttachments - The documentattachments data to create
    * @returns Promise with the created documentattachments
    */
-  async create(documentAttachments: IDocumentAttachments): Promise<ApiResponse<IDocumentAttachments>> {
+  async create(
+    documentAttachments: IDocumentAttachments
+  ): Promise<ApiResponse<IDocumentAttachments>> {
     this.logger.info('Creating documentattachments', { documentAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, documentAttachments),
@@ -91,7 +93,7 @@ export class DocumentAttachments extends BaseEntity {
     this.logger.info('Getting documentattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class DocumentAttachments extends BaseEntity {
     this.logger.info('Deleting documentattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class DocumentAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentattachments
    */
-  async list(query: IDocumentAttachmentsQuery = {}): Promise<ApiResponse<IDocumentAttachments[]>> {
+  async list(
+    query: IDocumentAttachmentsQuery = {}
+  ): Promise<ApiResponse<IDocumentAttachments[]>> {
     this.logger.info('Listing documentattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class DocumentAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

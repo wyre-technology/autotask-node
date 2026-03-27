@@ -17,11 +17,11 @@ export interface IConfigurationItemDnsRecordsQuery {
 
 /**
  * ConfigurationItemDnsRecords entity class for Autotask API
- * 
+ *
  * DNS records for configuration items
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemDnsRecordsEntity.htm}
  */
 export class ConfigurationItemDnsRecords extends BaseEntity {
@@ -71,7 +71,7 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemDnsRecords[]',
         endpoint: '/ConfigurationItemDnsRecords',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
    * @param configurationItemDnsRecords - The configurationitemdnsrecords data to create
    * @returns Promise with the created configurationitemdnsrecords
    */
-  async create(configurationItemDnsRecords: IConfigurationItemDnsRecords): Promise<ApiResponse<IConfigurationItemDnsRecords>> {
-    this.logger.info('Creating configurationitemdnsrecords', { configurationItemDnsRecords });
+  async create(
+    configurationItemDnsRecords: IConfigurationItemDnsRecords
+  ): Promise<ApiResponse<IConfigurationItemDnsRecords>> {
+    this.logger.info('Creating configurationitemdnsrecords', {
+      configurationItemDnsRecords,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, configurationItemDnsRecords),
       this.endpoint,
@@ -98,7 +102,7 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
     this.logger.info('Getting configurationitemdnsrecords', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
     id: number,
     configurationItemDnsRecords: Partial<IConfigurationItemDnsRecords>
   ): Promise<ApiResponse<IConfigurationItemDnsRecords>> {
-    this.logger.info('Updating configurationitemdnsrecords', { id, configurationItemDnsRecords });
+    this.logger.info('Updating configurationitemdnsrecords', {
+      id,
+      configurationItemDnsRecords,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, configurationItemDnsRecords),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, configurationItemDnsRecords),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
     id: number,
     configurationItemDnsRecords: Partial<IConfigurationItemDnsRecords>
   ): Promise<ApiResponse<IConfigurationItemDnsRecords>> {
-    this.logger.info('Patching configurationitemdnsrecords', { id, configurationItemDnsRecords });
+    this.logger.info('Patching configurationitemdnsrecords', {
+      id,
+      configurationItemDnsRecords,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, configurationItemDnsRecords),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(configurationItemDnsRecords as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
     this.logger.info('Deleting configurationitemdnsrecords', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemdnsrecords
    */
-  async list(query: IConfigurationItemDnsRecordsQuery = {}): Promise<ApiResponse<IConfigurationItemDnsRecords[]>> {
+  async list(
+    query: IConfigurationItemDnsRecordsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemDnsRecords[]>> {
     this.logger.info('Listing configurationitemdnsrecords', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class ConfigurationItemDnsRecords extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

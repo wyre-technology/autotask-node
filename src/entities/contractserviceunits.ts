@@ -17,11 +17,11 @@ export interface IContractServiceUnitsQuery {
 
 /**
  * ContractServiceUnits entity class for Autotask API
- * 
+ *
  * Units for contract services
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractServiceUnitsEntity.htm}
  */
 export class ContractServiceUnits extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContractServiceUnits extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractServiceUnits[]',
         endpoint: '/ContractServiceUnits',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ContractServiceUnits extends BaseEntity {
    * @param contractServiceUnits - The contractserviceunits data to create
    * @returns Promise with the created contractserviceunits
    */
-  async create(contractServiceUnits: IContractServiceUnits): Promise<ApiResponse<IContractServiceUnits>> {
+  async create(
+    contractServiceUnits: IContractServiceUnits
+  ): Promise<ApiResponse<IContractServiceUnits>> {
     this.logger.info('Creating contractserviceunits', { contractServiceUnits });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractServiceUnits),
@@ -98,7 +100,7 @@ export class ContractServiceUnits extends BaseEntity {
     this.logger.info('Getting contractserviceunits', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +115,13 @@ export class ContractServiceUnits extends BaseEntity {
     id: number,
     contractServiceUnits: Partial<IContractServiceUnits>
   ): Promise<ApiResponse<IContractServiceUnits>> {
-    this.logger.info('Updating contractserviceunits', { id, contractServiceUnits });
+    this.logger.info('Updating contractserviceunits', {
+      id,
+      contractServiceUnits,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractServiceUnits),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractServiceUnits),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +136,17 @@ export class ContractServiceUnits extends BaseEntity {
     id: number,
     contractServiceUnits: Partial<IContractServiceUnits>
   ): Promise<ApiResponse<IContractServiceUnits>> {
-    this.logger.info('Patching contractserviceunits', { id, contractServiceUnits });
+    this.logger.info('Patching contractserviceunits', {
+      id,
+      contractServiceUnits,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractServiceUnits),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(contractServiceUnits as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +160,7 @@ export class ContractServiceUnits extends BaseEntity {
     this.logger.info('Deleting contractserviceunits', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +170,9 @@ export class ContractServiceUnits extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractserviceunits
    */
-  async list(query: IContractServiceUnitsQuery = {}): Promise<ApiResponse<IContractServiceUnits[]>> {
+  async list(
+    query: IContractServiceUnitsQuery = {}
+  ): Promise<ApiResponse<IContractServiceUnits[]>> {
     this.logger.info('Listing contractserviceunits', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +191,11 @@ export class ContractServiceUnits extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

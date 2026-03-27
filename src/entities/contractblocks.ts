@@ -17,11 +17,11 @@ export interface IContractBlocksQuery {
 
 /**
  * ContractBlocks entity class for Autotask API
- * 
+ *
  * Time blocks for contracts
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractBlocksEntity.htm}
  */
 export class ContractBlocks extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContractBlocks extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractBlocks[]',
         endpoint: '/ContractBlocks',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ContractBlocks extends BaseEntity {
    * @param contractBlocks - The contractblocks data to create
    * @returns Promise with the created contractblocks
    */
-  async create(contractBlocks: IContractBlocks): Promise<ApiResponse<IContractBlocks>> {
+  async create(
+    contractBlocks: IContractBlocks
+  ): Promise<ApiResponse<IContractBlocks>> {
     this.logger.info('Creating contractblocks', { contractBlocks });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractBlocks),
@@ -98,7 +100,7 @@ export class ContractBlocks extends BaseEntity {
     this.logger.info('Getting contractblocks', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ContractBlocks extends BaseEntity {
   ): Promise<ApiResponse<IContractBlocks>> {
     this.logger.info('Updating contractblocks', { id, contractBlocks });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractBlocks),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractBlocks),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ContractBlocks extends BaseEntity {
   ): Promise<ApiResponse<IContractBlocks>> {
     this.logger.info('Patching contractblocks', { id, contractBlocks });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractBlocks),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(contractBlocks as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ContractBlocks extends BaseEntity {
     this.logger.info('Deleting contractblocks', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ContractBlocks extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractblocks
    */
-  async list(query: IContractBlocksQuery = {}): Promise<ApiResponse<IContractBlocks[]>> {
+  async list(
+    query: IContractBlocksQuery = {}
+  ): Promise<ApiResponse<IContractBlocks[]>> {
     this.logger.info('Listing contractblocks', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ContractBlocks extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

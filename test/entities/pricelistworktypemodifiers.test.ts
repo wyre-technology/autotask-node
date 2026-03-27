@@ -163,7 +163,7 @@ describe('PriceListWorkTypeModifiers Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/PriceListWorkTypeModifiers/1',
+        '/PriceListWorkTypeModifiers',
         priceListWorkTypeModifiersData
       );
     });
@@ -187,8 +187,8 @@ describe('PriceListWorkTypeModifiers Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/PriceListWorkTypeModifiers/1',
-        priceListWorkTypeModifiersData
+        '/PriceListWorkTypeModifiers',
+        { ...priceListWorkTypeModifiersData, id: 1 }
       );
     });
   });

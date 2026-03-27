@@ -17,11 +17,11 @@ export interface IDocumentTagAssociationsQuery {
 
 /**
  * DocumentTagAssociations entity class for Autotask API
- * 
+ *
  * Tag associations for documents
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentTagAssociationsEntity.htm}
  */
 export class DocumentTagAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class DocumentTagAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentTagAssociations[]',
         endpoint: '/DocumentTagAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class DocumentTagAssociations extends BaseEntity {
    * @param documentTagAssociations - The documenttagassociations data to create
    * @returns Promise with the created documenttagassociations
    */
-  async create(documentTagAssociations: IDocumentTagAssociations): Promise<ApiResponse<IDocumentTagAssociations>> {
-    this.logger.info('Creating documenttagassociations', { documentTagAssociations });
+  async create(
+    documentTagAssociations: IDocumentTagAssociations
+  ): Promise<ApiResponse<IDocumentTagAssociations>> {
+    this.logger.info('Creating documenttagassociations', {
+      documentTagAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, documentTagAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class DocumentTagAssociations extends BaseEntity {
     this.logger.info('Getting documenttagassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class DocumentTagAssociations extends BaseEntity {
     this.logger.info('Deleting documenttagassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class DocumentTagAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documenttagassociations
    */
-  async list(query: IDocumentTagAssociationsQuery = {}): Promise<ApiResponse<IDocumentTagAssociations[]>> {
+  async list(
+    query: IDocumentTagAssociationsQuery = {}
+  ): Promise<ApiResponse<IDocumentTagAssociations[]>> {
     this.logger.info('Listing documenttagassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class DocumentTagAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

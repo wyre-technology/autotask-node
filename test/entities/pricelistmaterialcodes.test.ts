@@ -156,7 +156,7 @@ describe('PriceListMaterialCodes Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/PriceListMaterialCodes/1',
+        '/PriceListMaterialCodes',
         priceListMaterialCodesData
       );
     });
@@ -179,10 +179,10 @@ describe('PriceListMaterialCodes Entity', () => {
       );
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/PriceListMaterialCodes/1',
-        priceListMaterialCodesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/PriceListMaterialCodes', {
+        ...priceListMaterialCodesData,
+        id: 1,
+      });
     });
   });
 

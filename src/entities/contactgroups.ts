@@ -17,11 +17,11 @@ export interface IContactGroupsQuery {
 
 /**
  * ContactGroups entity class for Autotask API
- * 
+ *
  * Groups for organizing contacts
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: associations
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContactGroupsEntity.htm}
  */
 export class ContactGroups extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContactGroups extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContactGroups[]',
         endpoint: '/ContactGroups',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ContactGroups extends BaseEntity {
    * @param contactGroups - The contactgroups data to create
    * @returns Promise with the created contactgroups
    */
-  async create(contactGroups: IContactGroups): Promise<ApiResponse<IContactGroups>> {
+  async create(
+    contactGroups: IContactGroups
+  ): Promise<ApiResponse<IContactGroups>> {
     this.logger.info('Creating contactgroups', { contactGroups });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contactGroups),
@@ -98,7 +100,7 @@ export class ContactGroups extends BaseEntity {
     this.logger.info('Getting contactgroups', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ContactGroups extends BaseEntity {
   ): Promise<ApiResponse<IContactGroups>> {
     this.logger.info('Updating contactgroups', { id, contactGroups });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contactGroups),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contactGroups),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ContactGroups extends BaseEntity {
   ): Promise<ApiResponse<IContactGroups>> {
     this.logger.info('Patching contactgroups', { id, contactGroups });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contactGroups),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(contactGroups as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ContactGroups extends BaseEntity {
     this.logger.info('Deleting contactgroups', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ContactGroups extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contactgroups
    */
-  async list(query: IContactGroupsQuery = {}): Promise<ApiResponse<IContactGroups[]>> {
+  async list(
+    query: IContactGroupsQuery = {}
+  ): Promise<ApiResponse<IContactGroups[]>> {
     this.logger.info('Listing contactgroups', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ContactGroups extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

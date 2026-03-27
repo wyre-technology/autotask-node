@@ -112,7 +112,7 @@ describe('Tasks Entity', () => {
       const result = await setup.entity.update(1, tasksData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.put).toHaveBeenCalledWith('/Tasks/1', tasksData);
+      expect(setup.mockAxios.put).toHaveBeenCalledWith('/Tasks', tasksData);
     });
   });
 
@@ -128,7 +128,10 @@ describe('Tasks Entity', () => {
       const result = await setup.entity.patch(1, tasksData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Tasks/1', tasksData);
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Tasks', {
+        ...tasksData,
+        id: 1,
+      });
     });
   });
 });

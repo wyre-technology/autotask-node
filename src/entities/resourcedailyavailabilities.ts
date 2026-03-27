@@ -17,11 +17,11 @@ export interface IResourceDailyAvailabilitiesQuery {
 
 /**
  * ResourceDailyAvailabilities entity class for Autotask API
- * 
+ *
  * Daily availability schedules for resources
  * Supported Operations: GET
  * Category: time
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceDailyAvailability.htm}
  */
 export class ResourceDailyAvailabilities extends BaseEntity {
@@ -50,7 +50,7 @@ export class ResourceDailyAvailabilities extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceDailyAvailabilities[]',
         endpoint: '/ResourceDailyAvailabilities',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class ResourceDailyAvailabilities extends BaseEntity {
     this.logger.info('Getting resourcedailyavailabilities', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class ResourceDailyAvailabilities extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourcedailyavailabilities
    */
-  async list(query: IResourceDailyAvailabilitiesQuery = {}): Promise<ApiResponse<IResourceDailyAvailabilities[]>> {
+  async list(
+    query: IResourceDailyAvailabilitiesQuery = {}
+  ): Promise<ApiResponse<IResourceDailyAvailabilities[]>> {
     this.logger.info('Listing resourcedailyavailabilities', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class ResourceDailyAvailabilities extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

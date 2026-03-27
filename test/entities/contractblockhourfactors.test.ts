@@ -161,7 +161,7 @@ describe('ContractBlockHourFactors Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ContractBlockHourFactors/1',
+        '/ContractBlockHourFactors',
         contractBlockHourFactorsData
       );
     });
@@ -185,8 +185,8 @@ describe('ContractBlockHourFactors Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ContractBlockHourFactors/1',
-        contractBlockHourFactorsData
+        '/ContractBlockHourFactors',
+        { ...contractBlockHourFactorsData, id: 1 }
       );
     });
   });

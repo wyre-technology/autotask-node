@@ -17,11 +17,11 @@ export interface ITagGroupsQuery {
 
 /**
  * TagGroups entity class for Autotask API
- * 
+ *
  * Groups for organizing tags
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: tags
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TagGroupsEntity.htm}
  */
 export class TagGroups extends BaseEntity {
@@ -71,7 +71,7 @@ export class TagGroups extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITagGroups[]',
         endpoint: '/TagGroups',
-      }
+      },
     ];
   }
 
@@ -98,7 +98,7 @@ export class TagGroups extends BaseEntity {
     this.logger.info('Getting taggroups', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +115,8 @@ export class TagGroups extends BaseEntity {
   ): Promise<ApiResponse<ITagGroups>> {
     this.logger.info('Updating taggroups', { id, tagGroups });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, tagGroups),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, tagGroups),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +133,9 @@ export class TagGroups extends BaseEntity {
   ): Promise<ApiResponse<ITagGroups>> {
     this.logger.info('Patching taggroups', { id, tagGroups });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, tagGroups),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(tagGroups as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +149,7 @@ export class TagGroups extends BaseEntity {
     this.logger.info('Deleting taggroups', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -177,7 +178,11 @@ export class TagGroups extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -17,11 +17,11 @@ export interface IDocumentConfigurationItemCategoryAssociationsQuery {
 
 /**
  * DocumentConfigurationItemCategoryAssociations entity class for Autotask API
- * 
+ *
  * Associations between documents and configuration item categories
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentConfigurationItemCategoryAssociationsEntity.htm}
  */
 export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentConfigurationItemCategoryAssociations[]',
         endpoint: '/DocumentConfigurationItemCategoryAssociations',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,18 @@ export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
    * @param documentConfigurationItemCategoryAssociations - The documentconfigurationitemcategoryassociations data to create
    * @returns Promise with the created documentconfigurationitemcategoryassociations
    */
-  async create(documentConfigurationItemCategoryAssociations: IDocumentConfigurationItemCategoryAssociations): Promise<ApiResponse<IDocumentConfigurationItemCategoryAssociations>> {
-    this.logger.info('Creating documentconfigurationitemcategoryassociations', { documentConfigurationItemCategoryAssociations });
+  async create(
+    documentConfigurationItemCategoryAssociations: IDocumentConfigurationItemCategoryAssociations
+  ): Promise<ApiResponse<IDocumentConfigurationItemCategoryAssociations>> {
+    this.logger.info('Creating documentconfigurationitemcategoryassociations', {
+      documentConfigurationItemCategoryAssociations,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, documentConfigurationItemCategoryAssociations),
+      async () =>
+        this.axios.post(
+          this.endpoint,
+          documentConfigurationItemCategoryAssociations
+        ),
       this.endpoint,
       'POST'
     );
@@ -87,11 +95,15 @@ export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
    * @param id - The documentconfigurationitemcategoryassociations ID
    * @returns Promise with the documentconfigurationitemcategoryassociations data
    */
-  async get(id: number): Promise<ApiResponse<IDocumentConfigurationItemCategoryAssociations>> {
-    this.logger.info('Getting documentconfigurationitemcategoryassociations', { id });
+  async get(
+    id: number
+  ): Promise<ApiResponse<IDocumentConfigurationItemCategoryAssociations>> {
+    this.logger.info('Getting documentconfigurationitemcategoryassociations', {
+      id,
+    });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -102,10 +114,12 @@ export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
    * @returns Promise that resolves when deletion is complete
    */
   async delete(id: number): Promise<void> {
-    this.logger.info('Deleting documentconfigurationitemcategoryassociations', { id });
+    this.logger.info('Deleting documentconfigurationitemcategoryassociations', {
+      id,
+    });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,8 +129,12 @@ export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentconfigurationitemcategoryassociations
    */
-  async list(query: IDocumentConfigurationItemCategoryAssociationsQuery = {}): Promise<ApiResponse<IDocumentConfigurationItemCategoryAssociations[]>> {
-    this.logger.info('Listing documentconfigurationitemcategoryassociations', { query });
+  async list(
+    query: IDocumentConfigurationItemCategoryAssociationsQuery = {}
+  ): Promise<ApiResponse<IDocumentConfigurationItemCategoryAssociations[]>> {
+    this.logger.info('Listing documentconfigurationitemcategoryassociations', {
+      query,
+    });
     const searchBody: Record<string, any> = {};
 
     // Set up basic filter if none provided
@@ -134,7 +152,11 @@ export class DocumentConfigurationItemCategoryAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

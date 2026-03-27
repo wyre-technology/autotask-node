@@ -17,11 +17,11 @@ export interface IChecklistLibraryChecklistItemsQuery {
 
 /**
  * ChecklistLibraryChecklistItems entity class for Autotask API
- * 
+ *
  * Items within checklist libraries
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: checklists
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ChecklistLibraryChecklistItemsEntity.htm}
  */
 export class ChecklistLibraryChecklistItems extends BaseEntity {
@@ -71,7 +71,7 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IChecklistLibraryChecklistItems[]',
         endpoint: '/ChecklistLibraryChecklistItems',
-      }
+      },
     ];
   }
 
@@ -80,10 +80,15 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
    * @param checklistLibraryChecklistItems - The checklistlibrarychecklistitems data to create
    * @returns Promise with the created checklistlibrarychecklistitems
    */
-  async create(checklistLibraryChecklistItems: IChecklistLibraryChecklistItems): Promise<ApiResponse<IChecklistLibraryChecklistItems>> {
-    this.logger.info('Creating checklistlibrarychecklistitems', { checklistLibraryChecklistItems });
+  async create(
+    checklistLibraryChecklistItems: IChecklistLibraryChecklistItems
+  ): Promise<ApiResponse<IChecklistLibraryChecklistItems>> {
+    this.logger.info('Creating checklistlibrarychecklistitems', {
+      checklistLibraryChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, checklistLibraryChecklistItems),
+      async () =>
+        this.axios.post(this.endpoint, checklistLibraryChecklistItems),
       this.endpoint,
       'POST'
     );
@@ -98,7 +103,7 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
     this.logger.info('Getting checklistlibrarychecklistitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +118,13 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
     id: number,
     checklistLibraryChecklistItems: Partial<IChecklistLibraryChecklistItems>
   ): Promise<ApiResponse<IChecklistLibraryChecklistItems>> {
-    this.logger.info('Updating checklistlibrarychecklistitems', { id, checklistLibraryChecklistItems });
+    this.logger.info('Updating checklistlibrarychecklistitems', {
+      id,
+      checklistLibraryChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, checklistLibraryChecklistItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, checklistLibraryChecklistItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +139,17 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
     id: number,
     checklistLibraryChecklistItems: Partial<IChecklistLibraryChecklistItems>
   ): Promise<ApiResponse<IChecklistLibraryChecklistItems>> {
-    this.logger.info('Patching checklistlibrarychecklistitems', { id, checklistLibraryChecklistItems });
+    this.logger.info('Patching checklistlibrarychecklistitems', {
+      id,
+      checklistLibraryChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, checklistLibraryChecklistItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(checklistLibraryChecklistItems as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +163,7 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
     this.logger.info('Deleting checklistlibrarychecklistitems', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +173,9 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of checklistlibrarychecklistitems
    */
-  async list(query: IChecklistLibraryChecklistItemsQuery = {}): Promise<ApiResponse<IChecklistLibraryChecklistItems[]>> {
+  async list(
+    query: IChecklistLibraryChecklistItemsQuery = {}
+  ): Promise<ApiResponse<IChecklistLibraryChecklistItems[]>> {
     this.logger.info('Listing checklistlibrarychecklistitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +194,11 @@ export class ChecklistLibraryChecklistItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

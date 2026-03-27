@@ -17,11 +17,11 @@ export interface IContractMilestonesQuery {
 
 /**
  * ContractMilestones entity class for Autotask API
- * 
+ *
  * Milestones for contracts
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractMilestonesEntity.htm}
  */
 export class ContractMilestones extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContractMilestones extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractMilestones[]',
         endpoint: '/ContractMilestones',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ContractMilestones extends BaseEntity {
    * @param contractMilestones - The contractmilestones data to create
    * @returns Promise with the created contractmilestones
    */
-  async create(contractMilestones: IContractMilestones): Promise<ApiResponse<IContractMilestones>> {
+  async create(
+    contractMilestones: IContractMilestones
+  ): Promise<ApiResponse<IContractMilestones>> {
     this.logger.info('Creating contractmilestones', { contractMilestones });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractMilestones),
@@ -98,7 +100,7 @@ export class ContractMilestones extends BaseEntity {
     this.logger.info('Getting contractmilestones', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ContractMilestones extends BaseEntity {
   ): Promise<ApiResponse<IContractMilestones>> {
     this.logger.info('Updating contractmilestones', { id, contractMilestones });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractMilestones),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractMilestones),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ContractMilestones extends BaseEntity {
   ): Promise<ApiResponse<IContractMilestones>> {
     this.logger.info('Patching contractmilestones', { id, contractMilestones });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractMilestones),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(contractMilestones as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ContractMilestones extends BaseEntity {
     this.logger.info('Deleting contractmilestones', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ContractMilestones extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractmilestones
    */
-  async list(query: IContractMilestonesQuery = {}): Promise<ApiResponse<IContractMilestones[]>> {
+  async list(
+    query: IContractMilestonesQuery = {}
+  ): Promise<ApiResponse<IContractMilestones[]>> {
     this.logger.info('Listing contractmilestones', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ContractMilestones extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

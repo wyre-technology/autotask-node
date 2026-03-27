@@ -17,11 +17,11 @@ export interface ITaskAttachmentsQuery {
 
 /**
  * TaskAttachments entity class for Autotask API
- * 
+ *
  * File attachments for tasks
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TaskAttachmentsEntity.htm}
  */
 export class TaskAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class TaskAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITaskAttachments[]',
         endpoint: '/TaskAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class TaskAttachments extends BaseEntity {
    * @param taskAttachments - The taskattachments data to create
    * @returns Promise with the created taskattachments
    */
-  async create(taskAttachments: ITaskAttachments): Promise<ApiResponse<ITaskAttachments>> {
+  async create(
+    taskAttachments: ITaskAttachments
+  ): Promise<ApiResponse<ITaskAttachments>> {
     this.logger.info('Creating taskattachments', { taskAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, taskAttachments),
@@ -91,7 +93,7 @@ export class TaskAttachments extends BaseEntity {
     this.logger.info('Getting taskattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class TaskAttachments extends BaseEntity {
     this.logger.info('Deleting taskattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class TaskAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of taskattachments
    */
-  async list(query: ITaskAttachmentsQuery = {}): Promise<ApiResponse<ITaskAttachments[]>> {
+  async list(
+    query: ITaskAttachmentsQuery = {}
+  ): Promise<ApiResponse<ITaskAttachments[]>> {
     this.logger.info('Listing taskattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class TaskAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

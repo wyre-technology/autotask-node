@@ -163,7 +163,7 @@ describe('InventoryItemSerialNumbers Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/InventoryItemSerialNumbers/1',
+        '/InventoryItemSerialNumbers',
         inventoryItemSerialNumbersData
       );
     });
@@ -187,8 +187,8 @@ describe('InventoryItemSerialNumbers Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/InventoryItemSerialNumbers/1',
-        inventoryItemSerialNumbersData
+        '/InventoryItemSerialNumbers',
+        { ...inventoryItemSerialNumbersData, id: 1 }
       );
     });
   });

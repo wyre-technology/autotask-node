@@ -17,11 +17,11 @@ export interface IConfigurationItemAttachmentsQuery {
 
 /**
  * ConfigurationItemAttachments entity class for Autotask API
- * 
+ *
  * File attachments for configuration items
  * Supported Operations: GET, POST, DELETE
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemAttachmentsEntity.htm}
  */
 export class ConfigurationItemAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ConfigurationItemAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemAttachments[]',
         endpoint: '/ConfigurationItemAttachments',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ConfigurationItemAttachments extends BaseEntity {
    * @param configurationItemAttachments - The configurationitemattachments data to create
    * @returns Promise with the created configurationitemattachments
    */
-  async create(configurationItemAttachments: IConfigurationItemAttachments): Promise<ApiResponse<IConfigurationItemAttachments>> {
-    this.logger.info('Creating configurationitemattachments', { configurationItemAttachments });
+  async create(
+    configurationItemAttachments: IConfigurationItemAttachments
+  ): Promise<ApiResponse<IConfigurationItemAttachments>> {
+    this.logger.info('Creating configurationitemattachments', {
+      configurationItemAttachments,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, configurationItemAttachments),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ConfigurationItemAttachments extends BaseEntity {
     this.logger.info('Getting configurationitemattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ConfigurationItemAttachments extends BaseEntity {
     this.logger.info('Deleting configurationitemattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ConfigurationItemAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemattachments
    */
-  async list(query: IConfigurationItemAttachmentsQuery = {}): Promise<ApiResponse<IConfigurationItemAttachments[]>> {
+  async list(
+    query: IConfigurationItemAttachmentsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemAttachments[]>> {
     this.logger.info('Listing configurationitemattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ConfigurationItemAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

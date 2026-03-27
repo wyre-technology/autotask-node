@@ -17,11 +17,11 @@ export interface IConfigurationItemCategoryUdfAssociationsQuery {
 
 /**
  * ConfigurationItemCategoryUdfAssociations entity class for Autotask API
- * 
+ *
  * UDF associations for configuration item categories
  * Supported Operations: GET
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemCategoryUdfAssociationsEntity.htm}
  */
 export class ConfigurationItemCategoryUdfAssociations extends BaseEntity {
@@ -50,7 +50,7 @@ export class ConfigurationItemCategoryUdfAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemCategoryUdfAssociations[]',
         endpoint: '/ConfigurationItemCategoryUdfAssociations',
-      }
+      },
     ];
   }
 
@@ -59,11 +59,15 @@ export class ConfigurationItemCategoryUdfAssociations extends BaseEntity {
    * @param id - The configurationitemcategoryudfassociations ID
    * @returns Promise with the configurationitemcategoryudfassociations data
    */
-  async get(id: number): Promise<ApiResponse<IConfigurationItemCategoryUdfAssociations>> {
-    this.logger.info('Getting configurationitemcategoryudfassociations', { id });
+  async get(
+    id: number
+  ): Promise<ApiResponse<IConfigurationItemCategoryUdfAssociations>> {
+    this.logger.info('Getting configurationitemcategoryudfassociations', {
+      id,
+    });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,8 +77,12 @@ export class ConfigurationItemCategoryUdfAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemcategoryudfassociations
    */
-  async list(query: IConfigurationItemCategoryUdfAssociationsQuery = {}): Promise<ApiResponse<IConfigurationItemCategoryUdfAssociations[]>> {
-    this.logger.info('Listing configurationitemcategoryudfassociations', { query });
+  async list(
+    query: IConfigurationItemCategoryUdfAssociationsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemCategoryUdfAssociations[]>> {
+    this.logger.info('Listing configurationitemcategoryudfassociations', {
+      query,
+    });
     const searchBody: Record<string, any> = {};
 
     // Set up basic filter if none provided
@@ -92,7 +100,11 @@ export class ConfigurationItemCategoryUdfAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

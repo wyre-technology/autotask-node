@@ -17,11 +17,11 @@ export interface IContractNoteAttachmentsQuery {
 
 /**
  * ContractNoteAttachments entity class for Autotask API
- * 
+ *
  * File attachments for contract notes
  * Supported Operations: GET, POST, DELETE
  * Category: notes
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractNoteAttachmentsEntity.htm}
  */
 export class ContractNoteAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ContractNoteAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractNoteAttachments[]',
         endpoint: '/ContractNoteAttachments',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ContractNoteAttachments extends BaseEntity {
    * @param contractNoteAttachments - The contractnoteattachments data to create
    * @returns Promise with the created contractnoteattachments
    */
-  async create(contractNoteAttachments: IContractNoteAttachments): Promise<ApiResponse<IContractNoteAttachments>> {
-    this.logger.info('Creating contractnoteattachments', { contractNoteAttachments });
+  async create(
+    contractNoteAttachments: IContractNoteAttachments
+  ): Promise<ApiResponse<IContractNoteAttachments>> {
+    this.logger.info('Creating contractnoteattachments', {
+      contractNoteAttachments,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractNoteAttachments),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ContractNoteAttachments extends BaseEntity {
     this.logger.info('Getting contractnoteattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ContractNoteAttachments extends BaseEntity {
     this.logger.info('Deleting contractnoteattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ContractNoteAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractnoteattachments
    */
-  async list(query: IContractNoteAttachmentsQuery = {}): Promise<ApiResponse<IContractNoteAttachments[]>> {
+  async list(
+    query: IContractNoteAttachmentsQuery = {}
+  ): Promise<ApiResponse<IContractNoteAttachments[]>> {
     this.logger.info('Listing contractnoteattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ContractNoteAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

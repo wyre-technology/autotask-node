@@ -29,7 +29,10 @@ export interface ExpenseQuery {
 export class Expenses {
   private readonly endpoint = '/Expenses';
 
-  constructor(private axios: AxiosInstance, private logger: winston.Logger) {}
+  constructor(
+    private axios: AxiosInstance,
+    private logger: winston.Logger
+  ) {}
 
   static getMetadata(): MethodMetadata[] {
     return [
@@ -71,7 +74,11 @@ export class Expenses {
     ];
   }
 
-  private async requestWithRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Promise<T> {
+  private async requestWithRetry<T>(
+    fn: () => Promise<T>,
+    retries = 3,
+    delay = 500
+  ): Promise<T> {
     let attempt = 0;
     while (true) {
       try {
@@ -80,7 +87,9 @@ export class Expenses {
         attempt++;
         this.logger.warn(`Request failed (attempt ${attempt}): ${err}`);
         if (attempt > retries) throw err;
-        await new Promise(res => setTimeout(res, delay * Math.pow(2, attempt - 1)));
+        await new Promise(res =>
+          setTimeout(res, delay * Math.pow(2, attempt - 1))
+        );
       }
     }
   }
@@ -101,10 +110,13 @@ export class Expenses {
     });
   }
 
-  async update(id: number, expense: Partial<Expense>): Promise<ApiResponse<Expense>> {
+  async update(
+    id: number,
+    expense: Partial<Expense>
+  ): Promise<ApiResponse<Expense>> {
     this.logger.info('Updating expense', { id, expense });
     return this.requestWithRetry(async () => {
-      const { data } = await this.axios.put(`${this.endpoint}/${id}`, expense);
+      const { data } = await this.axios.put(this.endpoint, expense);
       return { data };
     });
   }
@@ -128,4 +140,4 @@ export class Expenses {
       return { data };
     });
   }
-} 
+}

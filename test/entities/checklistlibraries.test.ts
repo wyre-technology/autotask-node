@@ -139,7 +139,7 @@ describe('ChecklistLibraries Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ChecklistLibraries/1',
+        '/ChecklistLibraries',
         checklistLibrariesData
       );
     });
@@ -157,10 +157,10 @@ describe('ChecklistLibraries Entity', () => {
       const result = await checklistLibraries.patch(1, checklistLibrariesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ChecklistLibraries/1',
-        checklistLibrariesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/ChecklistLibraries', {
+        ...checklistLibrariesData,
+        id: 1,
+      });
     });
   });
 

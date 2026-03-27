@@ -144,7 +144,7 @@ export class QuoteItems extends BaseEntity {
     this.logger.info('Getting quoteitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -161,8 +161,8 @@ export class QuoteItems extends BaseEntity {
   ): Promise<ApiResponse<IQuoteItems>> {
     this.logger.info('Updating quoteitems', { id, quoteItems });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, quoteItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, quoteItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -179,8 +179,9 @@ export class QuoteItems extends BaseEntity {
   ): Promise<ApiResponse<IQuoteItems>> {
     this.logger.info('Patching quoteitems', { id, quoteItems });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, quoteItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(quoteItems as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }

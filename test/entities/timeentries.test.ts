@@ -100,10 +100,10 @@ describe('TimeEntries Entity', () => {
       const result = await setup.entity.create(321, timeEntriesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.post).toHaveBeenCalledWith(
-        '/Tickets/321/TimeEntries',
-        timeEntriesData
-      );
+      expect(setup.mockAxios.post).toHaveBeenCalledWith('/TimeEntries', {
+        ...timeEntriesData,
+        ticketID: 321,
+      });
     });
   });
 
@@ -120,7 +120,7 @@ describe('TimeEntries Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(setup.mockAxios.put).toHaveBeenCalledWith(
-        '/TimeEntries/1',
+        '/TimeEntries',
         timeEntriesData
       );
     });
@@ -138,10 +138,10 @@ describe('TimeEntries Entity', () => {
       const result = await setup.entity.patch(1, timeEntriesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith(
-        '/TimeEntries/1',
-        timeEntriesData
-      );
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/TimeEntries', {
+        ...timeEntriesData,
+        id: 1,
+      });
     });
   });
 

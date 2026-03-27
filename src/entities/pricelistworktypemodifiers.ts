@@ -17,11 +17,11 @@ export interface IPriceListWorkTypeModifiersQuery {
 
 /**
  * PriceListWorkTypeModifiers entity class for Autotask API
- * 
+ *
  * Work type modifiers in price lists
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: pricing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PriceListWorkTypeModifiersEntity.htm}
  */
 export class PriceListWorkTypeModifiers extends BaseEntity {
@@ -71,7 +71,7 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPriceListWorkTypeModifiers[]',
         endpoint: '/PriceListWorkTypeModifiers',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
    * @param priceListWorkTypeModifiers - The pricelistworktypemodifiers data to create
    * @returns Promise with the created pricelistworktypemodifiers
    */
-  async create(priceListWorkTypeModifiers: IPriceListWorkTypeModifiers): Promise<ApiResponse<IPriceListWorkTypeModifiers>> {
-    this.logger.info('Creating pricelistworktypemodifiers', { priceListWorkTypeModifiers });
+  async create(
+    priceListWorkTypeModifiers: IPriceListWorkTypeModifiers
+  ): Promise<ApiResponse<IPriceListWorkTypeModifiers>> {
+    this.logger.info('Creating pricelistworktypemodifiers', {
+      priceListWorkTypeModifiers,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, priceListWorkTypeModifiers),
       this.endpoint,
@@ -98,7 +102,7 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
     this.logger.info('Getting pricelistworktypemodifiers', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
     id: number,
     priceListWorkTypeModifiers: Partial<IPriceListWorkTypeModifiers>
   ): Promise<ApiResponse<IPriceListWorkTypeModifiers>> {
-    this.logger.info('Updating pricelistworktypemodifiers', { id, priceListWorkTypeModifiers });
+    this.logger.info('Updating pricelistworktypemodifiers', {
+      id,
+      priceListWorkTypeModifiers,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, priceListWorkTypeModifiers),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, priceListWorkTypeModifiers),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
     id: number,
     priceListWorkTypeModifiers: Partial<IPriceListWorkTypeModifiers>
   ): Promise<ApiResponse<IPriceListWorkTypeModifiers>> {
-    this.logger.info('Patching pricelistworktypemodifiers', { id, priceListWorkTypeModifiers });
+    this.logger.info('Patching pricelistworktypemodifiers', {
+      id,
+      priceListWorkTypeModifiers,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, priceListWorkTypeModifiers),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(priceListWorkTypeModifiers as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
     this.logger.info('Deleting pricelistworktypemodifiers', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of pricelistworktypemodifiers
    */
-  async list(query: IPriceListWorkTypeModifiersQuery = {}): Promise<ApiResponse<IPriceListWorkTypeModifiers[]>> {
+  async list(
+    query: IPriceListWorkTypeModifiersQuery = {}
+  ): Promise<ApiResponse<IPriceListWorkTypeModifiers[]>> {
     this.logger.info('Listing pricelistworktypemodifiers', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class PriceListWorkTypeModifiers extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -17,11 +17,11 @@ export interface ITicketChecklistItemsQuery {
 
 /**
  * TicketChecklistItems entity class for Autotask API
- * 
+ *
  * Checklist items for tickets
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: ticketing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketChecklistItemsEntity.htm}
  */
 export class TicketChecklistItems extends BaseEntity {
@@ -64,7 +64,7 @@ export class TicketChecklistItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketChecklistItems[]',
         endpoint: '/TicketChecklistItems',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class TicketChecklistItems extends BaseEntity {
    * @param ticketChecklistItems - The ticketchecklistitems data to create
    * @returns Promise with the created ticketchecklistitems
    */
-  async create(ticketChecklistItems: ITicketChecklistItems): Promise<ApiResponse<ITicketChecklistItems>> {
+  async create(
+    ticketChecklistItems: ITicketChecklistItems
+  ): Promise<ApiResponse<ITicketChecklistItems>> {
     this.logger.info('Creating ticketchecklistitems', { ticketChecklistItems });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketChecklistItems),
@@ -91,7 +93,7 @@ export class TicketChecklistItems extends BaseEntity {
     this.logger.info('Getting ticketchecklistitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -106,10 +108,13 @@ export class TicketChecklistItems extends BaseEntity {
     id: number,
     ticketChecklistItems: Partial<ITicketChecklistItems>
   ): Promise<ApiResponse<ITicketChecklistItems>> {
-    this.logger.info('Updating ticketchecklistitems', { id, ticketChecklistItems });
+    this.logger.info('Updating ticketchecklistitems', {
+      id,
+      ticketChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, ticketChecklistItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, ticketChecklistItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -124,10 +129,17 @@ export class TicketChecklistItems extends BaseEntity {
     id: number,
     ticketChecklistItems: Partial<ITicketChecklistItems>
   ): Promise<ApiResponse<ITicketChecklistItems>> {
-    this.logger.info('Patching ticketchecklistitems', { id, ticketChecklistItems });
+    this.logger.info('Patching ticketchecklistitems', {
+      id,
+      ticketChecklistItems,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, ticketChecklistItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(ticketChecklistItems as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +149,9 @@ export class TicketChecklistItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of ticketchecklistitems
    */
-  async list(query: ITicketChecklistItemsQuery = {}): Promise<ApiResponse<ITicketChecklistItems[]>> {
+  async list(
+    query: ITicketChecklistItemsQuery = {}
+  ): Promise<ApiResponse<ITicketChecklistItems[]>> {
     this.logger.info('Listing ticketchecklistitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +170,11 @@ export class TicketChecklistItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

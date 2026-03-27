@@ -112,7 +112,7 @@ describe('Skills Entity', () => {
       const result = await setup.entity.update(1, skillsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.put).toHaveBeenCalledWith('/Skills/1', skillsData);
+      expect(setup.mockAxios.put).toHaveBeenCalledWith('/Skills', skillsData);
     });
   });
 
@@ -128,10 +128,10 @@ describe('Skills Entity', () => {
       const result = await setup.entity.patch(1, skillsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith(
-        '/Skills/1',
-        skillsData
-      );
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Skills', {
+        ...skillsData,
+        id: 1,
+      });
     });
   });
 

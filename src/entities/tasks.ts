@@ -91,7 +91,7 @@ export class Tasks extends BaseEntity {
     this.logger.info('Getting tasks', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +108,8 @@ export class Tasks extends BaseEntity {
   ): Promise<ApiResponse<ITasks>> {
     this.logger.info('Updating tasks', { id, tasks });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, tasks),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, tasks),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +126,8 @@ export class Tasks extends BaseEntity {
   ): Promise<ApiResponse<ITasks>> {
     this.logger.info('Patching tasks', { id, tasks });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, tasks),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.patch(this.endpoint, { ...(tasks as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -141,7 +141,7 @@ export class Tasks extends BaseEntity {
     this.logger.info('Deleting tasks', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -170,7 +170,11 @@ export class Tasks extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({
@@ -197,8 +201,7 @@ export class Tasks extends BaseEntity {
     if (query.pageSize) searchBody.maxRecords = query.pageSize;
 
     return this.executeQueryRequest(
-      async () =>
-        this.axios.post(`${this.endpoint}/query`, searchBody),
+      async () => this.axios.post(`${this.endpoint}/query`, searchBody),
       `${this.endpoint}/query`,
       'POST'
     );

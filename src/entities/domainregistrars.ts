@@ -17,11 +17,11 @@ export interface IDomainRegistrarsQuery {
 
 /**
  * DomainRegistrars entity class for Autotask API
- * 
+ *
  * Domain registrar information
  * Supported Operations: GET
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DomainRegistrarsEntity.htm}
  */
 export class DomainRegistrars extends BaseEntity {
@@ -50,7 +50,7 @@ export class DomainRegistrars extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDomainRegistrars[]',
         endpoint: '/DomainRegistrars',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class DomainRegistrars extends BaseEntity {
     this.logger.info('Getting domainregistrars', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class DomainRegistrars extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of domainregistrars
    */
-  async list(query: IDomainRegistrarsQuery = {}): Promise<ApiResponse<IDomainRegistrars[]>> {
+  async list(
+    query: IDomainRegistrarsQuery = {}
+  ): Promise<ApiResponse<IDomainRegistrars[]>> {
     this.logger.info('Listing domainregistrars', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class DomainRegistrars extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

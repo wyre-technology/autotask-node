@@ -75,7 +75,7 @@ describe('TicketsEnhanced', () => {
 
       const result = await ticketsEnhanced.update(1, updateData);
 
-      expect(mockAxios.put).toHaveBeenCalledWith('/Tickets/1', updateData);
+      expect(mockAxios.put).toHaveBeenCalledWith('/Tickets', updateData);
       expect(result.data).toEqual(updatedTicket);
     });
 

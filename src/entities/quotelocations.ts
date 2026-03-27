@@ -17,11 +17,11 @@ export interface IQuoteLocationsQuery {
 
 /**
  * QuoteLocations entity class for Autotask API
- * 
+ *
  * Location information for quotes
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/QuoteLocationsEntity.htm}
  */
 export class QuoteLocations extends BaseEntity {
@@ -71,7 +71,7 @@ export class QuoteLocations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IQuoteLocations[]',
         endpoint: '/QuoteLocations',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class QuoteLocations extends BaseEntity {
    * @param quoteLocations - The quotelocations data to create
    * @returns Promise with the created quotelocations
    */
-  async create(quoteLocations: IQuoteLocations): Promise<ApiResponse<IQuoteLocations>> {
+  async create(
+    quoteLocations: IQuoteLocations
+  ): Promise<ApiResponse<IQuoteLocations>> {
     this.logger.info('Creating quotelocations', { quoteLocations });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, quoteLocations),
@@ -98,7 +100,7 @@ export class QuoteLocations extends BaseEntity {
     this.logger.info('Getting quotelocations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class QuoteLocations extends BaseEntity {
   ): Promise<ApiResponse<IQuoteLocations>> {
     this.logger.info('Updating quotelocations', { id, quoteLocations });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, quoteLocations),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, quoteLocations),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class QuoteLocations extends BaseEntity {
   ): Promise<ApiResponse<IQuoteLocations>> {
     this.logger.info('Patching quotelocations', { id, quoteLocations });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, quoteLocations),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(quoteLocations as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class QuoteLocations extends BaseEntity {
     this.logger.info('Deleting quotelocations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class QuoteLocations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of quotelocations
    */
-  async list(query: IQuoteLocationsQuery = {}): Promise<ApiResponse<IQuoteLocations[]>> {
+  async list(
+    query: IQuoteLocationsQuery = {}
+  ): Promise<ApiResponse<IQuoteLocations[]>> {
     this.logger.info('Listing quotelocations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class QuoteLocations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -17,11 +17,11 @@ export interface IConfigurationItemRelatedItemsQuery {
 
 /**
  * ConfigurationItemRelatedItems entity class for Autotask API
- * 
+ *
  * Related items for configuration items
  * Supported Operations: GET, POST, DELETE
  * Category: configuration
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemRelatedItemsEntity.htm}
  */
 export class ConfigurationItemRelatedItems extends BaseEntity {
@@ -64,7 +64,7 @@ export class ConfigurationItemRelatedItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemRelatedItems[]',
         endpoint: '/ConfigurationItemRelatedItems',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ConfigurationItemRelatedItems extends BaseEntity {
    * @param configurationItemRelatedItems - The configurationitemrelateditems data to create
    * @returns Promise with the created configurationitemrelateditems
    */
-  async create(configurationItemRelatedItems: IConfigurationItemRelatedItems): Promise<ApiResponse<IConfigurationItemRelatedItems>> {
-    this.logger.info('Creating configurationitemrelateditems', { configurationItemRelatedItems });
+  async create(
+    configurationItemRelatedItems: IConfigurationItemRelatedItems
+  ): Promise<ApiResponse<IConfigurationItemRelatedItems>> {
+    this.logger.info('Creating configurationitemrelateditems', {
+      configurationItemRelatedItems,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, configurationItemRelatedItems),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ConfigurationItemRelatedItems extends BaseEntity {
     this.logger.info('Getting configurationitemrelateditems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ConfigurationItemRelatedItems extends BaseEntity {
     this.logger.info('Deleting configurationitemrelateditems', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ConfigurationItemRelatedItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemrelateditems
    */
-  async list(query: IConfigurationItemRelatedItemsQuery = {}): Promise<ApiResponse<IConfigurationItemRelatedItems[]>> {
+  async list(
+    query: IConfigurationItemRelatedItemsQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemRelatedItems[]>> {
     this.logger.info('Listing configurationitemrelateditems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ConfigurationItemRelatedItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

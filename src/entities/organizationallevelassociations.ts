@@ -17,11 +17,11 @@ export interface IOrganizationalLevelAssociationsQuery {
 
 /**
  * OrganizationalLevelAssociations entity class for Autotask API
- * 
+ *
  * Associations between organizational levels
  * Supported Operations: GET, POST, DELETE
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/OrganizationalLevelAssociationsEntity.htm}
  */
 export class OrganizationalLevelAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class OrganizationalLevelAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IOrganizationalLevelAssociations[]',
         endpoint: '/OrganizationalLevelAssociations',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,15 @@ export class OrganizationalLevelAssociations extends BaseEntity {
    * @param organizationalLevelAssociations - The organizationallevelassociations data to create
    * @returns Promise with the created organizationallevelassociations
    */
-  async create(organizationalLevelAssociations: IOrganizationalLevelAssociations): Promise<ApiResponse<IOrganizationalLevelAssociations>> {
-    this.logger.info('Creating organizationallevelassociations', { organizationalLevelAssociations });
+  async create(
+    organizationalLevelAssociations: IOrganizationalLevelAssociations
+  ): Promise<ApiResponse<IOrganizationalLevelAssociations>> {
+    this.logger.info('Creating organizationallevelassociations', {
+      organizationalLevelAssociations,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, organizationalLevelAssociations),
+      async () =>
+        this.axios.post(this.endpoint, organizationalLevelAssociations),
       this.endpoint,
       'POST'
     );
@@ -87,11 +92,13 @@ export class OrganizationalLevelAssociations extends BaseEntity {
    * @param id - The organizationallevelassociations ID
    * @returns Promise with the organizationallevelassociations data
    */
-  async get(id: number): Promise<ApiResponse<IOrganizationalLevelAssociations>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IOrganizationalLevelAssociations>> {
     this.logger.info('Getting organizationallevelassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +112,7 @@ export class OrganizationalLevelAssociations extends BaseEntity {
     this.logger.info('Deleting organizationallevelassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +122,9 @@ export class OrganizationalLevelAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of organizationallevelassociations
    */
-  async list(query: IOrganizationalLevelAssociationsQuery = {}): Promise<ApiResponse<IOrganizationalLevelAssociations[]>> {
+  async list(
+    query: IOrganizationalLevelAssociationsQuery = {}
+  ): Promise<ApiResponse<IOrganizationalLevelAssociations[]>> {
     this.logger.info('Listing organizationallevelassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +143,11 @@ export class OrganizationalLevelAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

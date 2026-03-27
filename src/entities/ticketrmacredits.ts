@@ -17,11 +17,11 @@ export interface ITicketRmaCreditsQuery {
 
 /**
  * TicketRmaCredits entity class for Autotask API
- * 
+ *
  * RMA credits associated with tickets
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: ticketing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketRmaCreditsEntity.htm}
  */
 export class TicketRmaCredits extends BaseEntity {
@@ -71,7 +71,7 @@ export class TicketRmaCredits extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketRmaCredits[]',
         endpoint: '/TicketRmaCredits',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class TicketRmaCredits extends BaseEntity {
    * @param ticketRmaCredits - The ticketrmacredits data to create
    * @returns Promise with the created ticketrmacredits
    */
-  async create(ticketRmaCredits: ITicketRmaCredits): Promise<ApiResponse<ITicketRmaCredits>> {
+  async create(
+    ticketRmaCredits: ITicketRmaCredits
+  ): Promise<ApiResponse<ITicketRmaCredits>> {
     this.logger.info('Creating ticketrmacredits', { ticketRmaCredits });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketRmaCredits),
@@ -98,7 +100,7 @@ export class TicketRmaCredits extends BaseEntity {
     this.logger.info('Getting ticketrmacredits', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class TicketRmaCredits extends BaseEntity {
   ): Promise<ApiResponse<ITicketRmaCredits>> {
     this.logger.info('Updating ticketrmacredits', { id, ticketRmaCredits });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, ticketRmaCredits),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, ticketRmaCredits),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class TicketRmaCredits extends BaseEntity {
   ): Promise<ApiResponse<ITicketRmaCredits>> {
     this.logger.info('Patching ticketrmacredits', { id, ticketRmaCredits });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, ticketRmaCredits),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(ticketRmaCredits as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class TicketRmaCredits extends BaseEntity {
     this.logger.info('Deleting ticketrmacredits', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class TicketRmaCredits extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of ticketrmacredits
    */
-  async list(query: ITicketRmaCreditsQuery = {}): Promise<ApiResponse<ITicketRmaCredits[]>> {
+  async list(
+    query: ITicketRmaCreditsQuery = {}
+  ): Promise<ApiResponse<ITicketRmaCredits[]>> {
     this.logger.info('Listing ticketrmacredits', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class TicketRmaCredits extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

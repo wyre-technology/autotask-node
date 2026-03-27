@@ -17,11 +17,11 @@ export interface IConfigurationItemNotesQuery {
 
 /**
  * ConfigurationItemNotes entity class for Autotask API
- * 
+ *
  * Notes for configuration items
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: notes
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ConfigurationItemNotesEntity.htm}
  */
 export class ConfigurationItemNotes extends BaseEntity {
@@ -64,7 +64,7 @@ export class ConfigurationItemNotes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IConfigurationItemNotes[]',
         endpoint: '/ConfigurationItemNotes',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ConfigurationItemNotes extends BaseEntity {
    * @param configurationItemNotes - The configurationitemnotes data to create
    * @returns Promise with the created configurationitemnotes
    */
-  async create(configurationItemNotes: IConfigurationItemNotes): Promise<ApiResponse<IConfigurationItemNotes>> {
-    this.logger.info('Creating configurationitemnotes', { configurationItemNotes });
+  async create(
+    configurationItemNotes: IConfigurationItemNotes
+  ): Promise<ApiResponse<IConfigurationItemNotes>> {
+    this.logger.info('Creating configurationitemnotes', {
+      configurationItemNotes,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, configurationItemNotes),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ConfigurationItemNotes extends BaseEntity {
     this.logger.info('Getting configurationitemnotes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -106,10 +110,13 @@ export class ConfigurationItemNotes extends BaseEntity {
     id: number,
     configurationItemNotes: Partial<IConfigurationItemNotes>
   ): Promise<ApiResponse<IConfigurationItemNotes>> {
-    this.logger.info('Updating configurationitemnotes', { id, configurationItemNotes });
+    this.logger.info('Updating configurationitemnotes', {
+      id,
+      configurationItemNotes,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, configurationItemNotes),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, configurationItemNotes),
+      this.endpoint,
       'PUT'
     );
   }
@@ -124,10 +131,17 @@ export class ConfigurationItemNotes extends BaseEntity {
     id: number,
     configurationItemNotes: Partial<IConfigurationItemNotes>
   ): Promise<ApiResponse<IConfigurationItemNotes>> {
-    this.logger.info('Patching configurationitemnotes', { id, configurationItemNotes });
+    this.logger.info('Patching configurationitemnotes', {
+      id,
+      configurationItemNotes,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, configurationItemNotes),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(configurationItemNotes as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +151,9 @@ export class ConfigurationItemNotes extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of configurationitemnotes
    */
-  async list(query: IConfigurationItemNotesQuery = {}): Promise<ApiResponse<IConfigurationItemNotes[]>> {
+  async list(
+    query: IConfigurationItemNotesQuery = {}
+  ): Promise<ApiResponse<IConfigurationItemNotes[]>> {
     this.logger.info('Listing configurationitemnotes', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +172,11 @@ export class ConfigurationItemNotes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

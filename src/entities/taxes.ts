@@ -17,11 +17,11 @@ export interface ITaxesQuery {
 
 /**
  * Taxes entity class for Autotask API
- * 
+ *
  * Tax rates and calculations
  * Supported Operations: GET
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TaxesEntity.htm}
  */
 export class Taxes extends BaseEntity {
@@ -50,7 +50,7 @@ export class Taxes extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITaxes[]',
         endpoint: '/Taxes',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class Taxes extends BaseEntity {
     this.logger.info('Getting taxes', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -92,7 +92,11 @@ export class Taxes extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

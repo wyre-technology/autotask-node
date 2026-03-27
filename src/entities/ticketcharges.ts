@@ -17,11 +17,11 @@ export interface ITicketChargesQuery {
 
 /**
  * TicketCharges entity class for Autotask API
- * 
+ *
  * Charges associated with tickets
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: ticketing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/TicketChargesEntity.htm}
  */
 export class TicketCharges extends BaseEntity {
@@ -71,7 +71,7 @@ export class TicketCharges extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ITicketCharges[]',
         endpoint: '/TicketCharges',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class TicketCharges extends BaseEntity {
    * @param ticketCharges - The ticketcharges data to create
    * @returns Promise with the created ticketcharges
    */
-  async create(ticketCharges: ITicketCharges): Promise<ApiResponse<ITicketCharges>> {
+  async create(
+    ticketCharges: ITicketCharges
+  ): Promise<ApiResponse<ITicketCharges>> {
     this.logger.info('Creating ticketcharges', { ticketCharges });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, ticketCharges),
@@ -98,7 +100,7 @@ export class TicketCharges extends BaseEntity {
     this.logger.info('Getting ticketcharges', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class TicketCharges extends BaseEntity {
   ): Promise<ApiResponse<ITicketCharges>> {
     this.logger.info('Updating ticketcharges', { id, ticketCharges });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, ticketCharges),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, ticketCharges),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class TicketCharges extends BaseEntity {
   ): Promise<ApiResponse<ITicketCharges>> {
     this.logger.info('Patching ticketcharges', { id, ticketCharges });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, ticketCharges),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(ticketCharges as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class TicketCharges extends BaseEntity {
     this.logger.info('Deleting ticketcharges', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class TicketCharges extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of ticketcharges
    */
-  async list(query: ITicketChargesQuery = {}): Promise<ApiResponse<ITicketCharges[]>> {
+  async list(
+    query: ITicketChargesQuery = {}
+  ): Promise<ApiResponse<ITicketCharges[]>> {
     this.logger.info('Listing ticketcharges', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class TicketCharges extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

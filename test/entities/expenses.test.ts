@@ -161,7 +161,7 @@ describe('Expenses', () => {
 
       const result = await expenses.update(123, updateData);
 
-      expect(mockAxios.put).toHaveBeenCalledWith('/Expenses/123', updateData);
+      expect(mockAxios.put).toHaveBeenCalledWith('/Expenses', updateData);
       expect(result.data).toEqual(mockResponse.data);
     });
 
@@ -171,7 +171,7 @@ describe('Expenses', () => {
 
       const result = await expenses.update(123, {});
 
-      expect(mockAxios.put).toHaveBeenCalledWith('/Expenses/123', {});
+      expect(mockAxios.put).toHaveBeenCalledWith('/Expenses', {});
       expect(result.data).toEqual(mockResponse.data);
     });
 

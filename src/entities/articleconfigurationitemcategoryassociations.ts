@@ -17,11 +17,11 @@ export interface IArticleConfigurationItemCategoryAssociationsQuery {
 
 /**
  * ArticleConfigurationItemCategoryAssociations entity class for Autotask API
- * 
+ *
  * Associations between articles and configuration item categories
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ArticleConfigurationItemCategoryAssociationsEntity.htm}
  */
 export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IArticleConfigurationItemCategoryAssociations[]',
         endpoint: '/ArticleConfigurationItemCategoryAssociations',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,18 @@ export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
    * @param articleConfigurationItemCategoryAssociations - The articleconfigurationitemcategoryassociations data to create
    * @returns Promise with the created articleconfigurationitemcategoryassociations
    */
-  async create(articleConfigurationItemCategoryAssociations: IArticleConfigurationItemCategoryAssociations): Promise<ApiResponse<IArticleConfigurationItemCategoryAssociations>> {
-    this.logger.info('Creating articleconfigurationitemcategoryassociations', { articleConfigurationItemCategoryAssociations });
+  async create(
+    articleConfigurationItemCategoryAssociations: IArticleConfigurationItemCategoryAssociations
+  ): Promise<ApiResponse<IArticleConfigurationItemCategoryAssociations>> {
+    this.logger.info('Creating articleconfigurationitemcategoryassociations', {
+      articleConfigurationItemCategoryAssociations,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, articleConfigurationItemCategoryAssociations),
+      async () =>
+        this.axios.post(
+          this.endpoint,
+          articleConfigurationItemCategoryAssociations
+        ),
       this.endpoint,
       'POST'
     );
@@ -87,11 +95,15 @@ export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
    * @param id - The articleconfigurationitemcategoryassociations ID
    * @returns Promise with the articleconfigurationitemcategoryassociations data
    */
-  async get(id: number): Promise<ApiResponse<IArticleConfigurationItemCategoryAssociations>> {
-    this.logger.info('Getting articleconfigurationitemcategoryassociations', { id });
+  async get(
+    id: number
+  ): Promise<ApiResponse<IArticleConfigurationItemCategoryAssociations>> {
+    this.logger.info('Getting articleconfigurationitemcategoryassociations', {
+      id,
+    });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -102,10 +114,12 @@ export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
    * @returns Promise that resolves when deletion is complete
    */
   async delete(id: number): Promise<void> {
-    this.logger.info('Deleting articleconfigurationitemcategoryassociations', { id });
+    this.logger.info('Deleting articleconfigurationitemcategoryassociations', {
+      id,
+    });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,8 +129,12 @@ export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of articleconfigurationitemcategoryassociations
    */
-  async list(query: IArticleConfigurationItemCategoryAssociationsQuery = {}): Promise<ApiResponse<IArticleConfigurationItemCategoryAssociations[]>> {
-    this.logger.info('Listing articleconfigurationitemcategoryassociations', { query });
+  async list(
+    query: IArticleConfigurationItemCategoryAssociationsQuery = {}
+  ): Promise<ApiResponse<IArticleConfigurationItemCategoryAssociations[]>> {
+    this.logger.info('Listing articleconfigurationitemcategoryassociations', {
+      query,
+    });
     const searchBody: Record<string, any> = {};
 
     // Set up basic filter if none provided
@@ -134,7 +152,11 @@ export class ArticleConfigurationItemCategoryAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

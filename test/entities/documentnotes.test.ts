@@ -139,7 +139,7 @@ describe('DocumentNotes Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/DocumentNotes/1',
+        '/DocumentNotes',
         documentNotesData
       );
     });
@@ -157,10 +157,10 @@ describe('DocumentNotes Entity', () => {
       const result = await documentNotes.patch(1, documentNotesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/DocumentNotes/1',
-        documentNotesData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/DocumentNotes', {
+        ...documentNotesData,
+        id: 1,
+      });
     });
   });
 });

@@ -17,11 +17,11 @@ export interface ISubscriptionsQuery {
 
 /**
  * Subscriptions entity class for Autotask API
- * 
+ *
  * Recurring service subscriptions
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/SubscriptionsEntity.htm}
  */
 export class Subscriptions extends BaseEntity {
@@ -71,7 +71,7 @@ export class Subscriptions extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ISubscriptions[]',
         endpoint: '/Subscriptions',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class Subscriptions extends BaseEntity {
    * @param subscriptions - The subscriptions data to create
    * @returns Promise with the created subscriptions
    */
-  async create(subscriptions: ISubscriptions): Promise<ApiResponse<ISubscriptions>> {
+  async create(
+    subscriptions: ISubscriptions
+  ): Promise<ApiResponse<ISubscriptions>> {
     this.logger.info('Creating subscriptions', { subscriptions });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, subscriptions),
@@ -98,7 +100,7 @@ export class Subscriptions extends BaseEntity {
     this.logger.info('Getting subscriptions', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class Subscriptions extends BaseEntity {
   ): Promise<ApiResponse<ISubscriptions>> {
     this.logger.info('Updating subscriptions', { id, subscriptions });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, subscriptions),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, subscriptions),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class Subscriptions extends BaseEntity {
   ): Promise<ApiResponse<ISubscriptions>> {
     this.logger.info('Patching subscriptions', { id, subscriptions });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, subscriptions),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(subscriptions as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class Subscriptions extends BaseEntity {
     this.logger.info('Deleting subscriptions', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class Subscriptions extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of subscriptions
    */
-  async list(query: ISubscriptionsQuery = {}): Promise<ApiResponse<ISubscriptions[]>> {
+  async list(
+    query: ISubscriptionsQuery = {}
+  ): Promise<ApiResponse<ISubscriptions[]>> {
     this.logger.info('Listing subscriptions', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class Subscriptions extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

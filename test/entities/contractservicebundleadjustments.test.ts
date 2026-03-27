@@ -163,7 +163,7 @@ describe('ContractServiceBundleAdjustments Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ContractServiceBundleAdjustments/1',
+        '/ContractServiceBundleAdjustments',
         contractServiceBundleAdjustmentsData
       );
     });
@@ -187,8 +187,8 @@ describe('ContractServiceBundleAdjustments Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ContractServiceBundleAdjustments/1',
-        contractServiceBundleAdjustmentsData
+        '/ContractServiceBundleAdjustments',
+        { ...contractServiceBundleAdjustmentsData, id: 1 }
       );
     });
   });

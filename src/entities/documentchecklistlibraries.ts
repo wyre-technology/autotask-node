@@ -17,11 +17,11 @@ export interface IDocumentChecklistLibrariesQuery {
 
 /**
  * DocumentChecklistLibraries entity class for Autotask API
- * 
+ *
  * Checklist libraries for documents
  * Supported Operations: GET
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentChecklistLibrariesEntity.htm}
  */
 export class DocumentChecklistLibraries extends BaseEntity {
@@ -50,7 +50,7 @@ export class DocumentChecklistLibraries extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentChecklistLibraries[]',
         endpoint: '/DocumentChecklistLibraries',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class DocumentChecklistLibraries extends BaseEntity {
     this.logger.info('Getting documentchecklistlibraries', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class DocumentChecklistLibraries extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentchecklistlibraries
    */
-  async list(query: IDocumentChecklistLibrariesQuery = {}): Promise<ApiResponse<IDocumentChecklistLibraries[]>> {
+  async list(
+    query: IDocumentChecklistLibrariesQuery = {}
+  ): Promise<ApiResponse<IDocumentChecklistLibraries[]>> {
     this.logger.info('Listing documentchecklistlibraries', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class DocumentChecklistLibraries extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

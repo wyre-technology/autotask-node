@@ -17,11 +17,11 @@ export interface IInternalLocationWithBusinessHoursQuery {
 
 /**
  * InternalLocationWithBusinessHours entity class for Autotask API
- * 
+ *
  * Internal locations with business hours information
  * Supported Operations: GET
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/InternalLocationWithBusinessHoursEntity.htm}
  */
 export class InternalLocationWithBusinessHours extends BaseEntity {
@@ -50,7 +50,7 @@ export class InternalLocationWithBusinessHours extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IInternalLocationWithBusinessHours[]',
         endpoint: '/InternalLocationWithBusinessHours',
-      }
+      },
     ];
   }
 
@@ -59,11 +59,13 @@ export class InternalLocationWithBusinessHours extends BaseEntity {
    * @param id - The internallocationwithbusinesshours ID
    * @returns Promise with the internallocationwithbusinesshours data
    */
-  async get(id: number): Promise<ApiResponse<IInternalLocationWithBusinessHours>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IInternalLocationWithBusinessHours>> {
     this.logger.info('Getting internallocationwithbusinesshours', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +75,9 @@ export class InternalLocationWithBusinessHours extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of internallocationwithbusinesshours
    */
-  async list(query: IInternalLocationWithBusinessHoursQuery = {}): Promise<ApiResponse<IInternalLocationWithBusinessHours[]>> {
+  async list(
+    query: IInternalLocationWithBusinessHoursQuery = {}
+  ): Promise<ApiResponse<IInternalLocationWithBusinessHours[]>> {
     this.logger.info('Listing internallocationwithbusinesshours', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +96,11 @@ export class InternalLocationWithBusinessHours extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

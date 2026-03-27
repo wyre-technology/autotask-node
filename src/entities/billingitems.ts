@@ -17,11 +17,11 @@ export interface IBillingItemsQuery {
 
 /**
  * BillingItems entity class for Autotask API
- * 
+ *
  * Billing items for invoicing
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/BillingItemsEntity.htm}
  */
 export class BillingItems extends BaseEntity {
@@ -71,7 +71,7 @@ export class BillingItems extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IBillingItems[]',
         endpoint: '/BillingItems',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class BillingItems extends BaseEntity {
    * @param billingItems - The billingitems data to create
    * @returns Promise with the created billingitems
    */
-  async create(billingItems: IBillingItems): Promise<ApiResponse<IBillingItems>> {
+  async create(
+    billingItems: IBillingItems
+  ): Promise<ApiResponse<IBillingItems>> {
     this.logger.info('Creating billingitems', { billingItems });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, billingItems),
@@ -98,7 +100,7 @@ export class BillingItems extends BaseEntity {
     this.logger.info('Getting billingitems', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class BillingItems extends BaseEntity {
   ): Promise<ApiResponse<IBillingItems>> {
     this.logger.info('Updating billingitems', { id, billingItems });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, billingItems),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, billingItems),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class BillingItems extends BaseEntity {
   ): Promise<ApiResponse<IBillingItems>> {
     this.logger.info('Patching billingitems', { id, billingItems });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, billingItems),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(billingItems as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class BillingItems extends BaseEntity {
     this.logger.info('Deleting billingitems', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class BillingItems extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of billingitems
    */
-  async list(query: IBillingItemsQuery = {}): Promise<ApiResponse<IBillingItems[]>> {
+  async list(
+    query: IBillingItemsQuery = {}
+  ): Promise<ApiResponse<IBillingItems[]>> {
     this.logger.info('Listing billingitems', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class BillingItems extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

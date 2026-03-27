@@ -17,11 +17,11 @@ export interface IResourceTimeOffApproversQuery {
 
 /**
  * ResourceTimeOffApprovers entity class for Autotask API
- * 
+ *
  * Approvers for resource time off requests
  * Supported Operations: GET, POST, DELETE
  * Category: time
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceTimeOffApproversEntity.htm}
  */
 export class ResourceTimeOffApprovers extends BaseEntity {
@@ -64,7 +64,7 @@ export class ResourceTimeOffApprovers extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceTimeOffApprovers[]',
         endpoint: '/ResourceTimeOffApprovers',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ResourceTimeOffApprovers extends BaseEntity {
    * @param resourceTimeOffApprovers - The resourcetimeoffapprovers data to create
    * @returns Promise with the created resourcetimeoffapprovers
    */
-  async create(resourceTimeOffApprovers: IResourceTimeOffApprovers): Promise<ApiResponse<IResourceTimeOffApprovers>> {
-    this.logger.info('Creating resourcetimeoffapprovers', { resourceTimeOffApprovers });
+  async create(
+    resourceTimeOffApprovers: IResourceTimeOffApprovers
+  ): Promise<ApiResponse<IResourceTimeOffApprovers>> {
+    this.logger.info('Creating resourcetimeoffapprovers', {
+      resourceTimeOffApprovers,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceTimeOffApprovers),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ResourceTimeOffApprovers extends BaseEntity {
     this.logger.info('Getting resourcetimeoffapprovers', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ResourceTimeOffApprovers extends BaseEntity {
     this.logger.info('Deleting resourcetimeoffapprovers', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ResourceTimeOffApprovers extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourcetimeoffapprovers
    */
-  async list(query: IResourceTimeOffApproversQuery = {}): Promise<ApiResponse<IResourceTimeOffApprovers[]>> {
+  async list(
+    query: IResourceTimeOffApproversQuery = {}
+  ): Promise<ApiResponse<IResourceTimeOffApprovers[]>> {
     this.logger.info('Listing resourcetimeoffapprovers', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ResourceTimeOffApprovers extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

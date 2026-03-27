@@ -17,11 +17,11 @@ export interface IDocumentTicketAssociationsQuery {
 
 /**
  * DocumentTicketAssociations entity class for Autotask API
- * 
+ *
  * Associations between documents and tickets
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentTicketAssociationsEntity.htm}
  */
 export class DocumentTicketAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class DocumentTicketAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentTicketAssociations[]',
         endpoint: '/DocumentTicketAssociations',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class DocumentTicketAssociations extends BaseEntity {
    * @param documentTicketAssociations - The documentticketassociations data to create
    * @returns Promise with the created documentticketassociations
    */
-  async create(documentTicketAssociations: IDocumentTicketAssociations): Promise<ApiResponse<IDocumentTicketAssociations>> {
-    this.logger.info('Creating documentticketassociations', { documentTicketAssociations });
+  async create(
+    documentTicketAssociations: IDocumentTicketAssociations
+  ): Promise<ApiResponse<IDocumentTicketAssociations>> {
+    this.logger.info('Creating documentticketassociations', {
+      documentTicketAssociations,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, documentTicketAssociations),
       this.endpoint,
@@ -91,7 +95,7 @@ export class DocumentTicketAssociations extends BaseEntity {
     this.logger.info('Getting documentticketassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class DocumentTicketAssociations extends BaseEntity {
     this.logger.info('Deleting documentticketassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class DocumentTicketAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentticketassociations
    */
-  async list(query: IDocumentTicketAssociationsQuery = {}): Promise<ApiResponse<IDocumentTicketAssociations[]>> {
+  async list(
+    query: IDocumentTicketAssociationsQuery = {}
+  ): Promise<ApiResponse<IDocumentTicketAssociations[]>> {
     this.logger.info('Listing documentticketassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class DocumentTicketAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

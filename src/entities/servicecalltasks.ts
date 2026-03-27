@@ -17,11 +17,11 @@ export interface IServiceCallTasksQuery {
 
 /**
  * ServiceCallTasks entity class for Autotask API
- * 
+ *
  * Tasks within service calls
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: service_calls
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ServiceCallTasksEntity.htm}
  */
 export class ServiceCallTasks extends BaseEntity {
@@ -71,7 +71,7 @@ export class ServiceCallTasks extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IServiceCallTasks[]',
         endpoint: '/ServiceCallTasks',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ServiceCallTasks extends BaseEntity {
    * @param serviceCallTasks - The servicecalltasks data to create
    * @returns Promise with the created servicecalltasks
    */
-  async create(serviceCallTasks: IServiceCallTasks): Promise<ApiResponse<IServiceCallTasks>> {
+  async create(
+    serviceCallTasks: IServiceCallTasks
+  ): Promise<ApiResponse<IServiceCallTasks>> {
     this.logger.info('Creating servicecalltasks', { serviceCallTasks });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, serviceCallTasks),
@@ -98,7 +100,7 @@ export class ServiceCallTasks extends BaseEntity {
     this.logger.info('Getting servicecalltasks', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ServiceCallTasks extends BaseEntity {
   ): Promise<ApiResponse<IServiceCallTasks>> {
     this.logger.info('Updating servicecalltasks', { id, serviceCallTasks });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, serviceCallTasks),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, serviceCallTasks),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ServiceCallTasks extends BaseEntity {
   ): Promise<ApiResponse<IServiceCallTasks>> {
     this.logger.info('Patching servicecalltasks', { id, serviceCallTasks });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, serviceCallTasks),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(serviceCallTasks as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ServiceCallTasks extends BaseEntity {
     this.logger.info('Deleting servicecalltasks', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ServiceCallTasks extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of servicecalltasks
    */
-  async list(query: IServiceCallTasksQuery = {}): Promise<ApiResponse<IServiceCallTasks[]>> {
+  async list(
+    query: IServiceCallTasksQuery = {}
+  ): Promise<ApiResponse<IServiceCallTasks[]>> {
     this.logger.info('Listing servicecalltasks', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ServiceCallTasks extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

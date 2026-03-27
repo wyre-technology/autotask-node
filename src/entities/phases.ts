@@ -17,11 +17,11 @@ export interface IPhasesQuery {
 
 /**
  * Phases entity class for Autotask API
- * 
+ *
  * Project and task phases
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: lookup
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PhasesEntity.htm}
  */
 export class Phases extends BaseEntity {
@@ -71,7 +71,7 @@ export class Phases extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPhases[]',
         endpoint: '/Phases',
-      }
+      },
     ];
   }
 
@@ -98,7 +98,7 @@ export class Phases extends BaseEntity {
     this.logger.info('Getting phases', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +115,8 @@ export class Phases extends BaseEntity {
   ): Promise<ApiResponse<IPhases>> {
     this.logger.info('Updating phases', { id, phases });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, phases),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, phases),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +133,8 @@ export class Phases extends BaseEntity {
   ): Promise<ApiResponse<IPhases>> {
     this.logger.info('Patching phases', { id, phases });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, phases),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.patch(this.endpoint, { ...(phases as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +148,7 @@ export class Phases extends BaseEntity {
     this.logger.info('Deleting phases', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -177,7 +177,11 @@ export class Phases extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

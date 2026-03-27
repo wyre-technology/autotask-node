@@ -17,11 +17,11 @@ export interface IResourceAttachmentsQuery {
 
 /**
  * ResourceAttachments entity class for Autotask API
- * 
+ *
  * File attachments for resources
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceAttachmentsEntity.htm}
  */
 export class ResourceAttachments extends BaseEntity {
@@ -64,7 +64,7 @@ export class ResourceAttachments extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceAttachments[]',
         endpoint: '/ResourceAttachments',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ResourceAttachments extends BaseEntity {
    * @param resourceAttachments - The resourceattachments data to create
    * @returns Promise with the created resourceattachments
    */
-  async create(resourceAttachments: IResourceAttachments): Promise<ApiResponse<IResourceAttachments>> {
+  async create(
+    resourceAttachments: IResourceAttachments
+  ): Promise<ApiResponse<IResourceAttachments>> {
     this.logger.info('Creating resourceattachments', { resourceAttachments });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceAttachments),
@@ -91,7 +93,7 @@ export class ResourceAttachments extends BaseEntity {
     this.logger.info('Getting resourceattachments', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class ResourceAttachments extends BaseEntity {
     this.logger.info('Deleting resourceattachments', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class ResourceAttachments extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourceattachments
    */
-  async list(query: IResourceAttachmentsQuery = {}): Promise<ApiResponse<IResourceAttachments[]>> {
+  async list(
+    query: IResourceAttachmentsQuery = {}
+  ): Promise<ApiResponse<IResourceAttachments[]>> {
     this.logger.info('Listing resourceattachments', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class ResourceAttachments extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

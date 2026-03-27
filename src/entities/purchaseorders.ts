@@ -17,11 +17,11 @@ export interface IPurchaseOrdersQuery {
 
 /**
  * PurchaseOrders entity class for Autotask API
- * 
+ *
  * Purchase orders for procurement
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PurchaseOrdersEntity.htm}
  */
 export class PurchaseOrders extends BaseEntity {
@@ -64,7 +64,7 @@ export class PurchaseOrders extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPurchaseOrders[]',
         endpoint: '/PurchaseOrders',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class PurchaseOrders extends BaseEntity {
    * @param purchaseOrders - The purchaseorders data to create
    * @returns Promise with the created purchaseorders
    */
-  async create(purchaseOrders: IPurchaseOrders): Promise<ApiResponse<IPurchaseOrders>> {
+  async create(
+    purchaseOrders: IPurchaseOrders
+  ): Promise<ApiResponse<IPurchaseOrders>> {
     this.logger.info('Creating purchaseorders', { purchaseOrders });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, purchaseOrders),
@@ -91,7 +93,7 @@ export class PurchaseOrders extends BaseEntity {
     this.logger.info('Getting purchaseorders', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +110,8 @@ export class PurchaseOrders extends BaseEntity {
   ): Promise<ApiResponse<IPurchaseOrders>> {
     this.logger.info('Updating purchaseorders', { id, purchaseOrders });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, purchaseOrders),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, purchaseOrders),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +128,9 @@ export class PurchaseOrders extends BaseEntity {
   ): Promise<ApiResponse<IPurchaseOrders>> {
     this.logger.info('Patching purchaseorders', { id, purchaseOrders });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, purchaseOrders),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(purchaseOrders as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +140,9 @@ export class PurchaseOrders extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of purchaseorders
    */
-  async list(query: IPurchaseOrdersQuery = {}): Promise<ApiResponse<IPurchaseOrders[]>> {
+  async list(
+    query: IPurchaseOrdersQuery = {}
+  ): Promise<ApiResponse<IPurchaseOrders[]>> {
     this.logger.info('Listing purchaseorders', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +161,11 @@ export class PurchaseOrders extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

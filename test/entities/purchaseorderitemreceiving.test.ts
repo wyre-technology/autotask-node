@@ -163,7 +163,7 @@ describe('PurchaseOrderItemReceiving Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/PurchaseOrderItemReceiving/1',
+        '/PurchaseOrderItemReceiving',
         purchaseOrderItemReceivingData
       );
     });
@@ -187,8 +187,8 @@ describe('PurchaseOrderItemReceiving Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/PurchaseOrderItemReceiving/1',
-        purchaseOrderItemReceivingData
+        '/PurchaseOrderItemReceiving',
+        { ...purchaseOrderItemReceivingData, id: 1 }
       );
     });
   });

@@ -17,11 +17,11 @@ export interface IDocumentsQuery {
 
 /**
  * Documents entity class for Autotask API
- * 
+ *
  * Documents and files in the system
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentsEntity.htm}
  */
 export class Documents extends BaseEntity {
@@ -64,7 +64,7 @@ export class Documents extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocuments[]',
         endpoint: '/Documents',
-      }
+      },
     ];
   }
 
@@ -91,7 +91,7 @@ export class Documents extends BaseEntity {
     this.logger.info('Getting documents', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +108,8 @@ export class Documents extends BaseEntity {
   ): Promise<ApiResponse<IDocuments>> {
     this.logger.info('Updating documents', { id, documents });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, documents),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, documents),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +126,9 @@ export class Documents extends BaseEntity {
   ): Promise<ApiResponse<IDocuments>> {
     this.logger.info('Patching documents', { id, documents });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, documents),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(documents as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -156,7 +157,11 @@ export class Documents extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

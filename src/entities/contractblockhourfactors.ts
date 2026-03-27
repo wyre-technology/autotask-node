@@ -17,11 +17,11 @@ export interface IContractBlockHourFactorsQuery {
 
 /**
  * ContractBlockHourFactors entity class for Autotask API
- * 
+ *
  * Hour factors for contract blocks
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractBlockHourFactorsEntity.htm}
  */
 export class ContractBlockHourFactors extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContractBlockHourFactors extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractBlockHourFactors[]',
         endpoint: '/ContractBlockHourFactors',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class ContractBlockHourFactors extends BaseEntity {
    * @param contractBlockHourFactors - The contractblockhourfactors data to create
    * @returns Promise with the created contractblockhourfactors
    */
-  async create(contractBlockHourFactors: IContractBlockHourFactors): Promise<ApiResponse<IContractBlockHourFactors>> {
-    this.logger.info('Creating contractblockhourfactors', { contractBlockHourFactors });
+  async create(
+    contractBlockHourFactors: IContractBlockHourFactors
+  ): Promise<ApiResponse<IContractBlockHourFactors>> {
+    this.logger.info('Creating contractblockhourfactors', {
+      contractBlockHourFactors,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractBlockHourFactors),
       this.endpoint,
@@ -98,7 +102,7 @@ export class ContractBlockHourFactors extends BaseEntity {
     this.logger.info('Getting contractblockhourfactors', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class ContractBlockHourFactors extends BaseEntity {
     id: number,
     contractBlockHourFactors: Partial<IContractBlockHourFactors>
   ): Promise<ApiResponse<IContractBlockHourFactors>> {
-    this.logger.info('Updating contractblockhourfactors', { id, contractBlockHourFactors });
+    this.logger.info('Updating contractblockhourfactors', {
+      id,
+      contractBlockHourFactors,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractBlockHourFactors),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractBlockHourFactors),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class ContractBlockHourFactors extends BaseEntity {
     id: number,
     contractBlockHourFactors: Partial<IContractBlockHourFactors>
   ): Promise<ApiResponse<IContractBlockHourFactors>> {
-    this.logger.info('Patching contractblockhourfactors', { id, contractBlockHourFactors });
+    this.logger.info('Patching contractblockhourfactors', {
+      id,
+      contractBlockHourFactors,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractBlockHourFactors),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(contractBlockHourFactors as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class ContractBlockHourFactors extends BaseEntity {
     this.logger.info('Deleting contractblockhourfactors', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class ContractBlockHourFactors extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractblockhourfactors
    */
-  async list(query: IContractBlockHourFactorsQuery = {}): Promise<ApiResponse<IContractBlockHourFactors[]>> {
+  async list(
+    query: IContractBlockHourFactorsQuery = {}
+  ): Promise<ApiResponse<IContractBlockHourFactors[]>> {
     this.logger.info('Listing contractblockhourfactors', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class ContractBlockHourFactors extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

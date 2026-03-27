@@ -17,11 +17,11 @@ export interface IContractChargesQuery {
 
 /**
  * ContractCharges entity class for Autotask API
- * 
+ *
  * Charges associated with contracts
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractChargesEntity.htm}
  */
 export class ContractCharges extends BaseEntity {
@@ -71,7 +71,7 @@ export class ContractCharges extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractCharges[]',
         endpoint: '/ContractCharges',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class ContractCharges extends BaseEntity {
    * @param contractCharges - The contractcharges data to create
    * @returns Promise with the created contractcharges
    */
-  async create(contractCharges: IContractCharges): Promise<ApiResponse<IContractCharges>> {
+  async create(
+    contractCharges: IContractCharges
+  ): Promise<ApiResponse<IContractCharges>> {
     this.logger.info('Creating contractcharges', { contractCharges });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractCharges),
@@ -98,7 +100,7 @@ export class ContractCharges extends BaseEntity {
     this.logger.info('Getting contractcharges', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class ContractCharges extends BaseEntity {
   ): Promise<ApiResponse<IContractCharges>> {
     this.logger.info('Updating contractcharges', { id, contractCharges });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, contractCharges),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, contractCharges),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class ContractCharges extends BaseEntity {
   ): Promise<ApiResponse<IContractCharges>> {
     this.logger.info('Patching contractcharges', { id, contractCharges });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, contractCharges),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(contractCharges as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class ContractCharges extends BaseEntity {
     this.logger.info('Deleting contractcharges', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class ContractCharges extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractcharges
    */
-  async list(query: IContractChargesQuery = {}): Promise<ApiResponse<IContractCharges[]>> {
+  async list(
+    query: IContractChargesQuery = {}
+  ): Promise<ApiResponse<IContractCharges[]>> {
     this.logger.info('Listing contractcharges', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class ContractCharges extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

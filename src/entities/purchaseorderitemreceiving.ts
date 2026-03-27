@@ -17,11 +17,11 @@ export interface IPurchaseOrderItemReceivingQuery {
 
 /**
  * PurchaseOrderItemReceiving entity class for Autotask API
- * 
+ *
  * Receiving records for purchase order items
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: financial
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PurchaseOrderItemReceivingEntity.htm}
  */
 export class PurchaseOrderItemReceiving extends BaseEntity {
@@ -64,7 +64,7 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPurchaseOrderItemReceiving[]',
         endpoint: '/PurchaseOrderItemReceiving',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
    * @param purchaseOrderItemReceiving - The purchaseorderitemreceiving data to create
    * @returns Promise with the created purchaseorderitemreceiving
    */
-  async create(purchaseOrderItemReceiving: IPurchaseOrderItemReceiving): Promise<ApiResponse<IPurchaseOrderItemReceiving>> {
-    this.logger.info('Creating purchaseorderitemreceiving', { purchaseOrderItemReceiving });
+  async create(
+    purchaseOrderItemReceiving: IPurchaseOrderItemReceiving
+  ): Promise<ApiResponse<IPurchaseOrderItemReceiving>> {
+    this.logger.info('Creating purchaseorderitemreceiving', {
+      purchaseOrderItemReceiving,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, purchaseOrderItemReceiving),
       this.endpoint,
@@ -91,7 +95,7 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
     this.logger.info('Getting purchaseorderitemreceiving', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -106,10 +110,13 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
     id: number,
     purchaseOrderItemReceiving: Partial<IPurchaseOrderItemReceiving>
   ): Promise<ApiResponse<IPurchaseOrderItemReceiving>> {
-    this.logger.info('Updating purchaseorderitemreceiving', { id, purchaseOrderItemReceiving });
+    this.logger.info('Updating purchaseorderitemreceiving', {
+      id,
+      purchaseOrderItemReceiving,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, purchaseOrderItemReceiving),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, purchaseOrderItemReceiving),
+      this.endpoint,
       'PUT'
     );
   }
@@ -124,10 +131,17 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
     id: number,
     purchaseOrderItemReceiving: Partial<IPurchaseOrderItemReceiving>
   ): Promise<ApiResponse<IPurchaseOrderItemReceiving>> {
-    this.logger.info('Patching purchaseorderitemreceiving', { id, purchaseOrderItemReceiving });
+    this.logger.info('Patching purchaseorderitemreceiving', {
+      id,
+      purchaseOrderItemReceiving,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, purchaseOrderItemReceiving),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(purchaseOrderItemReceiving as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +151,9 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of purchaseorderitemreceiving
    */
-  async list(query: IPurchaseOrderItemReceivingQuery = {}): Promise<ApiResponse<IPurchaseOrderItemReceiving[]>> {
+  async list(
+    query: IPurchaseOrderItemReceivingQuery = {}
+  ): Promise<ApiResponse<IPurchaseOrderItemReceiving[]>> {
     this.logger.info('Listing purchaseorderitemreceiving', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +172,11 @@ export class PurchaseOrderItemReceiving extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

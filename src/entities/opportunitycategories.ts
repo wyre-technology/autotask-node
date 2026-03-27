@@ -17,11 +17,11 @@ export interface IOpportunityCategoriesQuery {
 
 /**
  * OpportunityCategories entity class for Autotask API
- * 
+ *
  * Categories for organizing opportunities
  * Supported Operations: GET
  * Category: sales
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/OpportunityCategories.htm}
  */
 export class OpportunityCategories extends BaseEntity {
@@ -50,7 +50,7 @@ export class OpportunityCategories extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IOpportunityCategories[]',
         endpoint: '/OpportunityCategories',
-      }
+      },
     ];
   }
 
@@ -63,7 +63,7 @@ export class OpportunityCategories extends BaseEntity {
     this.logger.info('Getting opportunitycategories', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -73,7 +73,9 @@ export class OpportunityCategories extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of opportunitycategories
    */
-  async list(query: IOpportunityCategoriesQuery = {}): Promise<ApiResponse<IOpportunityCategories[]>> {
+  async list(
+    query: IOpportunityCategoriesQuery = {}
+  ): Promise<ApiResponse<IOpportunityCategories[]>> {
     this.logger.info('Listing opportunitycategories', { query });
     const searchBody: Record<string, any> = {};
 
@@ -92,7 +94,11 @@ export class OpportunityCategories extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

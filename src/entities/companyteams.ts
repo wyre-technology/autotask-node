@@ -17,11 +17,11 @@ export interface ICompanyTeamsQuery {
 
 /**
  * CompanyTeams entity class for Autotask API
- * 
+ *
  * Teams associated with companies
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/CompanyTeamsEntity.htm}
  */
 export class CompanyTeams extends BaseEntity {
@@ -71,7 +71,7 @@ export class CompanyTeams extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'ICompanyTeams[]',
         endpoint: '/CompanyTeams',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class CompanyTeams extends BaseEntity {
    * @param companyTeams - The companyteams data to create
    * @returns Promise with the created companyteams
    */
-  async create(companyTeams: ICompanyTeams): Promise<ApiResponse<ICompanyTeams>> {
+  async create(
+    companyTeams: ICompanyTeams
+  ): Promise<ApiResponse<ICompanyTeams>> {
     this.logger.info('Creating companyteams', { companyTeams });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, companyTeams),
@@ -98,7 +100,7 @@ export class CompanyTeams extends BaseEntity {
     this.logger.info('Getting companyteams', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class CompanyTeams extends BaseEntity {
   ): Promise<ApiResponse<ICompanyTeams>> {
     this.logger.info('Updating companyteams', { id, companyTeams });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, companyTeams),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, companyTeams),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class CompanyTeams extends BaseEntity {
   ): Promise<ApiResponse<ICompanyTeams>> {
     this.logger.info('Patching companyteams', { id, companyTeams });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, companyTeams),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(companyTeams as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class CompanyTeams extends BaseEntity {
     this.logger.info('Deleting companyteams', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class CompanyTeams extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of companyteams
    */
-  async list(query: ICompanyTeamsQuery = {}): Promise<ApiResponse<ICompanyTeams[]>> {
+  async list(
+    query: ICompanyTeamsQuery = {}
+  ): Promise<ApiResponse<ICompanyTeams[]>> {
     this.logger.info('Listing companyteams', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class CompanyTeams extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

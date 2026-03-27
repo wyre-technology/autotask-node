@@ -17,11 +17,11 @@ export interface IResourceTimeOffAdditionalQuery {
 
 /**
  * ResourceTimeOffAdditional entity class for Autotask API
- * 
+ *
  * Additional time off information for resources
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: time
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ResourceTimeOffAdditionalEntity.htm}
  */
 export class ResourceTimeOffAdditional extends BaseEntity {
@@ -71,7 +71,7 @@ export class ResourceTimeOffAdditional extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IResourceTimeOffAdditional[]',
         endpoint: '/ResourceTimeOffAdditional',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class ResourceTimeOffAdditional extends BaseEntity {
    * @param resourceTimeOffAdditional - The resourcetimeoffadditional data to create
    * @returns Promise with the created resourcetimeoffadditional
    */
-  async create(resourceTimeOffAdditional: IResourceTimeOffAdditional): Promise<ApiResponse<IResourceTimeOffAdditional>> {
-    this.logger.info('Creating resourcetimeoffadditional', { resourceTimeOffAdditional });
+  async create(
+    resourceTimeOffAdditional: IResourceTimeOffAdditional
+  ): Promise<ApiResponse<IResourceTimeOffAdditional>> {
+    this.logger.info('Creating resourcetimeoffadditional', {
+      resourceTimeOffAdditional,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, resourceTimeOffAdditional),
       this.endpoint,
@@ -98,7 +102,7 @@ export class ResourceTimeOffAdditional extends BaseEntity {
     this.logger.info('Getting resourcetimeoffadditional', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class ResourceTimeOffAdditional extends BaseEntity {
     id: number,
     resourceTimeOffAdditional: Partial<IResourceTimeOffAdditional>
   ): Promise<ApiResponse<IResourceTimeOffAdditional>> {
-    this.logger.info('Updating resourcetimeoffadditional', { id, resourceTimeOffAdditional });
+    this.logger.info('Updating resourcetimeoffadditional', {
+      id,
+      resourceTimeOffAdditional,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, resourceTimeOffAdditional),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, resourceTimeOffAdditional),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class ResourceTimeOffAdditional extends BaseEntity {
     id: number,
     resourceTimeOffAdditional: Partial<IResourceTimeOffAdditional>
   ): Promise<ApiResponse<IResourceTimeOffAdditional>> {
-    this.logger.info('Patching resourcetimeoffadditional', { id, resourceTimeOffAdditional });
+    this.logger.info('Patching resourcetimeoffadditional', {
+      id,
+      resourceTimeOffAdditional,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, resourceTimeOffAdditional),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(resourceTimeOffAdditional as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class ResourceTimeOffAdditional extends BaseEntity {
     this.logger.info('Deleting resourcetimeoffadditional', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class ResourceTimeOffAdditional extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of resourcetimeoffadditional
    */
-  async list(query: IResourceTimeOffAdditionalQuery = {}): Promise<ApiResponse<IResourceTimeOffAdditional[]>> {
+  async list(
+    query: IResourceTimeOffAdditionalQuery = {}
+  ): Promise<ApiResponse<IResourceTimeOffAdditional[]>> {
     this.logger.info('Listing resourcetimeoffadditional', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class ResourceTimeOffAdditional extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

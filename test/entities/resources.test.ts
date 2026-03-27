@@ -120,7 +120,7 @@ describe('Resources Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(setup.mockAxios.put).toHaveBeenCalledWith(
-        '/Resources/1',
+        '/Resources',
         resourcesData
       );
     });
@@ -138,10 +138,10 @@ describe('Resources Entity', () => {
       const result = await setup.entity.patch(1, resourcesData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(setup.mockAxios.patch).toHaveBeenCalledWith(
-        '/Resources/1',
-        resourcesData
-      );
+      expect(setup.mockAxios.patch).toHaveBeenCalledWith('/Resources', {
+        ...resourcesData,
+        id: 1,
+      });
     });
   });
 });

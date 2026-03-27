@@ -17,11 +17,11 @@ export interface IAttachmentInfoQuery {
 
 /**
  * AttachmentInfo entity class for Autotask API
- * 
+ *
  * Attachment information and metadata
  * Supported Operations: GET, POST, DELETE
  * Category: attachments
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/AttachmentInfoEntity.htm}
  */
 export class AttachmentInfo extends BaseEntity {
@@ -64,7 +64,7 @@ export class AttachmentInfo extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IAttachmentInfo[]',
         endpoint: '/AttachmentInfo',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class AttachmentInfo extends BaseEntity {
    * @param attachmentInfo - The attachmentinfo data to create
    * @returns Promise with the created attachmentinfo
    */
-  async create(attachmentInfo: IAttachmentInfo): Promise<ApiResponse<IAttachmentInfo>> {
+  async create(
+    attachmentInfo: IAttachmentInfo
+  ): Promise<ApiResponse<IAttachmentInfo>> {
     this.logger.info('Creating attachmentinfo', { attachmentInfo });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, attachmentInfo),
@@ -91,7 +93,7 @@ export class AttachmentInfo extends BaseEntity {
     this.logger.info('Getting attachmentinfo', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +107,7 @@ export class AttachmentInfo extends BaseEntity {
     this.logger.info('Deleting attachmentinfo', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +117,9 @@ export class AttachmentInfo extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of attachmentinfo
    */
-  async list(query: IAttachmentInfoQuery = {}): Promise<ApiResponse<IAttachmentInfo[]>> {
+  async list(
+    query: IAttachmentInfoQuery = {}
+  ): Promise<ApiResponse<IAttachmentInfo[]>> {
     this.logger.info('Listing attachmentinfo', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +138,11 @@ export class AttachmentInfo extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

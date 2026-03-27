@@ -17,11 +17,11 @@ export interface IHolidaysQuery {
 
 /**
  * Holidays entity class for Autotask API
- * 
+ *
  * Holiday calendar entries
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: time
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/HolidaysEntity.htm}
  */
 export class Holidays extends BaseEntity {
@@ -71,7 +71,7 @@ export class Holidays extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IHolidays[]',
         endpoint: '/Holidays',
-      }
+      },
     ];
   }
 
@@ -98,7 +98,7 @@ export class Holidays extends BaseEntity {
     this.logger.info('Getting holidays', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +115,8 @@ export class Holidays extends BaseEntity {
   ): Promise<ApiResponse<IHolidays>> {
     this.logger.info('Updating holidays', { id, holidays });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, holidays),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, holidays),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +133,8 @@ export class Holidays extends BaseEntity {
   ): Promise<ApiResponse<IHolidays>> {
     this.logger.info('Patching holidays', { id, holidays });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, holidays),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.patch(this.endpoint, { ...(holidays as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +148,7 @@ export class Holidays extends BaseEntity {
     this.logger.info('Deleting holidays', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -177,7 +177,11 @@ export class Holidays extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

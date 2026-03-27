@@ -139,7 +139,7 @@ describe('InventoryItems Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/InventoryItems/1',
+        '/InventoryItems',
         inventoryItemsData
       );
     });
@@ -157,10 +157,10 @@ describe('InventoryItems Entity', () => {
       const result = await inventoryItems.patch(1, inventoryItemsData);
 
       expect(result.data).toEqual(mockResponse);
-      expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/InventoryItems/1',
-        inventoryItemsData
-      );
+      expect(mockAxios.patch).toHaveBeenCalledWith('/InventoryItems', {
+        ...inventoryItemsData,
+        id: 1,
+      });
     });
   });
 

@@ -17,11 +17,11 @@ export interface IPriceListServiceBundlesQuery {
 
 /**
  * PriceListServiceBundles entity class for Autotask API
- * 
+ *
  * Service bundles in price lists
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: pricing
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/PriceListServiceBundlesEntity.htm}
  */
 export class PriceListServiceBundles extends BaseEntity {
@@ -71,7 +71,7 @@ export class PriceListServiceBundles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IPriceListServiceBundles[]',
         endpoint: '/PriceListServiceBundles',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class PriceListServiceBundles extends BaseEntity {
    * @param priceListServiceBundles - The pricelistservicebundles data to create
    * @returns Promise with the created pricelistservicebundles
    */
-  async create(priceListServiceBundles: IPriceListServiceBundles): Promise<ApiResponse<IPriceListServiceBundles>> {
-    this.logger.info('Creating pricelistservicebundles', { priceListServiceBundles });
+  async create(
+    priceListServiceBundles: IPriceListServiceBundles
+  ): Promise<ApiResponse<IPriceListServiceBundles>> {
+    this.logger.info('Creating pricelistservicebundles', {
+      priceListServiceBundles,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, priceListServiceBundles),
       this.endpoint,
@@ -98,7 +102,7 @@ export class PriceListServiceBundles extends BaseEntity {
     this.logger.info('Getting pricelistservicebundles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class PriceListServiceBundles extends BaseEntity {
     id: number,
     priceListServiceBundles: Partial<IPriceListServiceBundles>
   ): Promise<ApiResponse<IPriceListServiceBundles>> {
-    this.logger.info('Updating pricelistservicebundles', { id, priceListServiceBundles });
+    this.logger.info('Updating pricelistservicebundles', {
+      id,
+      priceListServiceBundles,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, priceListServiceBundles),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, priceListServiceBundles),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class PriceListServiceBundles extends BaseEntity {
     id: number,
     priceListServiceBundles: Partial<IPriceListServiceBundles>
   ): Promise<ApiResponse<IPriceListServiceBundles>> {
-    this.logger.info('Patching pricelistservicebundles', { id, priceListServiceBundles });
+    this.logger.info('Patching pricelistservicebundles', {
+      id,
+      priceListServiceBundles,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, priceListServiceBundles),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(priceListServiceBundles as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class PriceListServiceBundles extends BaseEntity {
     this.logger.info('Deleting pricelistservicebundles', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class PriceListServiceBundles extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of pricelistservicebundles
    */
-  async list(query: IPriceListServiceBundlesQuery = {}): Promise<ApiResponse<IPriceListServiceBundles[]>> {
+  async list(
+    query: IPriceListServiceBundlesQuery = {}
+  ): Promise<ApiResponse<IPriceListServiceBundles[]>> {
     this.logger.info('Listing pricelistservicebundles', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class PriceListServiceBundles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

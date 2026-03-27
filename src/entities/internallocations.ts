@@ -17,11 +17,11 @@ export interface IInternalLocationsQuery {
 
 /**
  * InternalLocations entity class for Autotask API
- * 
+ *
  * Internal office locations
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: organizational
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/InternalLocationsEntity.htm}
  */
 export class InternalLocations extends BaseEntity {
@@ -71,7 +71,7 @@ export class InternalLocations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IInternalLocations[]',
         endpoint: '/InternalLocations',
-      }
+      },
     ];
   }
 
@@ -80,7 +80,9 @@ export class InternalLocations extends BaseEntity {
    * @param internalLocations - The internallocations data to create
    * @returns Promise with the created internallocations
    */
-  async create(internalLocations: IInternalLocations): Promise<ApiResponse<IInternalLocations>> {
+  async create(
+    internalLocations: IInternalLocations
+  ): Promise<ApiResponse<IInternalLocations>> {
     this.logger.info('Creating internallocations', { internalLocations });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, internalLocations),
@@ -98,7 +100,7 @@ export class InternalLocations extends BaseEntity {
     this.logger.info('Getting internallocations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -115,8 +117,8 @@ export class InternalLocations extends BaseEntity {
   ): Promise<ApiResponse<IInternalLocations>> {
     this.logger.info('Updating internallocations', { id, internalLocations });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, internalLocations),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, internalLocations),
+      this.endpoint,
       'PUT'
     );
   }
@@ -133,8 +135,9 @@ export class InternalLocations extends BaseEntity {
   ): Promise<ApiResponse<IInternalLocations>> {
     this.logger.info('Patching internallocations', { id, internalLocations });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, internalLocations),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(internalLocations as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +151,7 @@ export class InternalLocations extends BaseEntity {
     this.logger.info('Deleting internallocations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +161,9 @@ export class InternalLocations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of internallocations
    */
-  async list(query: IInternalLocationsQuery = {}): Promise<ApiResponse<IInternalLocations[]>> {
+  async list(
+    query: IInternalLocationsQuery = {}
+  ): Promise<ApiResponse<IInternalLocations[]>> {
     this.logger.info('Listing internallocations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +182,11 @@ export class InternalLocations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

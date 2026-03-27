@@ -17,11 +17,11 @@ export interface IContractExclusionRolesQuery {
 
 /**
  * ContractExclusionRoles entity class for Autotask API
- * 
+ *
  * Roles excluded from contracts
  * Supported Operations: GET, POST, DELETE
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContractExclusionRolesEntity.htm}
  */
 export class ContractExclusionRoles extends BaseEntity {
@@ -64,7 +64,7 @@ export class ContractExclusionRoles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContractExclusionRoles[]',
         endpoint: '/ContractExclusionRoles',
-      }
+      },
     ];
   }
 
@@ -73,8 +73,12 @@ export class ContractExclusionRoles extends BaseEntity {
    * @param contractExclusionRoles - The contractexclusionroles data to create
    * @returns Promise with the created contractexclusionroles
    */
-  async create(contractExclusionRoles: IContractExclusionRoles): Promise<ApiResponse<IContractExclusionRoles>> {
-    this.logger.info('Creating contractexclusionroles', { contractExclusionRoles });
+  async create(
+    contractExclusionRoles: IContractExclusionRoles
+  ): Promise<ApiResponse<IContractExclusionRoles>> {
+    this.logger.info('Creating contractexclusionroles', {
+      contractExclusionRoles,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, contractExclusionRoles),
       this.endpoint,
@@ -91,7 +95,7 @@ export class ContractExclusionRoles extends BaseEntity {
     this.logger.info('Getting contractexclusionroles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +109,7 @@ export class ContractExclusionRoles extends BaseEntity {
     this.logger.info('Deleting contractexclusionroles', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +119,9 @@ export class ContractExclusionRoles extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contractexclusionroles
    */
-  async list(query: IContractExclusionRolesQuery = {}): Promise<ApiResponse<IContractExclusionRoles[]>> {
+  async list(
+    query: IContractExclusionRolesQuery = {}
+  ): Promise<ApiResponse<IContractExclusionRoles[]>> {
     this.logger.info('Listing contractexclusionroles', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +140,11 @@ export class ContractExclusionRoles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

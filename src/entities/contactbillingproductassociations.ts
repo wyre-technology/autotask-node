@@ -17,11 +17,11 @@ export interface IContactBillingProductAssociationsQuery {
 
 /**
  * ContactBillingProductAssociations entity class for Autotask API
- * 
+ *
  * Associations between contacts and billing products
  * Supported Operations: GET, POST, DELETE
  * Category: associations
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ContactBillingProductAssociationsEntity.htm}
  */
 export class ContactBillingProductAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class ContactBillingProductAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IContactBillingProductAssociations[]',
         endpoint: '/ContactBillingProductAssociations',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,15 @@ export class ContactBillingProductAssociations extends BaseEntity {
    * @param contactBillingProductAssociations - The contactbillingproductassociations data to create
    * @returns Promise with the created contactbillingproductassociations
    */
-  async create(contactBillingProductAssociations: IContactBillingProductAssociations): Promise<ApiResponse<IContactBillingProductAssociations>> {
-    this.logger.info('Creating contactbillingproductassociations', { contactBillingProductAssociations });
+  async create(
+    contactBillingProductAssociations: IContactBillingProductAssociations
+  ): Promise<ApiResponse<IContactBillingProductAssociations>> {
+    this.logger.info('Creating contactbillingproductassociations', {
+      contactBillingProductAssociations,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, contactBillingProductAssociations),
+      async () =>
+        this.axios.post(this.endpoint, contactBillingProductAssociations),
       this.endpoint,
       'POST'
     );
@@ -87,11 +92,13 @@ export class ContactBillingProductAssociations extends BaseEntity {
    * @param id - The contactbillingproductassociations ID
    * @returns Promise with the contactbillingproductassociations data
    */
-  async get(id: number): Promise<ApiResponse<IContactBillingProductAssociations>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IContactBillingProductAssociations>> {
     this.logger.info('Getting contactbillingproductassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +112,7 @@ export class ContactBillingProductAssociations extends BaseEntity {
     this.logger.info('Deleting contactbillingproductassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,7 +122,9 @@ export class ContactBillingProductAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of contactbillingproductassociations
    */
-  async list(query: IContactBillingProductAssociationsQuery = {}): Promise<ApiResponse<IContactBillingProductAssociations[]>> {
+  async list(
+    query: IContactBillingProductAssociationsQuery = {}
+  ): Promise<ApiResponse<IContactBillingProductAssociations[]>> {
     this.logger.info('Listing contactbillingproductassociations', { query });
     const searchBody: Record<string, any> = {};
 
@@ -134,7 +143,11 @@ export class ContactBillingProductAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

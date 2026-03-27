@@ -163,7 +163,7 @@ describe('ResourceTimeOffAdditional Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.put).toHaveBeenCalledWith(
-        '/ResourceTimeOffAdditional/1',
+        '/ResourceTimeOffAdditional',
         resourceTimeOffAdditionalData
       );
     });
@@ -187,8 +187,8 @@ describe('ResourceTimeOffAdditional Entity', () => {
 
       expect(result.data).toEqual(mockResponse);
       expect(mockAxios.patch).toHaveBeenCalledWith(
-        '/ResourceTimeOffAdditional/1',
-        resourceTimeOffAdditionalData
+        '/ResourceTimeOffAdditional',
+        { ...resourceTimeOffAdditionalData, id: 1 }
       );
     });
   });

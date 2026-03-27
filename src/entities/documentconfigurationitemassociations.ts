@@ -17,11 +17,11 @@ export interface IDocumentConfigurationItemAssociationsQuery {
 
 /**
  * DocumentConfigurationItemAssociations entity class for Autotask API
- * 
+ *
  * Associations between documents and configuration items
  * Supported Operations: GET, POST, DELETE
  * Category: knowledge
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/DocumentConfigurationItemAssociationsEntity.htm}
  */
 export class DocumentConfigurationItemAssociations extends BaseEntity {
@@ -64,7 +64,7 @@ export class DocumentConfigurationItemAssociations extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IDocumentConfigurationItemAssociations[]',
         endpoint: '/DocumentConfigurationItemAssociations',
-      }
+      },
     ];
   }
 
@@ -73,10 +73,15 @@ export class DocumentConfigurationItemAssociations extends BaseEntity {
    * @param documentConfigurationItemAssociations - The documentconfigurationitemassociations data to create
    * @returns Promise with the created documentconfigurationitemassociations
    */
-  async create(documentConfigurationItemAssociations: IDocumentConfigurationItemAssociations): Promise<ApiResponse<IDocumentConfigurationItemAssociations>> {
-    this.logger.info('Creating documentconfigurationitemassociations', { documentConfigurationItemAssociations });
+  async create(
+    documentConfigurationItemAssociations: IDocumentConfigurationItemAssociations
+  ): Promise<ApiResponse<IDocumentConfigurationItemAssociations>> {
+    this.logger.info('Creating documentconfigurationitemassociations', {
+      documentConfigurationItemAssociations,
+    });
     return this.executeRequest(
-      async () => this.axios.post(this.endpoint, documentConfigurationItemAssociations),
+      async () =>
+        this.axios.post(this.endpoint, documentConfigurationItemAssociations),
       this.endpoint,
       'POST'
     );
@@ -87,11 +92,13 @@ export class DocumentConfigurationItemAssociations extends BaseEntity {
    * @param id - The documentconfigurationitemassociations ID
    * @returns Promise with the documentconfigurationitemassociations data
    */
-  async get(id: number): Promise<ApiResponse<IDocumentConfigurationItemAssociations>> {
+  async get(
+    id: number
+  ): Promise<ApiResponse<IDocumentConfigurationItemAssociations>> {
     this.logger.info('Getting documentconfigurationitemassociations', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -105,7 +112,7 @@ export class DocumentConfigurationItemAssociations extends BaseEntity {
     this.logger.info('Deleting documentconfigurationitemassociations', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -115,8 +122,12 @@ export class DocumentConfigurationItemAssociations extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of documentconfigurationitemassociations
    */
-  async list(query: IDocumentConfigurationItemAssociationsQuery = {}): Promise<ApiResponse<IDocumentConfigurationItemAssociations[]>> {
-    this.logger.info('Listing documentconfigurationitemassociations', { query });
+  async list(
+    query: IDocumentConfigurationItemAssociationsQuery = {}
+  ): Promise<ApiResponse<IDocumentConfigurationItemAssociations[]>> {
+    this.logger.info('Listing documentconfigurationitemassociations', {
+      query,
+    });
     const searchBody: Record<string, any> = {};
 
     // Set up basic filter if none provided
@@ -134,7 +145,11 @@ export class DocumentConfigurationItemAssociations extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

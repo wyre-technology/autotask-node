@@ -17,11 +17,11 @@ export interface IServiceBundlesQuery {
 
 /**
  * ServiceBundles entity class for Autotask API
- * 
+ *
  * Bundled service offerings
  * Supported Operations: GET, POST, PATCH, PUT
  * Category: contracts
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/ServiceBundlesEntity.htm}
  */
 export class ServiceBundles extends BaseEntity {
@@ -64,7 +64,7 @@ export class ServiceBundles extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IServiceBundles[]',
         endpoint: '/ServiceBundles',
-      }
+      },
     ];
   }
 
@@ -73,7 +73,9 @@ export class ServiceBundles extends BaseEntity {
    * @param serviceBundles - The servicebundles data to create
    * @returns Promise with the created servicebundles
    */
-  async create(serviceBundles: IServiceBundles): Promise<ApiResponse<IServiceBundles>> {
+  async create(
+    serviceBundles: IServiceBundles
+  ): Promise<ApiResponse<IServiceBundles>> {
     this.logger.info('Creating servicebundles', { serviceBundles });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, serviceBundles),
@@ -91,7 +93,7 @@ export class ServiceBundles extends BaseEntity {
     this.logger.info('Getting servicebundles', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -108,8 +110,8 @@ export class ServiceBundles extends BaseEntity {
   ): Promise<ApiResponse<IServiceBundles>> {
     this.logger.info('Updating servicebundles', { id, serviceBundles });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, serviceBundles),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, serviceBundles),
+      this.endpoint,
       'PUT'
     );
   }
@@ -126,8 +128,9 @@ export class ServiceBundles extends BaseEntity {
   ): Promise<ApiResponse<IServiceBundles>> {
     this.logger.info('Patching servicebundles', { id, serviceBundles });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, serviceBundles),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, { ...(serviceBundles as any), id }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -137,7 +140,9 @@ export class ServiceBundles extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of servicebundles
    */
-  async list(query: IServiceBundlesQuery = {}): Promise<ApiResponse<IServiceBundles[]>> {
+  async list(
+    query: IServiceBundlesQuery = {}
+  ): Promise<ApiResponse<IServiceBundles[]>> {
     this.logger.info('Listing servicebundles', { query });
     const searchBody: Record<string, any> = {};
 
@@ -156,7 +161,11 @@ export class ServiceBundles extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({

@@ -17,11 +17,11 @@ export interface IInventoryItemSerialNumbersQuery {
 
 /**
  * InventoryItemSerialNumbers entity class for Autotask API
- * 
+ *
  * Serial numbers for inventory items
  * Supported Operations: GET, POST, PATCH, PUT, DELETE
  * Category: inventory
- * 
+ *
  * @see {@link https://www.autotask.net/help/DeveloperHelp/Content/APIs/REST/Entities/InventoryItemSerialNumbersEntity.htm}
  */
 export class InventoryItemSerialNumbers extends BaseEntity {
@@ -71,7 +71,7 @@ export class InventoryItemSerialNumbers extends BaseEntity {
         optionalParams: ['filter', 'sort', 'page', 'pageSize'],
         returnType: 'IInventoryItemSerialNumbers[]',
         endpoint: '/InventoryItemSerialNumbers',
-      }
+      },
     ];
   }
 
@@ -80,8 +80,12 @@ export class InventoryItemSerialNumbers extends BaseEntity {
    * @param inventoryItemSerialNumbers - The inventoryitemserialnumbers data to create
    * @returns Promise with the created inventoryitemserialnumbers
    */
-  async create(inventoryItemSerialNumbers: IInventoryItemSerialNumbers): Promise<ApiResponse<IInventoryItemSerialNumbers>> {
-    this.logger.info('Creating inventoryitemserialnumbers', { inventoryItemSerialNumbers });
+  async create(
+    inventoryItemSerialNumbers: IInventoryItemSerialNumbers
+  ): Promise<ApiResponse<IInventoryItemSerialNumbers>> {
+    this.logger.info('Creating inventoryitemserialnumbers', {
+      inventoryItemSerialNumbers,
+    });
     return this.executeRequest(
       async () => this.axios.post(this.endpoint, inventoryItemSerialNumbers),
       this.endpoint,
@@ -98,7 +102,7 @@ export class InventoryItemSerialNumbers extends BaseEntity {
     this.logger.info('Getting inventoryitemserialnumbers', { id });
     return this.executeRequest(
       async () => this.axios.get(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'GET'
     );
   }
@@ -113,10 +117,13 @@ export class InventoryItemSerialNumbers extends BaseEntity {
     id: number,
     inventoryItemSerialNumbers: Partial<IInventoryItemSerialNumbers>
   ): Promise<ApiResponse<IInventoryItemSerialNumbers>> {
-    this.logger.info('Updating inventoryitemserialnumbers', { id, inventoryItemSerialNumbers });
+    this.logger.info('Updating inventoryitemserialnumbers', {
+      id,
+      inventoryItemSerialNumbers,
+    });
     return this.executeRequest(
-      async () => this.axios.put(`${this.endpoint}/${id}`, inventoryItemSerialNumbers),
-      `${this.endpoint}/${id}`,
+      async () => this.axios.put(this.endpoint, inventoryItemSerialNumbers),
+      this.endpoint,
       'PUT'
     );
   }
@@ -131,10 +138,17 @@ export class InventoryItemSerialNumbers extends BaseEntity {
     id: number,
     inventoryItemSerialNumbers: Partial<IInventoryItemSerialNumbers>
   ): Promise<ApiResponse<IInventoryItemSerialNumbers>> {
-    this.logger.info('Patching inventoryitemserialnumbers', { id, inventoryItemSerialNumbers });
+    this.logger.info('Patching inventoryitemserialnumbers', {
+      id,
+      inventoryItemSerialNumbers,
+    });
     return this.executeRequest(
-      async () => this.axios.patch(`${this.endpoint}/${id}`, inventoryItemSerialNumbers),
-      `${this.endpoint}/${id}`,
+      async () =>
+        this.axios.patch(this.endpoint, {
+          ...(inventoryItemSerialNumbers as any),
+          id,
+        }),
+      this.endpoint,
       'PATCH'
     );
   }
@@ -148,7 +162,7 @@ export class InventoryItemSerialNumbers extends BaseEntity {
     this.logger.info('Deleting inventoryitemserialnumbers', { id });
     await this.executeRequest(
       async () => this.axios.delete(`${this.endpoint}/${id}`),
-      `${this.endpoint}/${id}`,
+      this.endpoint,
       'DELETE'
     );
   }
@@ -158,7 +172,9 @@ export class InventoryItemSerialNumbers extends BaseEntity {
    * @param query - Query parameters for filtering, sorting, and pagination
    * @returns Promise with array of inventoryitemserialnumbers
    */
-  async list(query: IInventoryItemSerialNumbersQuery = {}): Promise<ApiResponse<IInventoryItemSerialNumbers[]>> {
+  async list(
+    query: IInventoryItemSerialNumbersQuery = {}
+  ): Promise<ApiResponse<IInventoryItemSerialNumbers[]>> {
     this.logger.info('Listing inventoryitemserialnumbers', { query });
     const searchBody: Record<string, any> = {};
 
@@ -177,7 +193,11 @@ export class InventoryItemSerialNumbers extends BaseEntity {
         const filterArray = [];
         for (const [field, value] of Object.entries(query.filter)) {
           // Handle nested objects like { id: { gte: 0 } }
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          if (
+            typeof value === 'object' &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
             // Extract operator and value from nested object
             const [op, val] = Object.entries(value)[0] as [string, any];
             filterArray.push({
