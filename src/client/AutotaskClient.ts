@@ -410,6 +410,7 @@ export class AutotaskClient {
         ApiIntegrationCode: config.integrationCode,
         UserName: config.username,
         Secret: config.secret,
+        ...(config.impersonateResourceId && { ImpersonateAsResourceID: String(config.impersonateResourceId) }),
       },
       transformRequest: [
         (data, headers) => {
