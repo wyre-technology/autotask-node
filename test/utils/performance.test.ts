@@ -304,6 +304,8 @@ describe('Performance & Reliability Improvements', () => {
       };
       jest.spyOn(axios, 'get').mockResolvedValueOnce(mockZoneResponse);
       jest.spyOn(axios, 'create').mockReturnValueOnce(mockAxios);
+      // Mock the connection test (/Version endpoint)
+      (mockAxios.get as jest.Mock).mockResolvedValue({ data: {}, status: 200 });
 
       const client = await AutotaskClient.create(
         {
@@ -327,6 +329,8 @@ describe('Performance & Reliability Improvements', () => {
       };
       jest.spyOn(axios, 'get').mockResolvedValueOnce(mockZoneResponse);
       jest.spyOn(axios, 'create').mockReturnValueOnce(mockAxios);
+      // Mock the connection test (/Version endpoint)
+      (mockAxios.get as jest.Mock).mockResolvedValue({ data: {}, status: 200 });
 
       const client = await AutotaskClient.create({
         username: 'test@example.com',

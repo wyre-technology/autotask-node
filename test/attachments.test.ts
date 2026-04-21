@@ -69,7 +69,10 @@ describe('Attachments Entity - Comprehensive Tests', () => {
         const result = await attachments.create(attachmentData);
 
         expect(result.data).toEqual(mockResponse);
-        expect(mockAxios.post).toHaveBeenCalledWith('/Attachments', attachmentData);
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          '/Attachments',
+          attachmentData
+        );
       });
 
       it('should validate required fields on create', async () => {
@@ -79,10 +82,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           contentType: 'application/pdf',
         };
 
-        const validationError = new ValidationError('File name is required', ['fileName']);
+        const validationError = new ValidationError('File name is required', {
+          fileName: ['File name is required'],
+        });
         mockAxios.post.mockRejectedValueOnce(validationError);
 
-        await expect(attachments.create(invalidAttachment)).rejects.toThrow(ValidationError);
+        await expect(attachments.create(invalidAttachment)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should validate file name format', async () => {
@@ -92,10 +99,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           contentType: 'application/pdf',
         };
 
-        const validationError = new ValidationError('Invalid file name', ['fileName']);
+        const validationError = new ValidationError('Invalid file name', {
+          fileName: ['Invalid file name'],
+        });
         mockAxios.post.mockRejectedValueOnce(validationError);
 
-        await expect(attachments.create(attachmentWithInvalidName)).rejects.toThrow(ValidationError);
+        await expect(
+          attachments.create(attachmentWithInvalidName)
+        ).rejects.toThrow(ValidationError);
       });
 
       it('should handle file size limits', async () => {
@@ -106,10 +117,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           size: 50 * 1024 * 1024, // 50MB
         };
 
-        const sizeError = new ValidationError('File size exceeds limit', ['size']);
+        const sizeError = new ValidationError('File size exceeds limit', {
+          size: ['File size exceeds limit'],
+        });
         mockAxios.post.mockRejectedValueOnce(sizeError);
 
-        await expect(attachments.create(largeAttachment)).rejects.toThrow(ValidationError);
+        await expect(attachments.create(largeAttachment)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should validate content type', async () => {
@@ -119,10 +134,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           contentType: 'application/x-executable',
         };
 
-        const typeError = new ValidationError('File type not allowed', ['contentType']);
+        const typeError = new ValidationError('File type not allowed', {
+          contentType: ['File type not allowed'],
+        });
         mockAxios.post.mockRejectedValueOnce(typeError);
 
-        await expect(attachments.create(attachmentWithInvalidType)).rejects.toThrow(ValidationError);
+        await expect(
+          attachments.create(attachmentWithInvalidType)
+        ).rejects.toThrow(ValidationError);
       });
     });
 
@@ -146,14 +165,20 @@ describe('Attachments Entity - Comprehensive Tests', () => {
       });
 
       it('should throw NotFoundError for non-existent attachment', async () => {
-        const notFoundError = new NotFoundError('Attachment not found', 'Attachment', 999);
+        const notFoundError = new NotFoundError(
+          'Attachment not found',
+          'Attachment',
+          999
+        );
         mockAxios.get.mockRejectedValueOnce(notFoundError);
 
         await expect(attachments.get(999)).rejects.toThrow(NotFoundError);
       });
 
       it('should handle invalid id parameter', async () => {
-        const invalidIdError = new ValidationError('Invalid attachment ID', ['id']);
+        const invalidIdError = new ValidationError('Invalid attachment ID', {
+          id: ['Invalid attachment ID'],
+        });
         mockAxios.get.mockRejectedValueOnce(invalidIdError);
 
         await expect(attachments.get(-1)).rejects.toThrow();
@@ -181,7 +206,10 @@ describe('Attachments Entity - Comprehensive Tests', () => {
         const result = await attachments.update(1, updateData);
 
         expect(result.data).toEqual(mockResponse);
-        expect(mockAxios.put).toHaveBeenCalledWith('/Attachments/1', updateData);
+        expect(mockAxios.put).toHaveBeenCalledWith(
+          '/Attachments/1',
+          updateData
+        );
       });
 
       it('should handle partial updates', async () => {
@@ -193,7 +221,8 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           id: 1,
           parentId: 123,
           fileName: 'renamed-file.docx',
-          contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          contentType:
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         };
 
         mockAxios.put.mockResolvedValueOnce({
@@ -210,10 +239,15 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           fileName: 'malicious.exe',
         };
 
-        const validationError = new ValidationError('File extension not allowed', ['fileName']);
+        const validationError = new ValidationError(
+          'File extension not allowed',
+          { fileName: ['File extension not allowed'] }
+        );
         mockAxios.put.mockRejectedValueOnce(validationError);
 
-        await expect(attachments.update(1, invalidUpdate)).rejects.toThrow(ValidationError);
+        await expect(attachments.update(1, invalidUpdate)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should handle content type mismatches', async () => {
@@ -222,10 +256,15 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           contentType: 'application/pdf', // Mismatch
         };
 
-        const mismatchError = new ValidationError('Content type does not match file extension', ['contentType']);
+        const mismatchError = new ValidationError(
+          'Content type does not match file extension',
+          { contentType: ['Content type does not match file extension'] }
+        );
         mockAxios.put.mockRejectedValueOnce(mismatchError);
 
-        await expect(attachments.update(1, mismatchUpdate)).rejects.toThrow(ValidationError);
+        await expect(attachments.update(1, mismatchUpdate)).rejects.toThrow(
+          ValidationError
+        );
       });
     });
 
@@ -238,7 +277,11 @@ describe('Attachments Entity - Comprehensive Tests', () => {
       });
 
       it('should handle deletion of non-existent attachment', async () => {
-        const notFoundError = new NotFoundError('Attachment not found', 'Attachment', 999);
+        const notFoundError = new NotFoundError(
+          'Attachment not found',
+          'Attachment',
+          999
+        );
         mockAxios.delete.mockRejectedValueOnce(notFoundError);
 
         await expect(attachments.delete(999)).rejects.toThrow(NotFoundError);
@@ -253,10 +296,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
       });
 
       it('should handle attachments in use', async () => {
-        const inUseError = new Error('Cannot delete attachment that is currently in use');
+        const inUseError = new Error(
+          'Cannot delete attachment that is currently in use'
+        );
         mockAxios.delete.mockRejectedValueOnce(inUseError);
 
-        await expect(attachments.delete(1)).rejects.toThrow('Cannot delete attachment that is currently in use');
+        await expect(attachments.delete(1)).rejects.toThrow(
+          'Cannot delete attachment that is currently in use'
+        );
       });
     });
   });
@@ -265,8 +312,19 @@ describe('Attachments Entity - Comprehensive Tests', () => {
     describe('list', () => {
       it('should list attachments successfully', async () => {
         const mockAttachments: Attachment[] = [
-          { id: 1, parentId: 123, fileName: 'file1.pdf', contentType: 'application/pdf' },
-          { id: 2, parentId: 124, fileName: 'file2.docx', contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+          {
+            id: 1,
+            parentId: 123,
+            fileName: 'file1.pdf',
+            contentType: 'application/pdf',
+          },
+          {
+            id: 2,
+            parentId: 124,
+            fileName: 'file2.docx',
+            contentType:
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          },
         ];
 
         mockAxios.get.mockResolvedValueOnce({
@@ -276,7 +334,9 @@ describe('Attachments Entity - Comprehensive Tests', () => {
         const result = await attachments.list();
 
         expect(result.data).toEqual(mockAttachments);
-        expect(mockAxios.get).toHaveBeenCalledWith('/Attachments', { params: {} });
+        expect(mockAxios.get).toHaveBeenCalledWith('/Attachments', {
+          params: {},
+        });
       });
 
       it('should handle filtered queries', async () => {
@@ -373,8 +433,16 @@ describe('Attachments Entity - Comprehensive Tests', () => {
       it('should validate document file types', async () => {
         const documentTypes = [
           { fileName: 'doc.pdf', contentType: 'application/pdf' },
-          { fileName: 'sheet.xlsx', contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-          { fileName: 'presentation.pptx', contentType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' },
+          {
+            fileName: 'sheet.xlsx',
+            contentType:
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          },
+          {
+            fileName: 'presentation.pptx',
+            contentType:
+              'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          },
           { fileName: 'text.txt', contentType: 'text/plain' },
         ];
 
@@ -406,10 +474,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
             ...dangerousType,
           };
 
-          const typeError = new ValidationError('File type not allowed', ['contentType']);
+          const typeError = new ValidationError('File type not allowed', {
+            contentType: ['File type not allowed'],
+          });
           mockAxios.post.mockRejectedValueOnce(typeError);
 
-          await expect(attachments.create(attachment)).rejects.toThrow(ValidationError);
+          await expect(attachments.create(attachment)).rejects.toThrow(
+            ValidationError
+          );
         }
       });
     });
@@ -439,10 +511,15 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           size: 100 * 1024 * 1024, // 100MB
         };
 
-        const sizeError = new ValidationError('File size exceeds maximum limit', ['size']);
+        const sizeError = new ValidationError(
+          'File size exceeds maximum limit',
+          { size: ['File size exceeds maximum limit'] }
+        );
         mockAxios.post.mockRejectedValueOnce(sizeError);
 
-        await expect(attachments.create(oversizedAttachment)).rejects.toThrow(ValidationError);
+        await expect(attachments.create(oversizedAttachment)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should handle zero-byte files', async () => {
@@ -453,10 +530,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           size: 0,
         };
 
-        const sizeError = new ValidationError('File cannot be empty', ['size']);
+        const sizeError = new ValidationError('File cannot be empty', {
+          size: ['File cannot be empty'],
+        });
         mockAxios.post.mockRejectedValueOnce(sizeError);
 
-        await expect(attachments.create(emptyAttachment)).rejects.toThrow(ValidationError);
+        await expect(attachments.create(emptyAttachment)).rejects.toThrow(
+          ValidationError
+        );
       });
     });
 
@@ -502,10 +583,15 @@ describe('Attachments Entity - Comprehensive Tests', () => {
             contentType: 'text/plain',
           };
 
-          const nameError = new ValidationError('Invalid characters in file name', ['fileName']);
+          const nameError = new ValidationError(
+            'Invalid characters in file name',
+            { fileName: ['Invalid characters in file name'] }
+          );
           mockAxios.post.mockRejectedValueOnce(nameError);
 
-          await expect(attachments.create(attachment)).rejects.toThrow(ValidationError);
+          await expect(attachments.create(attachment)).rejects.toThrow(
+            ValidationError
+          );
         }
       });
 
@@ -517,10 +603,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
           contentType: 'text/plain',
         };
 
-        const nameError = new ValidationError('File name too long', ['fileName']);
+        const nameError = new ValidationError('File name too long', {
+          fileName: ['File name too long'],
+        });
         mockAxios.post.mockRejectedValueOnce(nameError);
 
-        await expect(attachments.create(attachment)).rejects.toThrow(ValidationError);
+        await expect(attachments.create(attachment)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should handle file names without extensions', async () => {
@@ -548,10 +638,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
         contentType: 'application/pdf',
       };
 
-      const parentError = new ValidationError('Parent entity not found', ['parentId']);
+      const parentError = new ValidationError('Parent entity not found', {
+        parentId: ['Parent entity not found'],
+      });
       mockAxios.post.mockRejectedValueOnce(parentError);
 
-      await expect(attachments.create(attachmentData)).rejects.toThrow(ValidationError);
+      await expect(attachments.create(attachmentData)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate parent permissions', async () => {
@@ -575,8 +669,19 @@ describe('Attachments Entity - Comprehensive Tests', () => {
       };
 
       const mockAttachments: Attachment[] = [
-        { id: 1, parentId, fileName: 'file1.pdf', contentType: 'application/pdf' },
-        { id: 2, parentId, fileName: 'file2.docx', contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+        {
+          id: 1,
+          parentId,
+          fileName: 'file1.pdf',
+          contentType: 'application/pdf',
+        },
+        {
+          id: 2,
+          parentId,
+          fileName: 'file2.docx',
+          contentType:
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        },
       ];
 
       mockAxios.get.mockResolvedValueOnce({
@@ -593,7 +698,7 @@ describe('Attachments Entity - Comprehensive Tests', () => {
   describe('Error Handling', () => {
     it('should handle network errors gracefully', async () => {
       const networkError = new AxiosError('Network Error');
-      mockAxios.get.mockRejectedValueOnce(networkError);
+      mockAxios.get.mockRejectedValue(networkError);
 
       await expect(attachments.get(1)).rejects.toThrow('Network Error');
     });
@@ -601,25 +706,31 @@ describe('Attachments Entity - Comprehensive Tests', () => {
     it('should handle server errors', async () => {
       const serverError = new AxiosError('Internal Server Error');
       serverError.response = { status: 500 } as any;
-      mockAxios.post.mockRejectedValueOnce(serverError);
+      mockAxios.post.mockRejectedValue(serverError);
 
-      await expect(attachments.create({ fileName: 'test.txt' })).rejects.toThrow();
+      await expect(
+        attachments.create({ fileName: 'test.txt' })
+      ).rejects.toThrow();
     });
 
     it('should handle timeout errors during upload', async () => {
       const timeoutError = new AxiosError('Request timeout');
       timeoutError.code = 'ECONNABORTED';
-      mockAxios.post.mockRejectedValueOnce(timeoutError);
+      mockAxios.post.mockRejectedValue(timeoutError);
 
-      await expect(attachments.create({ fileName: 'large.zip' })).rejects.toThrow();
+      await expect(
+        attachments.create({ fileName: 'large.zip' })
+      ).rejects.toThrow();
     });
 
     it('should handle disk space errors', async () => {
       const diskSpaceError = new AxiosError('Insufficient storage space');
       diskSpaceError.response = { status: 507 } as any;
-      mockAxios.post.mockRejectedValueOnce(diskSpaceError);
+      mockAxios.post.mockRejectedValue(diskSpaceError);
 
-      await expect(attachments.create({ fileName: 'file.pdf' })).rejects.toThrow();
+      await expect(
+        attachments.create({ fileName: 'file.pdf' })
+      ).rejects.toThrow();
     });
   });
 
@@ -648,10 +759,14 @@ describe('Attachments Entity - Comprehensive Tests', () => {
         contentType: 'application/pdf',
       };
 
-      const validationError = new ValidationError('Invalid file', ['fileName']);
+      const validationError = new ValidationError('Invalid file', {
+        fileName: ['Invalid file'],
+      });
       mockAxios.post.mockRejectedValueOnce(validationError);
 
-      await expect(attachments.create(attachment)).rejects.toThrow(ValidationError);
+      await expect(attachments.create(attachment)).rejects.toThrow(
+        ValidationError
+      );
       expect(mockAxios.post).toHaveBeenCalledTimes(1);
     });
 
@@ -720,8 +835,16 @@ describe('Attachments Entity - Comprehensive Tests', () => {
     });
 
     it('should handle concurrent operations', async () => {
-      const attachments1: Attachment = { parentId: 123, fileName: 'file1.txt', contentType: 'text/plain' };
-      const attachments2: Attachment = { parentId: 123, fileName: 'file2.txt', contentType: 'text/plain' };
+      const attachments1: Attachment = {
+        parentId: 123,
+        fileName: 'file1.txt',
+        contentType: 'text/plain',
+      };
+      const attachments2: Attachment = {
+        parentId: 123,
+        fileName: 'file2.txt',
+        contentType: 'text/plain',
+      };
 
       mockAxios.post
         .mockResolvedValueOnce({ data: { id: 1, ...attachments1 } })

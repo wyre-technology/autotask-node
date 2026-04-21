@@ -12,10 +12,16 @@ import {
   ExternalLogHandler,
   defaultErrorLogger,
   LogErrors,
-  withLoggingContext
+  withLoggingContext,
 } from '../../src/errors/ErrorLogger';
-import { AutotaskError, AuthenticationError } from '../../src/errors/AutotaskErrors';
-import { CircuitBreakerState, CircuitBreakerMetrics } from '../../src/errors/CircuitBreaker';
+import {
+  AutotaskError,
+  AuthenticationError,
+} from '../../src/errors/AutotaskErrors';
+import {
+  CircuitBreakerState,
+  CircuitBreakerMetrics,
+} from '../../src/errors/CircuitBreaker';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -28,23 +34,23 @@ const mockFs = fs as jest.Mocked<typeof fs>;
 
 describe('ErrorLogger', () => {
   let logger: ErrorLogger;
-  let mockConsoleLog: jest.SpyInstance;
+  let mockConsoleError: jest.SpyInstance;
   let mockConsoleWarn: jest.SpyInstance;
   const testLogPath = './test-logs/test.log';
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
+    mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
     mockConsoleWarn = jest.spyOn(console, 'warn').mockImplementation();
-    
+
     // Mock fs methods
     mockFs.existsSync.mockReturnValue(true);
     mockFs.mkdirSync.mockReturnValue(undefined);
     mockFs.appendFileSync.mockReturnValue(undefined);
-    
+
     logger = new ErrorLogger({
       level: LogLevel.DEBUG,
-      destinations: [LogDestination.CONSOLE]
+      destinations: [LogDestination.CONSOLE],
     });
   });
 
@@ -56,7 +62,7 @@ describe('ErrorLogger', () => {
     it('should initialize with default configuration', () => {
       const defaultLogger = new ErrorLogger();
       const config = defaultLogger.getConfig();
-      
+
       expect(config.level).toBe(LogLevel.INFO);
       expect(config.includeStackTrace).toBe(true);
       expect(config.destinations).toEqual([LogDestination.CONSOLE]);
@@ -70,7 +76,7 @@ describe('ErrorLogger', () => {
         destinations: [LogDestination.FILE, LogDestination.CONSOLE],
         filePath: './custom.log',
         jsonFormat: true,
-        sensitiveFields: ['customSecret']
+        sensitiveFields: ['customSecret'],
       });
 
       const config = customLogger.getConfig();
@@ -86,7 +92,7 @@ describe('ErrorLogger', () => {
     it('should generate unique correlation IDs', () => {
       const id1 = logger.generateCorrelationId();
       const id2 = logger.generateCorrelationId();
-      
+
       expect(id1).toBeDefined();
       expect(id2).toBeDefined();
       expect(id1).not.toBe(id2);
@@ -96,10 +102,10 @@ describe('ErrorLogger', () => {
     it('should increment counter in correlation IDs', () => {
       const id1 = logger.generateCorrelationId();
       const id2 = logger.generateCorrelationId();
-      
+
       const parts1 = id1.split('-');
       const parts2 = id2.split('-');
-      
+
       expect(parseInt(parts2[1], 36)).toBeGreaterThan(parseInt(parts1[1], 36));
     });
   });
@@ -107,16 +113,16 @@ describe('ErrorLogger', () => {
   describe('log levels', () => {
     it('should log debug messages', () => {
       logger.debug('Debug message', { operation: 'test' });
-      
-      expect(mockConsoleLog).toHaveBeenCalledWith(
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining('DEBUG')
       );
     });
 
     it('should log info messages', () => {
       logger.info('Info message', { operation: 'test' });
-      
-      expect(mockConsoleLog).toHaveBeenCalledWith(
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining('INFO')
       );
     });
@@ -124,8 +130,8 @@ describe('ErrorLogger', () => {
     it('should log warning messages', () => {
       const error = new Error('Test error');
       logger.warn('Warning message', error, { operation: 'test' });
-      
-      expect(mockConsoleLog).toHaveBeenCalledWith(
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining('WARN')
       );
     });
@@ -133,8 +139,8 @@ describe('ErrorLogger', () => {
     it('should log error messages', () => {
       const error = new Error('Test error');
       logger.error('Error message', error, { operation: 'test' });
-      
-      expect(mockConsoleLog).toHaveBeenCalledWith(
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining('ERROR')
       );
     });
@@ -142,8 +148,8 @@ describe('ErrorLogger', () => {
     it('should log fatal messages', () => {
       const error = new Error('Fatal error');
       logger.fatal('Fatal message', error, { operation: 'test' });
-      
-      expect(mockConsoleLog).toHaveBeenCalledWith(
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining('FATAL')
       );
     });
@@ -151,7 +157,7 @@ describe('ErrorLogger', () => {
     it('should respect minimum log level', () => {
       const errorOnlyLogger = new ErrorLogger({
         level: LogLevel.ERROR,
-        destinations: [LogDestination.CONSOLE]
+        destinations: [LogDestination.CONSOLE],
       });
 
       errorOnlyLogger.debug('Debug message');
@@ -159,8 +165,8 @@ describe('ErrorLogger', () => {
       errorOnlyLogger.warn('Warn message');
       errorOnlyLogger.error('Error message');
 
-      expect(mockConsoleLog).toHaveBeenCalledTimes(1);
-      expect(mockConsoleLog).toHaveBeenCalledWith(
+      expect(mockConsoleError).toHaveBeenCalledTimes(1);
+      expect(mockConsoleError).toHaveBeenCalledWith(
         expect.stringContaining('ERROR')
       );
     });
@@ -170,8 +176,8 @@ describe('ErrorLogger', () => {
     it('should log basic errors with stack trace', () => {
       const error = new Error('Test error');
       logger.error('Error occurred', error);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('Error occurred');
       expect(logCall).toContain('Test error');
       expect(logCall).toContain('at '); // Stack trace indicator
@@ -179,29 +185,29 @@ describe('ErrorLogger', () => {
 
     it('should log AutotaskError with additional details', () => {
       const error = new AuthenticationError('Invalid credentials', {
-        userId: 'user123', 
-        action: 'login' 
+        userId: 'user123',
+        action: 'login',
       });
-      
+
       logger.error('Authentication failed', error);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('Authentication failed');
       expect(logCall).toContain('Invalid credentials');
-      // Check that the error details contain the context information  
+      // Check that the error details contain the context information
       expect(logCall).toContain('userId');
     });
 
     it('should exclude stack trace when configured', () => {
       const noStackLogger = new ErrorLogger({
         includeStackTrace: false,
-        destinations: [LogDestination.CONSOLE]
+        destinations: [LogDestination.CONSOLE],
       });
 
       const error = new Error('Test error');
       noStackLogger.error('Error occurred', error);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).not.toContain('at ');
     });
   });
@@ -215,13 +221,13 @@ describe('ErrorLogger', () => {
         entityType: 'Company',
         performance: {
           startTime: Date.now(),
-          duration: 150
-        }
+          duration: 150,
+        },
       };
 
       logger.info('Operation completed', context);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('test-123');
       expect(logCall).toContain('getData');
       expect(logCall).toContain('Company');
@@ -229,8 +235,8 @@ describe('ErrorLogger', () => {
 
     it('should generate correlation ID if not provided', () => {
       logger.info('Test message');
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toMatch(/\[[a-z0-9]+-[a-z0-9]+-[a-z0-9]+\]/);
     });
   });
@@ -242,12 +248,12 @@ describe('ErrorLogger', () => {
         apiKey: 'key456',
         authorization: 'Bearer token789',
         username: 'john_doe', // This should not be redacted
-        operation: 'login'
+        operation: 'login',
       };
 
       logger.info('Login attempt', context);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('[REDACTED]');
       expect(logCall).not.toContain('secret123');
       expect(logCall).not.toContain('key456');
@@ -258,20 +264,20 @@ describe('ErrorLogger', () => {
     it('should redact custom sensitive fields', () => {
       const customLogger = new ErrorLogger({
         sensitiveFields: ['customSecret', 'privateData'],
-        destinations: [LogDestination.CONSOLE]
+        destinations: [LogDestination.CONSOLE],
       });
 
       const context: LogContext = {
         metadata: {
           customSecret: 'secret123',
           privateData: 'private456',
-          publicData: 'public789'
-        }
+          publicData: 'public789',
+        },
       };
 
       customLogger.info('Test message', context);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('[REDACTED]');
       expect(logCall).not.toContain('secret123');
       expect(logCall).not.toContain('private456');
@@ -283,18 +289,18 @@ describe('ErrorLogger', () => {
         request: {
           headers: {
             authorization: 'Bearer secret',
-            'content-type': 'application/json'
-          }
+            'content-type': 'application/json',
+          },
         },
         user: {
           id: 'user123',
-          password: 'secret'
-        }
+          password: 'secret',
+        },
       };
 
       logger.info('Request processed', context);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('[REDACTED]');
       expect(logCall).not.toContain('Bearer secret');
       expect(logCall).toContain('application/json');
@@ -309,12 +315,14 @@ describe('ErrorLogger', () => {
         attempt: 2,
         maxAttempts: 3,
         nextDelay: 2000,
-        totalTime: 3500
+        totalTime: 3500,
       };
 
-      logger.logRetry('API call failed', error, retryInfo, { operation: 'getData' });
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+      logger.logRetry('API call failed', error, retryInfo, {
+        operation: 'getData',
+      });
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('Retry attempt 2/3');
       expect(logCall).toContain('API call failed');
       expect(logCall).toContain('Network timeout');
@@ -332,7 +340,7 @@ describe('ErrorLogger', () => {
         rejectedCount: 25,
         failureRate: 0.5,
         stateTransitions: 3,
-        averageResponseTime: 250
+        averageResponseTime: 250,
       };
 
       const error = new Error('Service unavailable');
@@ -343,8 +351,8 @@ describe('ErrorLogger', () => {
         error,
         metrics
       );
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('Circuit breaker');
       expect(logCall).toContain('api-service');
       expect(logCall).toContain('closed');
@@ -358,12 +366,12 @@ describe('ErrorLogger', () => {
       const longMessage = 'A'.repeat(11000);
       const shortLogger = new ErrorLogger({
         maxLogSize: 100,
-        destinations: [LogDestination.CONSOLE]
+        destinations: [LogDestination.CONSOLE],
       });
 
       shortLogger.info(longMessage);
-      
-      const logCall = mockConsoleLog.mock.calls[0][0];
+
+      const logCall = mockConsoleError.mock.calls[0][0];
       expect(logCall).toContain('A'.repeat(97) + '...');
       expect(logCall.length).toBeLessThan(longMessage.length);
     });
@@ -372,10 +380,10 @@ describe('ErrorLogger', () => {
 
 describe('ConsoleLogHandler', () => {
   let handler: ConsoleLogHandler;
-  let mockConsoleLog: jest.SpyInstance;
+  let mockConsoleError: jest.SpyInstance;
 
   beforeEach(() => {
-    mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
+    mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
   });
 
   afterEach(() => {
@@ -384,37 +392,37 @@ describe('ConsoleLogHandler', () => {
 
   it('should format logs in human-readable format by default', () => {
     handler = new ConsoleLogHandler(false);
-    
+
     const entry = {
       timestamp: '2023-01-01T10:00:00.000Z',
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
       context: { correlationId: 'test-123' },
-      executionTime: 100
+      executionTime: 100,
     };
 
     handler.write(entry);
-    
-    const logCall = mockConsoleLog.mock.calls[0][0];
+
+    const logCall = mockConsoleError.mock.calls[0][0];
     expect(logCall).toContain('INFO [test-123]:');
     expect(logCall).toContain('Test message');
   });
 
   it('should format logs in JSON format when configured', () => {
     handler = new ConsoleLogHandler(true);
-    
+
     const entry = {
       timestamp: '2023-01-01T10:00:00.000Z',
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: { correlationId: 'test-123' }
+      context: { correlationId: 'test-123' },
     };
 
     handler.write(entry);
-    
-    expect(mockConsoleLog).toHaveBeenCalledWith(
+
+    expect(mockConsoleError).toHaveBeenCalledWith(
       JSON.stringify(entry, null, 2)
     );
   });
@@ -432,33 +440,35 @@ describe('FileLogHandler', () => {
 
   it('should create directory if it does not exist', async () => {
     handler = new FileLogHandler('./logs/test.log');
-    
+
     const entry = {
       timestamp: '2023-01-01T10:00:00.000Z',
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: {}
+      context: {},
     };
 
     await handler.write(entry);
-    
-    expect(mockFs.mkdirSync).toHaveBeenCalledWith('./logs', { recursive: true });
+
+    expect(mockFs.mkdirSync).toHaveBeenCalledWith('./logs', {
+      recursive: true,
+    });
   });
 
   it('should append JSON log entries to file', async () => {
     handler = new FileLogHandler('./logs/test.log', true);
-    
+
     const entry = {
       timestamp: '2023-01-01T10:00:00.000Z',
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: {}
+      context: {},
     };
 
     await handler.write(entry);
-    
+
     expect(mockFs.appendFileSync).toHaveBeenCalledWith(
       './logs/test.log',
       JSON.stringify(entry) + '\n'
@@ -468,13 +478,15 @@ describe('FileLogHandler', () => {
 
 describe('ExternalLogHandler', () => {
   let handler: ExternalLogHandler;
-  const mockFetch = (globalThis as any).fetch as jest.MockedFunction<typeof globalThis.fetch>;
+  const mockFetch = (globalThis as any).fetch as jest.MockedFunction<
+    typeof globalThis.fetch
+  >;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockFetch.mockResolvedValue({
       ok: true,
-      status: 200
+      status: 200,
     } as any);
   });
 
@@ -482,7 +494,7 @@ describe('ExternalLogHandler', () => {
     handler = new ExternalLogHandler({
       endpoint: 'https://logs.example.com/api/logs',
       apiKey: 'test-key',
-      service: 'custom'
+      service: 'custom',
     });
 
     const entry = {
@@ -490,7 +502,7 @@ describe('ExternalLogHandler', () => {
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: {}
+      context: {},
     };
 
     await handler.write(entry);
@@ -501,9 +513,9 @@ describe('ExternalLogHandler', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer test-key'
+          Authorization: 'Bearer test-key',
         },
-        body: JSON.stringify(entry)
+        body: JSON.stringify(entry),
       }
     );
   });
@@ -512,7 +524,7 @@ describe('ExternalLogHandler', () => {
     handler = new ExternalLogHandler({
       endpoint: 'https://http-intake.logs.datadoghq.com/v1/input/test',
       apiKey: 'datadog-key',
-      service: 'datadog'
+      service: 'datadog',
     });
 
     const entry = {
@@ -520,7 +532,7 @@ describe('ExternalLogHandler', () => {
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: {}
+      context: {},
     };
 
     await handler.write(entry);
@@ -529,8 +541,8 @@ describe('ExternalLogHandler', () => {
       expect.any(String),
       expect.objectContaining({
         headers: expect.objectContaining({
-          'DD-API-KEY': 'datadog-key'
-        })
+          'DD-API-KEY': 'datadog-key',
+        }),
       })
     );
   });
@@ -539,12 +551,12 @@ describe('ExternalLogHandler', () => {
     const mockConsoleWarn = jest.spyOn(console, 'warn').mockImplementation();
     mockFetch.mockResolvedValue({
       ok: false,
-      status: 500
+      status: 500,
     } as any);
 
     handler = new ExternalLogHandler({
       endpoint: 'https://logs.example.com/api/logs',
-      apiKey: 'test-key'
+      apiKey: 'test-key',
     });
 
     const entry = {
@@ -552,7 +564,7 @@ describe('ExternalLogHandler', () => {
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: {}
+      context: {},
     };
 
     await handler.write(entry);
@@ -566,7 +578,7 @@ describe('ExternalLogHandler', () => {
 
   it('should skip logging when endpoint or API key is missing', async () => {
     handler = new ExternalLogHandler({
-      service: 'custom'
+      service: 'custom',
     });
 
     const entry = {
@@ -574,7 +586,7 @@ describe('ExternalLogHandler', () => {
       level: LogLevel.INFO,
       levelName: 'INFO',
       message: 'Test message',
-      context: {}
+      context: {},
     };
 
     await handler.write(entry);
@@ -584,11 +596,11 @@ describe('ExternalLogHandler', () => {
 });
 
 describe('LogErrors decorator', () => {
-  let mockConsoleLog: jest.SpyInstance;
+  let mockConsoleError: jest.SpyInstance;
   let originalConfig: any;
 
   beforeEach(() => {
-    mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
+    mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
     // Temporarily set default logger to debug level
     originalConfig = defaultErrorLogger.getConfig();
     defaultErrorLogger.updateConfig({ level: LogLevel.DEBUG });
@@ -609,7 +621,7 @@ describe('LogErrors decorator', () => {
 
   it('should wrap method with logging functionality', async () => {
     const decorator = LogErrors('Testing method execution');
-    
+
     const originalMethod = async (param: string): Promise<string> => {
       return `result: ${param}`;
     };
@@ -618,7 +630,7 @@ describe('LogErrors decorator', () => {
       value: originalMethod,
       writable: true,
       enumerable: true,
-      configurable: true
+      configurable: true,
     };
 
     class TestClass {}
@@ -632,14 +644,14 @@ describe('LogErrors decorator', () => {
     const result = await mockDescriptor.value('test');
 
     expect(result).toBe('result: test');
-    expect(mockConsoleLog).toHaveBeenCalledWith(
+    expect(mockConsoleError).toHaveBeenCalledWith(
       expect.stringContaining('Testing method execution')
     );
   });
 
   it('should log errors and rethrow them', async () => {
     const decorator = LogErrors('Testing error handling');
-    
+
     const originalMethod = async (): Promise<void> => {
       throw new Error('Test error');
     };
@@ -648,7 +660,7 @@ describe('LogErrors decorator', () => {
       value: originalMethod,
       writable: true,
       enumerable: true,
-      configurable: true
+      configurable: true,
     };
 
     class TestClass {}
@@ -660,18 +672,18 @@ describe('LogErrors decorator', () => {
 
     // Call the wrapped method and expect error
     await expect(mockDescriptor.value()).rejects.toThrow('Test error');
-    expect(mockConsoleLog).toHaveBeenCalledWith(
+    expect(mockConsoleError).toHaveBeenCalledWith(
       expect.stringContaining('ERROR')
     );
   });
 });
 
 describe('withLoggingContext', () => {
-  let mockConsoleLog: jest.SpyInstance;
+  let mockConsoleError: jest.SpyInstance;
   let originalConfig: any;
 
   beforeEach(() => {
-    mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
+    mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
     // Temporarily set default logger to debug level
     originalConfig = defaultErrorLogger.getConfig();
     defaultErrorLogger.updateConfig({ level: LogLevel.DEBUG });
@@ -697,26 +709,23 @@ describe('withLoggingContext', () => {
     );
 
     expect(result).toBe('success');
-    expect(mockConsoleLog).toHaveBeenCalledTimes(2); // Start and completion
-    expect(mockConsoleLog).toHaveBeenCalledWith(
+    expect(mockConsoleError).toHaveBeenCalledTimes(2); // Start and completion
+    expect(mockConsoleError).toHaveBeenCalledWith(
       expect.stringContaining('Starting test-operation')
     );
-    expect(mockConsoleLog).toHaveBeenCalledWith(
+    expect(mockConsoleError).toHaveBeenCalledWith(
       expect.stringContaining('Completed test-operation')
     );
   });
 
   it('should log errors and rethrow them', async () => {
     await expect(
-      withLoggingContext(
-        'failing-operation',
-        async () => {
-          throw new Error('Operation failed');
-        }
-      )
+      withLoggingContext('failing-operation', async () => {
+        throw new Error('Operation failed');
+      })
     ).rejects.toThrow('Operation failed');
 
-    expect(mockConsoleLog).toHaveBeenCalledWith(
+    expect(mockConsoleError).toHaveBeenCalledWith(
       expect.stringContaining('Failed failing-operation')
     );
   });

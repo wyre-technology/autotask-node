@@ -117,6 +117,8 @@ describe('QuoteItems Entity', () => {
       mockAxios.post.mockResolvedValueOnce(
         createMockItemResponse(mockResponse, 201)
       );
+      // QuoteItems.create fetches the created item by ID after creation
+      mockAxios.get.mockResolvedValueOnce(createMockItemResponse(mockResponse));
 
       const result = await quoteItems.create(quoteItemsData);
 

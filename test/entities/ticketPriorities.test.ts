@@ -4,6 +4,7 @@ import {
   createEntityTestSetup,
   createMockItemResponse,
   createMockItemsResponse,
+  createMockResponse,
   createMockDeleteResponse,
   resetAllMocks,
   EntityTestSetup,
@@ -27,9 +28,9 @@ describe('TicketPriorities Entity', () => {
         { id: 2, name: 'Medium', priorityLevel: 2, isActive: true },
       ];
 
-      setup.mockAxios.post.mockResolvedValueOnce(
-        createMockItemsResponse(mockData)
-      );
+      // TicketPriorities.list uses executeRequest (not executeQueryRequest),
+      // so the response data is returned as-is without items unwrapping
+      setup.mockAxios.get.mockResolvedValueOnce(createMockResponse(mockData));
 
       const result = await setup.entity.list();
 
@@ -45,9 +46,7 @@ describe('TicketPriorities Entity', () => {
     it('should handle query parameters', async () => {
       const mockData = [{ id: 1, name: 'High Priority' }];
 
-      setup.mockAxios.post.mockResolvedValueOnce(
-        createMockItemsResponse(mockData)
-      );
+      setup.mockAxios.get.mockResolvedValueOnce(createMockResponse(mockData));
 
       const options = {
         filter: { isActive: true },

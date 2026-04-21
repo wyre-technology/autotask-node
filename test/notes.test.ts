@@ -8,11 +8,7 @@ import {
 } from '@jest/globals';
 import { AxiosInstance, AxiosError } from 'axios';
 import winston from 'winston';
-import {
-  Notes,
-  Note,
-  NoteQuery,
-} from '../src/entities/notes';
+import { Notes, Note, NoteQuery } from '../src/entities/notes';
 import { BusinessRuleEngine } from '../src/business-rules/BusinessRuleEngine';
 import { ReferentialIntegrityManager } from '../src/referential-integrity/ReferentialIntegrityManager';
 import { NotFoundError, ValidationError } from '../src/utils/errors';
@@ -93,10 +89,14 @@ describe('Notes Entity - Comprehensive Tests', () => {
           description: 'Note without title',
         };
 
-        const validationError = new ValidationError('Title is required', ['title']);
+        const validationError = new ValidationError('Title is required', {
+          title: ['Title is required'],
+        });
         mockAxios.post.mockRejectedValueOnce(validationError);
 
-        await expect(notes.create(invalidNote)).rejects.toThrow(ValidationError);
+        await expect(notes.create(invalidNote)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should validate ticket relationship on create', async () => {
@@ -106,10 +106,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
           description: 'This note has no valid parent ticket',
         };
 
-        const relationshipError = new ValidationError('Referenced ticket does not exist', ['ticketId']);
+        const relationshipError = new ValidationError(
+          'Referenced ticket does not exist',
+          { ticketId: ['Referenced ticket does not exist'] }
+        );
         mockAxios.post.mockRejectedValueOnce(relationshipError);
 
-        await expect(notes.create(noteWithInvalidTicket)).rejects.toThrow(ValidationError);
+        await expect(notes.create(noteWithInvalidTicket)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should handle note creation with rich content', async () => {
@@ -269,10 +274,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
           description: longContent,
         };
 
-        const validationError = new ValidationError('Description exceeds maximum length', ['description']);
+        const validationError = new ValidationError(
+          'Description exceeds maximum length',
+          { description: ['Description exceeds maximum length'] }
+        );
         mockAxios.put.mockRejectedValueOnce(validationError);
 
-        await expect(notes.update(1, invalidUpdate)).rejects.toThrow(ValidationError);
+        await expect(notes.update(1, invalidUpdate)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should prevent changing ticket association', async () => {
@@ -280,10 +290,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
           ticketId: 456, // Trying to move note to different ticket
         };
 
-        const validationError = new ValidationError('Cannot change note parent ticket', ['ticketId']);
+        const validationError = new ValidationError(
+          'Cannot change note parent ticket',
+          { ticketId: ['Cannot change note parent ticket'] }
+        );
         mockAxios.put.mockRejectedValueOnce(validationError);
 
-        await expect(notes.update(1, invalidUpdate)).rejects.toThrow(ValidationError);
+        await expect(notes.update(1, invalidUpdate)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should toggle privacy setting', async () => {
@@ -325,7 +340,9 @@ describe('Notes Entity - Comprehensive Tests', () => {
       });
 
       it('should handle permission errors on delete', async () => {
-        const permissionError = new AxiosError('Insufficient permissions to delete note');
+        const permissionError = new AxiosError(
+          'Insufficient permissions to delete note'
+        );
         permissionError.response = { status: 403 } as any;
         mockAxios.delete.mockRejectedValueOnce(permissionError);
 
@@ -333,10 +350,14 @@ describe('Notes Entity - Comprehensive Tests', () => {
       });
 
       it('should handle referenced note deletion constraints', async () => {
-        const constraintError = new Error('Cannot delete note referenced by other entities');
+        const constraintError = new Error(
+          'Cannot delete note referenced by other entities'
+        );
         mockAxios.delete.mockRejectedValueOnce(constraintError);
 
-        await expect(notes.delete(1)).rejects.toThrow('Cannot delete note referenced by other entities');
+        await expect(notes.delete(1)).rejects.toThrow(
+          'Cannot delete note referenced by other entities'
+        );
       });
     });
   });
@@ -365,8 +386,18 @@ describe('Notes Entity - Comprehensive Tests', () => {
         };
 
         const ticketNotes: Note[] = [
-          { id: 1, ticketId: 123, title: 'Ticket Note 1', description: 'First note for ticket' },
-          { id: 2, ticketId: 123, title: 'Ticket Note 2', description: 'Second note for ticket' },
+          {
+            id: 1,
+            ticketId: 123,
+            title: 'Ticket Note 1',
+            description: 'First note for ticket',
+          },
+          {
+            id: 2,
+            ticketId: 123,
+            title: 'Ticket Note 2',
+            description: 'Second note for ticket',
+          },
         ];
 
         mockAxios.get.mockResolvedValueOnce({
@@ -389,7 +420,13 @@ describe('Notes Entity - Comprehensive Tests', () => {
         };
 
         const publicNotes: Note[] = [
-          { id: 1, ticketId: 123, title: 'Public Note', description: 'This is public', isPrivate: false },
+          {
+            id: 1,
+            ticketId: 123,
+            title: 'Public Note',
+            description: 'This is public',
+            isPrivate: false,
+          },
         ];
 
         mockAxios.get.mockResolvedValueOnce({
@@ -485,10 +522,14 @@ describe('Notes Entity - Comprehensive Tests', () => {
       // Mock referential integrity check
       mockIntegrityManager.validateReferences.mockResolvedValueOnce({
         isValid: false,
-        violations: [{ field: 'ticketId', message: 'Referenced ticket does not exist' }],
+        violations: [
+          { field: 'ticketId', message: 'Referenced ticket does not exist' },
+        ],
       } as any);
 
-      const referenceError = new ValidationError('Invalid ticket reference', ['ticketId']);
+      const referenceError = new ValidationError('Invalid ticket reference', {
+        ticketId: ['Invalid ticket reference'],
+      });
       mockAxios.post.mockRejectedValueOnce(referenceError);
 
       await expect(notes.create(noteData)).rejects.toThrow(ValidationError);
@@ -513,7 +554,9 @@ describe('Notes Entity - Comprehensive Tests', () => {
         title: 'Unauthorized Update',
       };
 
-      const ownershipError = new AxiosError('Cannot modify note created by another user');
+      const ownershipError = new AxiosError(
+        'Cannot modify note created by another user'
+      );
       ownershipError.response = { status: 403 } as any;
       mockAxios.put.mockRejectedValueOnce(ownershipError);
 
@@ -532,10 +575,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
       // Mock business rules validation
       mockBusinessRules.validateEntity.mockResolvedValueOnce({
         isValid: false,
-        getErrors: () => [{ code: 'DUPLICATE_NOTE', message: 'Similar note already exists' }],
+        getErrors: () => [
+          { code: 'DUPLICATE_NOTE', message: 'Similar note already exists' },
+        ],
       } as any);
 
-      const duplicateError = new ValidationError('Business rule violation: duplicate note', ['title']);
+      const duplicateError = new ValidationError(
+        'Business rule violation: duplicate note',
+        { title: ['Business rule violation: duplicate note'] }
+      );
       mockAxios.post.mockRejectedValueOnce(duplicateError);
 
       await expect(notes.create(noteData)).rejects.toThrow(ValidationError);
@@ -545,13 +593,19 @@ describe('Notes Entity - Comprehensive Tests', () => {
       const noteWithRestrictedContent: Note = {
         ticketId: 123,
         title: 'Sensitive Information',
-        description: 'This note contains: SSN 123-45-6789, Credit Card: 4111-1111-1111-1111',
+        description:
+          'This note contains: SSN 123-45-6789, Credit Card: 4111-1111-1111-1111',
       };
 
-      const policyError = new ValidationError('Note contains sensitive information', ['description']);
+      const policyError = new ValidationError(
+        'Note contains sensitive information',
+        { description: ['Note contains sensitive information'] }
+      );
       mockAxios.post.mockRejectedValueOnce(policyError);
 
-      await expect(notes.create(noteWithRestrictedContent)).rejects.toThrow(ValidationError);
+      await expect(notes.create(noteWithRestrictedContent)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate note visibility rules', async () => {
@@ -563,10 +617,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
       };
 
       // Some tickets might not allow private notes
-      const visibilityError = new ValidationError('Private notes not allowed for this ticket type', ['isPrivate']);
+      const visibilityError = new ValidationError(
+        'Private notes not allowed for this ticket type',
+        { isPrivate: ['Private notes not allowed for this ticket type'] }
+      );
       mockAxios.post.mockRejectedValueOnce(visibilityError);
 
-      await expect(notes.create(privateNoteData)).rejects.toThrow(ValidationError);
+      await expect(notes.create(privateNoteData)).rejects.toThrow(
+        ValidationError
+      );
     });
   });
 
@@ -579,10 +638,14 @@ describe('Notes Entity - Comprehensive Tests', () => {
         description: 'Note with very long title',
       };
 
-      const lengthError = new ValidationError('Title exceeds maximum length', ['title']);
+      const lengthError = new ValidationError('Title exceeds maximum length', {
+        title: ['Title exceeds maximum length'],
+      });
       mockAxios.post.mockRejectedValueOnce(lengthError);
 
-      await expect(notes.create(noteWithLongTitle)).rejects.toThrow(ValidationError);
+      await expect(notes.create(noteWithLongTitle)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate description format', async () => {
@@ -592,10 +655,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
         description: '<script>alert("xss")</script>', // Potentially dangerous content
       };
 
-      const formatError = new ValidationError('Invalid content format detected', ['description']);
+      const formatError = new ValidationError(
+        'Invalid content format detected',
+        { description: ['Invalid content format detected'] }
+      );
       mockAxios.post.mockRejectedValueOnce(formatError);
 
-      await expect(notes.create(noteWithInvalidFormat)).rejects.toThrow(ValidationError);
+      await expect(notes.create(noteWithInvalidFormat)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate required fields', async () => {
@@ -605,10 +673,14 @@ describe('Notes Entity - Comprehensive Tests', () => {
         description: 'Note without title',
       };
 
-      const requiredError = new ValidationError('Title is required', ['title']);
+      const requiredError = new ValidationError('Title is required', {
+        title: ['Title is required'],
+      });
       mockAxios.post.mockRejectedValueOnce(requiredError);
 
-      await expect(notes.create(incompleteNote)).rejects.toThrow(ValidationError);
+      await expect(notes.create(incompleteNote)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should handle special characters in content', async () => {
@@ -631,7 +703,7 @@ describe('Notes Entity - Comprehensive Tests', () => {
   describe('Error Handling', () => {
     it('should handle network errors gracefully', async () => {
       const networkError = new AxiosError('Network Error');
-      mockAxios.get.mockRejectedValueOnce(networkError);
+      mockAxios.get.mockRejectedValue(networkError);
 
       await expect(notes.get(1)).rejects.toThrow('Network Error');
     });
@@ -639,7 +711,7 @@ describe('Notes Entity - Comprehensive Tests', () => {
     it('should handle server errors', async () => {
       const serverError = new AxiosError('Internal Server Error');
       serverError.response = { status: 500 } as any;
-      mockAxios.post.mockRejectedValueOnce(serverError);
+      mockAxios.post.mockRejectedValue(serverError);
 
       await expect(notes.create({ title: 'Test' })).rejects.toThrow();
     });
@@ -647,7 +719,7 @@ describe('Notes Entity - Comprehensive Tests', () => {
     it('should handle timeout errors', async () => {
       const timeoutError = new AxiosError('Request timeout');
       timeoutError.code = 'ECONNABORTED';
-      mockAxios.put.mockRejectedValueOnce(timeoutError);
+      mockAxios.put.mockRejectedValue(timeoutError);
 
       await expect(notes.update(1, { title: 'Updated' })).rejects.toThrow();
     });
@@ -686,7 +758,9 @@ describe('Notes Entity - Comprehensive Tests', () => {
         description: 'Empty title should not retry',
       };
 
-      const validationError = new ValidationError('Title cannot be empty', ['title']);
+      const validationError = new ValidationError('Title cannot be empty', {
+        title: ['Title cannot be empty'],
+      });
       mockAxios.post.mockRejectedValueOnce(validationError);
 
       await expect(notes.create(invalidNote)).rejects.toThrow(ValidationError);
@@ -717,10 +791,15 @@ describe('Notes Entity - Comprehensive Tests', () => {
         description: longDescription,
       };
 
-      const lengthError = new ValidationError('Description exceeds maximum length', ['description']);
+      const lengthError = new ValidationError(
+        'Description exceeds maximum length',
+        { description: ['Description exceeds maximum length'] }
+      );
       mockAxios.post.mockRejectedValueOnce(lengthError);
 
-      await expect(notes.create(noteWithLongContent)).rejects.toThrow(ValidationError);
+      await expect(notes.create(noteWithLongContent)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should handle null and undefined values', async () => {
@@ -756,8 +835,16 @@ describe('Notes Entity - Comprehensive Tests', () => {
     });
 
     it('should handle concurrent note operations', async () => {
-      const note1: Note = { ticketId: 123, title: 'Concurrent Note 1', description: 'First note' };
-      const note2: Note = { ticketId: 124, title: 'Concurrent Note 2', description: 'Second note' };
+      const note1: Note = {
+        ticketId: 123,
+        title: 'Concurrent Note 1',
+        description: 'First note',
+      };
+      const note2: Note = {
+        ticketId: 124,
+        title: 'Concurrent Note 2',
+        description: 'Second note',
+      };
 
       mockAxios.post
         .mockResolvedValueOnce({ data: { id: 1, ...note1 } })
