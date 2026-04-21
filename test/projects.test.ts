@@ -15,12 +15,12 @@ describe('Projects', () => {
       delete: jest.fn(),
       interceptors: {
         request: {
-          use: jest.fn()
+          use: jest.fn(),
         },
         response: {
-          use: jest.fn()
-        }
-      }
+          use: jest.fn(),
+        },
+      },
     } as any;
     logger = winston.createLogger({ transports: [] });
     projects = new Projects(mockAxios as AxiosInstance, logger);
@@ -39,7 +39,9 @@ describe('Projects', () => {
   });
 
   it('should update a project', async () => {
-    (mockAxios.put as jest.Mock).mockResolvedValue({ data: { id: 3, name: 'Updated' } });
+    (mockAxios.put as jest.Mock).mockResolvedValue({
+      data: { id: 3, name: 'Updated' },
+    });
     const res = await projects.update(3, { name: 'Updated' });
     expect(res.data.name).toBe('Updated');
   });
@@ -50,8 +52,8 @@ describe('Projects', () => {
   });
 
   it('should list projects', async () => {
-    (mockAxios.get as jest.Mock).mockResolvedValue({ data: [{ id: 5 }] });
+    (mockAxios.post as jest.Mock).mockResolvedValue({ data: [{ id: 5 }] });
     const res = await projects.list();
     expect(res.data[0].id).toBe(5);
   });
-}); 
+});

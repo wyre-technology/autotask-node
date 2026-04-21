@@ -306,8 +306,9 @@ describe('AutotaskClient', () => {
           timeout: expect.any(Number),
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            ApiIntegrationcode: mockAuth.integrationCode,
-            Authorization: expect.stringContaining('Basic'),
+            ApiIntegrationCode: mockAuth.integrationCode,
+            UserName: mockAuth.username,
+            Secret: mockAuth.secret,
           }),
         })
       );

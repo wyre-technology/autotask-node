@@ -147,7 +147,7 @@ describe('RequestHandler', () => {
         requestFn,
         '/test',
         'GET',
-        { retries: 3 }
+        { retries: 3, enableCircuitBreaker: false }
       );
 
       expect(result).toEqual(mockResponse);
@@ -172,7 +172,10 @@ describe('RequestHandler', () => {
         .mockRejectedValue(serverError);
 
       await expect(
-        requestHandler.executeRequest(requestFn, '/test', 'GET', { retries: 2 })
+        requestHandler.executeRequest(requestFn, '/test', 'GET', {
+          retries: 2,
+          enableCircuitBreaker: false,
+        })
       ).rejects.toThrow(ServerError);
 
       expect(requestFn).toHaveBeenCalledTimes(3); // Initial + 2 retries
@@ -194,7 +197,7 @@ describe('RequestHandler', () => {
         requestFn,
         '/test',
         'GET',
-        { retries: 3 }
+        { retries: 3, enableCircuitBreaker: false }
       );
 
       expect(requestFn).toHaveBeenCalledTimes(2);
@@ -238,6 +241,7 @@ describe('RequestHandler', () => {
 
       await requestHandler.executeRequest(requestFn, '/test', 'GET', {
         retries: 3,
+        enableCircuitBreaker: false,
       });
 
       expect(requestFn).toHaveBeenCalledTimes(3);

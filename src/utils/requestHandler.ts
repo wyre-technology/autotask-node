@@ -14,9 +14,13 @@ import {
   CircuitBreaker,
   CircuitBreakerOptions,
   CircuitBreakerRegistry,
-  CircuitBreakerState
+  CircuitBreakerState,
 } from '../errors/CircuitBreaker';
-import { ErrorLogger, LogContext, defaultErrorLogger } from '../errors/ErrorLogger';
+import {
+  ErrorLogger,
+  LogContext,
+  defaultErrorLogger,
+} from '../errors/ErrorLogger';
 
 /**
  * Limits concurrent requests per endpoint to respect Autotask's 3-thread-per-endpoint
@@ -51,7 +55,10 @@ class EndpointSemaphore {
       this.queues.set(endpoint, queue);
       next();
     } else {
-      this.active.set(endpoint, Math.max(0, (this.active.get(endpoint) ?? 1) - 1));
+      this.active.set(
+        endpoint,
+        Math.max(0, (this.active.get(endpoint) ?? 1) - 1)
+      );
     }
   }
 
@@ -68,11 +75,11 @@ export interface RequestOptions {
   enableResponseLogging?: boolean;
   requestId?: string;
   enablePerformanceMonitoring?: boolean;
-  
+
   // Enhanced retry options
   retryStrategy?: RetryOptions;
   useAdvancedRetry?: boolean;
-  
+
   // Circuit breaker options
   circuitBreaker?: CircuitBreakerOptions;
   enableCircuitBreaker?: boolean;
@@ -91,7 +98,12 @@ export interface RequestContext {
  * Enhanced request handler with structured error handling, retry logic, and logging
  */
 export class RequestHandler {
-  private defaultOptions: Required<Omit<RequestOptions, 'retryStrategy' | 'circuitBreaker' | 'circuitBreakerName'>> & {
+  private defaultOptions: Required<
+    Omit<
+      RequestOptions,
+      'retryStrategy' | 'circuitBreaker' | 'circuitBreakerName'
+    >
+  > & {
     retryStrategy?: RetryOptions;
     circuitBreaker?: CircuitBreakerOptions;
     circuitBreakerName?: string;
@@ -214,7 +226,9 @@ export class RequestHandler {
     const endpointBase = endpoint.split('?')[0];
     const queueLen = this.endpointSemaphore.queueLength(endpointBase);
     if (queueLen > 0) {
-      this.logger.debug(`Autotask thread limit reached for ${endpointBase}, queuing request (${queueLen} ahead)`);
+      this.logger.debug(
+        `Autotask thread limit reached for ${endpointBase}, queuing request (${queueLen} ahead)`
+      );
     }
     await this.endpointSemaphore.acquire(endpointBase);
 
@@ -258,7 +272,6 @@ export class RequestHandler {
     options: any,
     performanceTimer?: (statusCode?: number, error?: string) => void
   ): Promise<AxiosResponse<T>> {
-    
     // Create retry strategy with merged options
     const retryOptions = {
       ...options.retryStrategy,
@@ -275,14 +288,19 @@ export class RequestHandler {
           retry: {
             attempt,
             maxAttempts: options.retries,
-            totalTime: Date.now() - context.startTime
-          }
+            totalTime: Date.now() - context.startTime,
+          },
         };
 
         this.errorLogger.logRetry(
           'Request failed, retrying with advanced strategy',
           error,
-          { attempt, maxAttempts: options.retries, nextDelay: delay, totalTime: Date.now() - context.startTime },
+          {
+            attempt,
+            maxAttempts: options.retries,
+            nextDelay: delay,
+            totalTime: Date.now() - context.startTime,
+          },
           logContext
         );
 
@@ -302,7 +320,7 @@ export class RequestHandler {
           return isRetryableError(error);
         }
         return true; // Assume retryable for unknown errors
-      }
+      },
     };
 
     const strategy = new RetryStrategy(retryOptions);
@@ -310,13 +328,13 @@ export class RequestHandler {
     // Wrap the request execution
     const executeWithLogging = async (): Promise<AxiosResponse<T>> => {
       context.attempt++;
-      
+
       this.logRequest(context, options, context.attempt > 1);
-      
+
       try {
         const response = await requestFn();
         this.logResponse(context, response, options);
-        
+
         // Log successful request with ErrorLogger
         const logContext: LogContext = {
           correlationId: context.requestId,
@@ -327,25 +345,21 @@ export class RequestHandler {
           },
           performance: {
             startTime: context.startTime,
-            duration: Date.now() - context.startTime
-          }
+            duration: Date.now() - context.startTime,
+          },
         };
 
-        this.errorLogger.info(
-          `Request completed successfully`,
-          logContext,
-          { 
-            statusCode: response.status,
-            statusText: response.statusText,
-            responseSize: JSON.stringify(response.data).length 
-          }
-        );
-        
+        this.errorLogger.info(`Request completed successfully`, logContext, {
+          statusCode: response.status,
+          statusText: response.statusText,
+          responseSize: JSON.stringify(response.data ?? null).length,
+        });
+
         // Record successful performance metrics
         if (performanceTimer) {
           performanceTimer(response.status, undefined);
         }
-        
+
         return response;
       } catch (error) {
         const autotaskError = this.handleError(error, context);
@@ -356,9 +370,10 @@ export class RequestHandler {
 
     // Use circuit breaker if enabled
     if (options.enableCircuitBreaker) {
-      const circuitBreakerName = options.circuitBreakerName || 
+      const circuitBreakerName =
+        options.circuitBreakerName ||
         `${context.endpoint}-${context.method}`.replace(/[^a-zA-Z0-9-]/g, '-');
-      
+
       const circuitBreaker = this.circuitBreakerRegistry.getCircuitBreaker(
         circuitBreakerName,
         options.circuitBreaker
@@ -366,7 +381,7 @@ export class RequestHandler {
 
       try {
         const result = await circuitBreaker.execute(executeWithLogging);
-        
+
         if (!result.success) {
           // Record error performance metrics
           if (performanceTimer) {
@@ -374,7 +389,7 @@ export class RequestHandler {
           }
           throw result.error;
         }
-        
+
         return result.data!;
       } catch (error) {
         // Handle circuit breaker specific errors
@@ -389,8 +404,8 @@ export class RequestHandler {
             circuitBreaker: {
               name: circuitBreakerName,
               state: 'open',
-              metrics: {} as any // Will be populated by circuit breaker
-            }
+              metrics: {} as any, // Will be populated by circuit breaker
+            },
           };
 
           this.errorLogger.warn('Circuit breaker is open', error, logContext);
@@ -402,7 +417,7 @@ export class RequestHandler {
             method: context.method,
             circuitBreakerName,
           });
-          
+
           if (performanceTimer) {
             performanceTimer(503, 'Circuit breaker open');
           }
@@ -414,7 +429,7 @@ export class RequestHandler {
     // Execute with retry strategy only (no circuit breaker)
     try {
       const result = await strategy.execute(executeWithLogging);
-      
+
       if (!result.success) {
         // Record error performance metrics
         if (performanceTimer) {
@@ -422,13 +437,15 @@ export class RequestHandler {
         }
         throw result.error;
       }
-      
+
       return result.data!;
     } catch (error) {
       // Record error performance metrics
       if (performanceTimer) {
-        const autotaskError = error instanceof AutotaskError ? error : 
-          this.handleError(error, context);
+        const autotaskError =
+          error instanceof AutotaskError
+            ? error
+            : this.handleError(error, context);
         performanceTimer(autotaskError.statusCode, autotaskError.message);
       }
       throw error;
@@ -476,10 +493,7 @@ export class RequestHandler {
         }
 
         // Check if we should retry
-        if (
-          attempt <= options.retries &&
-          isRetryableError(autotaskError)
-        ) {
+        if (attempt <= options.retries && isRetryableError(autotaskError)) {
           const delay = getRetryDelay(
             autotaskError,
             attempt,
@@ -496,28 +510,36 @@ export class RequestHandler {
             retry: {
               attempt,
               maxAttempts: options.retries,
-              totalTime: Date.now() - context.startTime
-            }
+              totalTime: Date.now() - context.startTime,
+            },
           };
 
           this.errorLogger.logRetry(
             'Request failed, retrying with legacy strategy',
             autotaskError,
-            { attempt, maxAttempts: options.retries, nextDelay: delay, totalTime: Date.now() - context.startTime },
+            {
+              attempt,
+              maxAttempts: options.retries,
+              nextDelay: delay,
+              totalTime: Date.now() - context.startTime,
+            },
             logContext
           );
 
           // Fallback to winston for backward compatibility
-          this.logger.warn(`Legacy retry: Request failed, retrying in ${delay}ms`, {
-            requestId: context.requestId,
-            endpoint: context.endpoint,
-            method: context.method,
-            attempt,
-            maxRetries: options.retries,
-            delay,
-            errorType: autotaskError.constructor.name,
-            statusCode: autotaskError.statusCode,
-          });
+          this.logger.warn(
+            `Legacy retry: Request failed, retrying in ${delay}ms`,
+            {
+              requestId: context.requestId,
+              endpoint: context.endpoint,
+              method: context.method,
+              attempt,
+              maxRetries: options.retries,
+              delay,
+              errorType: autotaskError.constructor.name,
+              statusCode: autotaskError.statusCode,
+            }
+          );
 
           await this.sleep(delay);
           continue;
@@ -606,7 +628,7 @@ export class RequestHandler {
       statusText: response.statusText,
       duration,
       attempt: context.attempt,
-      responseSize: JSON.stringify(response.data).length,
+      responseSize: JSON.stringify(response.data ?? null).length,
       timestamp: new Date().toISOString(),
     });
   }
@@ -630,8 +652,8 @@ export class RequestHandler {
       },
       performance: {
         startTime: context.startTime,
-        duration
-      }
+        duration,
+      },
     };
 
     const extraData = {
@@ -642,28 +664,43 @@ export class RequestHandler {
     };
 
     if (error.statusCode && error.statusCode >= 500) {
-      this.errorLogger.error('Server error occurred', error, logContext, extraData);
+      this.errorLogger.error(
+        'Server error occurred',
+        error,
+        logContext,
+        extraData
+      );
       this.logger.error('Server error occurred', {
         requestId: context.requestId,
         endpoint: context.endpoint,
         method: context.method,
-        ...extraData
+        ...extraData,
       });
     } else if (error.statusCode && error.statusCode >= 400) {
-      this.errorLogger.warn('Client error occurred', error, logContext, extraData);
+      this.errorLogger.warn(
+        'Client error occurred',
+        error,
+        logContext,
+        extraData
+      );
       this.logger.warn('Client error occurred', {
         requestId: context.requestId,
         endpoint: context.endpoint,
         method: context.method,
-        ...extraData
+        ...extraData,
       });
     } else {
-      this.errorLogger.error('Network or unknown error occurred', error, logContext, extraData);
+      this.errorLogger.error(
+        'Network or unknown error occurred',
+        error,
+        logContext,
+        extraData
+      );
       this.logger.error('Network or unknown error occurred', {
         requestId: context.requestId,
         endpoint: context.endpoint,
         method: context.method,
-        ...extraData
+        ...extraData,
       });
     }
   }
@@ -735,8 +772,12 @@ export class RequestHandler {
    * Get circuit breaker metrics for a specific endpoint
    */
   getCircuitBreakerMetricsForEndpoint(endpoint: string, method: string) {
-    const circuitBreakerName = `${endpoint}-${method}`.replace(/[^a-zA-Z0-9-]/g, '-');
-    const circuitBreaker = this.circuitBreakerRegistry.getCircuitBreaker(circuitBreakerName);
+    const circuitBreakerName = `${endpoint}-${method}`.replace(
+      /[^a-zA-Z0-9-]/g,
+      '-'
+    );
+    const circuitBreaker =
+      this.circuitBreakerRegistry.getCircuitBreaker(circuitBreakerName);
     return circuitBreaker.getMetrics();
   }
 
@@ -744,8 +785,12 @@ export class RequestHandler {
    * Reset circuit breaker for a specific endpoint
    */
   resetCircuitBreakerForEndpoint(endpoint: string, method: string): void {
-    const circuitBreakerName = `${endpoint}-${method}`.replace(/[^a-zA-Z0-9-]/g, '-');
-    const circuitBreaker = this.circuitBreakerRegistry.getCircuitBreaker(circuitBreakerName);
+    const circuitBreakerName = `${endpoint}-${method}`.replace(
+      /[^a-zA-Z0-9-]/g,
+      '-'
+    );
+    const circuitBreaker =
+      this.circuitBreakerRegistry.getCircuitBreaker(circuitBreakerName);
     circuitBreaker.reset();
   }
 
@@ -776,16 +821,19 @@ export class RequestHandler {
   getHealthStatus() {
     const circuitBreakerMetrics = this.getCircuitBreakerMetrics();
     const performanceMetrics = this.getPerformanceMetrics();
-    
+
     const healthyCircuitBreakers = Object.values(circuitBreakerMetrics).filter(
       metrics => metrics.state === CircuitBreakerState.CLOSED
     ).length;
-    
+
     const totalCircuitBreakers = Object.keys(circuitBreakerMetrics).length;
-    
+
     return {
       timestamp: new Date().toISOString(),
-      status: healthyCircuitBreakers === totalCircuitBreakers ? 'healthy' : 'degraded',
+      status:
+        healthyCircuitBreakers === totalCircuitBreakers
+          ? 'healthy'
+          : 'degraded',
       circuitBreakers: {
         total: totalCircuitBreakers,
         healthy: healthyCircuitBreakers,
@@ -795,14 +843,14 @@ export class RequestHandler {
         halfOpen: Object.values(circuitBreakerMetrics).filter(
           metrics => metrics.state === CircuitBreakerState.HALF_OPEN
         ).length,
-        metrics: circuitBreakerMetrics
+        metrics: circuitBreakerMetrics,
       },
       performance: performanceMetrics,
       features: {
         advancedRetry: this.defaultOptions.useAdvancedRetry,
         circuitBreaker: this.defaultOptions.enableCircuitBreaker,
         performanceMonitoring: this.defaultOptions.enablePerformanceMonitoring,
-      }
+      },
     };
   }
 
@@ -810,11 +858,14 @@ export class RequestHandler {
    * Configure endpoint-specific circuit breaker
    */
   configureCircuitBreakerForEndpoint(
-    endpoint: string, 
-    method: string, 
+    endpoint: string,
+    method: string,
     options: CircuitBreakerOptions
   ): void {
-    const circuitBreakerName = `${endpoint}-${method}`.replace(/[^a-zA-Z0-9-]/g, '-');
+    const circuitBreakerName = `${endpoint}-${method}`.replace(
+      /[^a-zA-Z0-9-]/g,
+      '-'
+    );
     this.circuitBreakerRegistry.getCircuitBreaker(circuitBreakerName, options);
   }
 }

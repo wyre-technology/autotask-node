@@ -15,12 +15,12 @@ describe('Tasks', () => {
       delete: jest.fn(),
       interceptors: {
         request: {
-          use: jest.fn()
+          use: jest.fn(),
         },
         response: {
-          use: jest.fn()
-        }
-      }
+          use: jest.fn(),
+        },
+      },
     } as any;
     logger = winston.createLogger({ transports: [] });
     tasks = new Tasks(mockAxios as AxiosInstance, logger);
@@ -39,7 +39,9 @@ describe('Tasks', () => {
   });
 
   it('should update a task', async () => {
-    (mockAxios.put as jest.Mock).mockResolvedValue({ data: { id: 3, title: 'Updated' } });
+    (mockAxios.put as jest.Mock).mockResolvedValue({
+      data: { id: 3, title: 'Updated' },
+    });
     const res = await tasks.update(3, { title: 'Updated' });
     expect(res.data.title).toBe('Updated');
   });
@@ -50,8 +52,8 @@ describe('Tasks', () => {
   });
 
   it('should list tasks', async () => {
-    (mockAxios.get as jest.Mock).mockResolvedValue({ data: [{ id: 5 }] });
+    (mockAxios.post as jest.Mock).mockResolvedValue({ data: [{ id: 5 }] });
     const res = await tasks.list();
     expect(res.data[0].id).toBe(5);
   });
-}); 
+});

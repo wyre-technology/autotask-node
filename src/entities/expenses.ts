@@ -1,6 +1,8 @@
 import { AxiosInstance } from 'axios';
 import winston from 'winston';
 import { MethodMetadata, ApiResponse } from '../types';
+import { NetworkError, RateLimitError } from '../utils/errors';
+import { AxiosError } from 'axios';
 
 export interface Expense {
   id?: number;
@@ -29,7 +31,10 @@ export interface ExpenseQuery {
 export class Expenses {
   private readonly endpoint = '/Expenses';
 
-  constructor(private axios: AxiosInstance, private logger: winston.Logger) {}
+  constructor(
+    private axios: AxiosInstance,
+    private logger: winston.Logger
+  ) {}
 
   static getMetadata(): MethodMetadata[] {
     return [
@@ -71,16 +76,29 @@ export class Expenses {
     ];
   }
 
-  private async requestWithRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Promise<T> {
+  private async requestWithRetry<T>(
+    fn: () => Promise<T>,
+    retries = 3,
+    delay = 500
+  ): Promise<T> {
     let attempt = 0;
     while (true) {
       try {
         return await fn();
       } catch (err) {
+        // Only retry on transient errors (network failures, 5xx, rate limits)
+        const isTransient =
+          err instanceof NetworkError ||
+          err instanceof RateLimitError ||
+          (err instanceof AxiosError &&
+            (!err.response || err.response.status >= 500));
+        if (!isTransient) throw err;
         attempt++;
         this.logger.warn(`Request failed (attempt ${attempt}): ${err}`);
         if (attempt > retries) throw err;
-        await new Promise(res => setTimeout(res, delay * Math.pow(2, attempt - 1)));
+        await new Promise(res =>
+          setTimeout(res, delay * Math.pow(2, attempt - 1))
+        );
       }
     }
   }
@@ -101,7 +119,10 @@ export class Expenses {
     });
   }
 
-  async update(id: number, expense: Partial<Expense>): Promise<ApiResponse<Expense>> {
+  async update(
+    id: number,
+    expense: Partial<Expense>
+  ): Promise<ApiResponse<Expense>> {
     this.logger.info('Updating expense', { id, expense });
     return this.requestWithRetry(async () => {
       const { data } = await this.axios.put(`${this.endpoint}/${id}`, expense);
@@ -128,4 +149,4 @@ export class Expenses {
       return { data };
     });
   }
-} 
+}

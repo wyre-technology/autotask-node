@@ -1,5 +1,6 @@
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 import { Expenses, Expense } from '../../src/entities/expenses';
+import { NetworkError } from '../../src/utils/errors';
 import { AxiosInstance } from 'axios';
 import winston from 'winston';
 import {
@@ -212,7 +213,7 @@ describe('Expenses', () => {
 
   describe('error handling with retry', () => {
     it('should retry failed requests', async () => {
-      const error = new Error('Network timeout');
+      const error = new NetworkError('Network timeout', false);
       mockAxios.get
         .mockRejectedValueOnce(error)
         .mockRejectedValueOnce(error)
@@ -225,7 +226,7 @@ describe('Expenses', () => {
     });
 
     it('should fail after max retries', async () => {
-      const error = new Error('Persistent error');
+      const error = new NetworkError('Persistent error', false);
       mockAxios.get.mockRejectedValue(error);
 
       await expect(expenses.get(123)).rejects.toThrow('Persistent error');
@@ -245,7 +246,7 @@ describe('Expenses', () => {
     });
 
     it('should log warnings on retry', async () => {
-      const error = new Error('Temporary error');
+      const error = new NetworkError('Temporary error', false);
       mockAxios.get
         .mockRejectedValueOnce(error)
         .mockResolvedValue({ data: { id: 123 } });

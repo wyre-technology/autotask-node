@@ -8,11 +8,7 @@ import {
 } from '@jest/globals';
 import { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import winston from 'winston';
-import {
-  Accounts,
-  Account,
-  AccountQuery,
-} from '../src/entities/accounts';
+import { Accounts, Account, AccountQuery } from '../src/entities/accounts';
 import { BusinessRuleEngine } from '../src/business-rules/BusinessRuleEngine';
 import { ReferentialIntegrityManager } from '../src/referential-integrity/ReferentialIntegrityManager';
 import { NotFoundError, ValidationError } from '../src/utils/errors';
@@ -94,7 +90,8 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies',
-          'POST'
+          'POST',
+          expect.any(Object)
         );
       });
 
@@ -104,10 +101,17 @@ describe('Accounts Entity - Comprehensive Tests', () => {
           phone: '123-456-7890',
         };
 
-        const validationError = new ValidationError('Company name is required', ['companyName']);
-        mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
+        const validationError = new ValidationError(
+          'Company name is required',
+          { companyName: ['Company name is required'] }
+        );
+        mockRequestHandler.executeRequest.mockRejectedValueOnce(
+          validationError
+        );
 
-        await expect(accounts.create(invalidAccount)).rejects.toThrow(ValidationError);
+        await expect(accounts.create(invalidAccount)).rejects.toThrow(
+          ValidationError
+        );
       });
 
       it('should handle duplicate account creation', async () => {
@@ -118,7 +122,9 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         const duplicateError = new Error('Company already exists');
         mockRequestHandler.executeRequest.mockRejectedValueOnce(duplicateError);
 
-        await expect(accounts.create(accountData)).rejects.toThrow('Company already exists');
+        await expect(accounts.create(accountData)).rejects.toThrow(
+          'Company already exists'
+        );
       });
     });
 
@@ -142,12 +148,17 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/1',
-          'GET'
+          'GET',
+          expect.any(Object)
         );
       });
 
       it('should throw NotFoundError for non-existent account', async () => {
-        const notFoundError = new NotFoundError('Account not found', 'Account', 999);
+        const notFoundError = new NotFoundError(
+          'Account not found',
+          'Account',
+          999
+        );
         mockRequestHandler.executeRequest.mockRejectedValueOnce(notFoundError);
 
         await expect(accounts.get(999)).rejects.toThrow(NotFoundError);
@@ -183,7 +194,8 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/1',
-          'PUT'
+          'PUT',
+          expect.any(Object)
         );
       });
 
@@ -213,10 +225,16 @@ describe('Accounts Entity - Comprehensive Tests', () => {
           companyType: -1, // Invalid type
         };
 
-        const validationError = new ValidationError('Invalid company type', ['companyType']);
-        mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
+        const validationError = new ValidationError('Invalid company type', {
+          companyType: ['Invalid company type'],
+        });
+        mockRequestHandler.executeRequest.mockRejectedValueOnce(
+          validationError
+        );
 
-        await expect(accounts.update(1, invalidUpdate)).rejects.toThrow(ValidationError);
+        await expect(accounts.update(1, invalidUpdate)).rejects.toThrow(
+          ValidationError
+        );
       });
     });
 
@@ -230,22 +248,33 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/1',
-          'DELETE'
+          'DELETE',
+          expect.any(Object)
         );
       });
 
       it('should handle deletion of non-existent account', async () => {
-        const notFoundError = new NotFoundError('Account not found', 'Account', 999);
+        const notFoundError = new NotFoundError(
+          'Account not found',
+          'Account',
+          999
+        );
         mockRequestHandler.executeRequest.mockRejectedValueOnce(notFoundError);
 
         await expect(accounts.delete(999)).rejects.toThrow(NotFoundError);
       });
 
       it('should handle referential integrity constraints', async () => {
-        const constraintError = new Error('Cannot delete account with active contracts');
-        mockRequestHandler.executeRequest.mockRejectedValueOnce(constraintError);
+        const constraintError = new Error(
+          'Cannot delete account with active contracts'
+        );
+        mockRequestHandler.executeRequest.mockRejectedValueOnce(
+          constraintError
+        );
 
-        await expect(accounts.delete(1)).rejects.toThrow('Cannot delete account with active contracts');
+        await expect(accounts.delete(1)).rejects.toThrow(
+          'Cannot delete account with active contracts'
+        );
       });
     });
   });
@@ -268,7 +297,8 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/query',
-          'POST'
+          'POST',
+          expect.any(Object)
         );
       });
 
@@ -293,7 +323,8 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/query',
-          'POST'
+          'POST',
+          expect.any(Object)
         );
       });
 
@@ -314,7 +345,8 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/query',
-          'POST'
+          'POST',
+          expect.any(Object)
         );
       });
 
@@ -343,7 +375,8 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         expect(mockRequestHandler.executeRequest).toHaveBeenCalledWith(
           expect.any(Function),
           '/Companies/query',
-          'POST'
+          'POST',
+          expect.any(Object)
         );
       });
     });
@@ -355,10 +388,14 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         phone: '123-456-7890',
       };
 
-      const validationError = new ValidationError('Company name is required', ['companyName']);
+      const validationError = new ValidationError('Company name is required', {
+        companyName: ['Company name is required'],
+      });
       mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
 
-      await expect(accounts.create(accountWithoutName)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountWithoutName)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate phone number format', async () => {
@@ -367,10 +404,14 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         phone: 'invalid-phone',
       };
 
-      const validationError = new ValidationError('Invalid phone format', ['phone']);
+      const validationError = new ValidationError('Invalid phone format', {
+        phone: ['Invalid phone format'],
+      });
       mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
 
-      await expect(accounts.create(accountWithInvalidPhone)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountWithInvalidPhone)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate email format', async () => {
@@ -379,10 +420,14 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         webAddress: 'invalid-email',
       };
 
-      const validationError = new ValidationError('Invalid email format', ['webAddress']);
+      const validationError = new ValidationError('Invalid email format', {
+        webAddress: ['Invalid email format'],
+      });
       mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
 
-      await expect(accounts.create(accountWithInvalidEmail)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountWithInvalidEmail)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should validate required numeric fields', async () => {
@@ -392,10 +437,15 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         currencyID: 'invalid' as any, // Should be number
       };
 
-      const validationError = new ValidationError('Invalid field values', ['companyType', 'currencyID']);
+      const validationError = new ValidationError('Invalid field values', {
+        companyType: ['Invalid field values'],
+        currencyID: ['Invalid field values'],
+      });
       mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
 
-      await expect(accounts.create(accountWithInvalidData)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountWithInvalidData)).rejects.toThrow(
+        ValidationError
+      );
     });
   });
 
@@ -409,14 +459,20 @@ describe('Accounts Entity - Comprehensive Tests', () => {
       // Mock business rules validation
       mockBusinessRules.validateEntity.mockResolvedValueOnce({
         isValid: false,
-        getErrors: () => [{ code: 'DUPLICATE_COMPANY', message: 'Company name already exists' }],
+        getErrors: () => [
+          { code: 'DUPLICATE_COMPANY', message: 'Company name already exists' },
+        ],
       } as any);
 
       mockRequestHandler.executeRequest.mockRejectedValueOnce(
-        new ValidationError('Business rule violation', ['companyName'])
+        new ValidationError('Business rule violation', {
+          companyName: ['Business rule violation'],
+        })
       );
 
-      await expect(accounts.create(accountData)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountData)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should enforce territory constraints', async () => {
@@ -425,10 +481,15 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         territoryID: 999, // Non-existent territory
       };
 
-      const constraintError = new ValidationError('Invalid territory reference', ['territoryID']);
+      const constraintError = new ValidationError(
+        'Invalid territory reference',
+        { territoryID: ['Invalid territory reference'] }
+      );
       mockRequestHandler.executeRequest.mockRejectedValueOnce(constraintError);
 
-      await expect(accounts.create(accountData)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountData)).rejects.toThrow(
+        ValidationError
+      );
     });
   });
 
@@ -442,14 +503,23 @@ describe('Accounts Entity - Comprehensive Tests', () => {
       // Mock referential integrity check
       mockIntegrityManager.validateReferences.mockResolvedValueOnce({
         isValid: false,
-        violations: [{ field: 'parentCompanyID', message: 'Parent company does not exist' }],
+        violations: [
+          {
+            field: 'parentCompanyID',
+            message: 'Parent company does not exist',
+          },
+        ],
       } as any);
 
       mockRequestHandler.executeRequest.mockRejectedValueOnce(
-        new ValidationError('Invalid parent company reference', ['parentCompanyID'])
+        new ValidationError('Invalid parent company reference', {
+          parentCompanyID: ['Invalid parent company reference'],
+        })
       );
 
-      await expect(accounts.create(accountData)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountData)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should prevent circular parent relationships', async () => {
@@ -459,10 +529,15 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         parentCompanyID: 1, // Self-reference
       };
 
-      const circularError = new ValidationError('Circular parent reference detected', ['parentCompanyID']);
+      const circularError = new ValidationError(
+        'Circular parent reference detected',
+        { parentCompanyID: ['Circular parent reference detected'] }
+      );
       mockRequestHandler.executeRequest.mockRejectedValueOnce(circularError);
 
-      await expect(accounts.update(1, accountData)).rejects.toThrow(ValidationError);
+      await expect(accounts.update(1, accountData)).rejects.toThrow(
+        ValidationError
+      );
     });
   });
 
@@ -477,7 +552,7 @@ describe('Accounts Entity - Comprehensive Tests', () => {
     it('should handle rate limiting', async () => {
       const rateLimitError = new AxiosError('Rate limit exceeded');
       rateLimitError.response = { status: 429 } as any;
-      
+
       mockRequestHandler.executeRequest.mockRejectedValueOnce(rateLimitError);
 
       await expect(accounts.get(1)).rejects.toThrow();
@@ -486,7 +561,7 @@ describe('Accounts Entity - Comprehensive Tests', () => {
     it('should handle server errors', async () => {
       const serverError = new AxiosError('Internal Server Error');
       serverError.response = { status: 500 } as any;
-      
+
       mockRequestHandler.executeRequest.mockRejectedValueOnce(serverError);
 
       await expect(accounts.get(1)).rejects.toThrow();
@@ -495,7 +570,7 @@ describe('Accounts Entity - Comprehensive Tests', () => {
     it('should handle timeout errors', async () => {
       const timeoutError = new AxiosError('Request timeout');
       timeoutError.code = 'ECONNABORTED';
-      
+
       mockRequestHandler.executeRequest.mockRejectedValueOnce(timeoutError);
 
       await expect(accounts.get(1)).rejects.toThrow();
@@ -509,10 +584,14 @@ describe('Accounts Entity - Comprehensive Tests', () => {
         companyName: longName,
       };
 
-      const validationError = new ValidationError('Company name too long', ['companyName']);
+      const validationError = new ValidationError('Company name too long', {
+        companyName: ['Company name too long'],
+      });
       mockRequestHandler.executeRequest.mockRejectedValueOnce(validationError);
 
-      await expect(accounts.create(accountData)).rejects.toThrow(ValidationError);
+      await expect(accounts.create(accountData)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should handle special characters in company names', async () => {
