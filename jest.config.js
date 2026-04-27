@@ -35,6 +35,9 @@ const config = {
   // Module resolution
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^uuid$': '<rootDir>/test/__mocks__/uuid.js',
+    '^dompurify$': '<rootDir>/test/__mocks__/dompurify.js',
+    '^jsdom$': '<rootDir>/test/__mocks__/jsdom.js',
   },
 
   // Transform settings
