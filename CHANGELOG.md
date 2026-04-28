@@ -1,5 +1,18 @@
 # Autotask Node SDK Release Notes
 
+## [2.2.1] - 2026-04-28
+
+### Security
+
+- **Resolved 28 dependabot/npm audit vulnerabilities** (1 critical, 15 high, 9 moderate, 3 low) — `npm audit` now reports 0 vulnerabilities.
+  - Direct deps bumped: `sqlite3` ^5.1.7 → ^6.0.1, `uuid` ^11.1.0 → ^14.0.0, `jest-junit` ^16 → ^17
+  - Overrides added: `@isaacs/brace-expansion ^5.0.1` (patches bundled `npm` via semantic-release), `uuid ^14.0.0` (forces patched uuid through `bull` / `exceljs` / `jest-junit`)
+  - Notable advisories cleared: handlebars (critical, 8 advisories), tar (high, 6), undici (high, 11), minimatch (high, 12), lodash, picomatch, path-to-regexp, dompurify (moderate, 8)
+
+### Internal
+
+- Added `test/__mocks__/uuid.js` CJS shim wired via Jest `moduleNameMapper`. uuid v14 ships native ESM that Jest's CJS runtime can't load; runtime continues to use the real patched uuid via the override.
+
 ## [2.2.0] - 2026-03-15
 
 ### Added
