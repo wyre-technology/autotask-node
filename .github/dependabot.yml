@@ -9,9 +9,9 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 10
     reviewers:
-      - "your-username"
+      - "asachs01"
     assignees:
-      - "your-username"
+      - "asachs01"
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
@@ -19,6 +19,9 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    ignore:
+      # No patched version available upstream as of 2026-05-07
+      - dependency-name: "ip-address"
     
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -29,9 +32,9 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 5
     reviewers:
-      - "your-username"
+      - "asachs01"
     assignees:
-      - "your-username"
+      - "asachs01"
     commit-message:
       prefix: "chore"
       include: "scope"

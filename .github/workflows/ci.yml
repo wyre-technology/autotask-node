@@ -70,7 +70,20 @@ jobs:
           AUTOTASK_INTEGRATION_CODE: ${{ secrets.AUTOTASK_INTEGRATION_CODE }}
           AUTOTASK_SECRET: ${{ secrets.AUTOTASK_SECRET }}
 
+      - name: Detect integration secrets
+        id: detect-secrets
+        shell: bash
+        run: |
+          if [ -n "${{ secrets.AUTOTASK_USERNAME }}" ] && [ -n "${{ secrets.AUTOTASK_SECRET }}" ] && [ -n "${{ secrets.AUTOTASK_INTEGRATION_CODE }}" ]; then
+            echo "HAS_AUTOTASK_SECRETS=true" >> "$GITHUB_ENV"
+          else
+            echo "HAS_AUTOTASK_SECRETS=false" >> "$GITHUB_ENV"
+            echo "::notice::Skipping integration tests — Autotask secrets not configured for this run"
+          fi
+
       - name: Run integration tests
+        # Skip integration tests when secrets are unavailable (forks, dependabot PRs)
+        if: ${{ env.HAS_AUTOTASK_SECRETS == 'true' }}
         env:
           NODE_OPTIONS: --max-old-space-size=4096
           AUTOTASK_USERNAME: ${{ secrets.AUTOTASK_USERNAME }}
