@@ -78,7 +78,7 @@
     "integration",
     "cli"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "Wyre Technology",
   "license": "MIT",
   "dependencies": {
     "@types/async": "^3.2.25",

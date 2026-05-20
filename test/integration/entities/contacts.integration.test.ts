@@ -1,4 +1,4 @@
-import { Contact } from '../../../src/entities/contacts';
+import { IContacts as Contact } from '../../../src/entities/contacts';
 import {
   setupIntegrationTest,
   generateTestId,
@@ -36,6 +36,11 @@ describe('Contacts Integration Tests (Optimized)', () => {
   });
 
   afterAll(async () => {
+    // config is undefined when integration tests were skipped (no credentials)
+    if (!config) {
+      return;
+    }
+
     console.log('🧹 Cleaning up created contacts...');
 
     // Clean up any contacts created during tests

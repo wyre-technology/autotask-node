@@ -1,5 +1,21 @@
 # Autotask Node SDK Release Notes
 
+## [Unreleased]
+
+### Changed
+
+- Repository hygiene: stopped tracking the generated `dist/` build tree in git (`.gitignore` already excludes it).
+- Set `package.json` `author` to `Wyre Technology` (was a placeholder).
+- Added `*.tgz` to `.gitignore` to keep build tarballs out of the working tree.
+
+### Removed
+
+- Deleted stray artifacts from the working tree: `autotask-node-2.0.0.tgz`, `npm-debug-403.log`, and the empty `logs/` directory.
+
+### Security
+
+- `npm audit fix` cleared 2 of 4 moderate advisories. The remaining 2 (`brace-expansion`, `ip-address`) live in the bundled `npm` CLI pulled in transitively and require a breaking `--force` change to resolve.
+
 ## [2.2.1] - 2026-04-28
 
 ### Security

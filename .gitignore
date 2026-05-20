@@ -44,6 +44,9 @@ ww2*
 logs
 *.log
 dev-debug.log
+
+# Build tarballs
+*.tgz
 # Dependency directories
 # Editor directories and files
 .idea

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "lib": ["ES2021"],
     "module": "CommonJS",
     "moduleResolution": "Node",
     "outDir": "dist",
@@ -15,4 +16,4 @@
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "test"]
-} 
+}
