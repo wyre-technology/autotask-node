@@ -8,8 +8,10 @@ const config = {
   testMatch: ['<rootDir>/test/integration/**/*.test.ts'],
 
   // Global setup and teardown
-  globalSetup: '<rootDir>/test/integration/setup.ts',
-  globalTeardown: '<rootDir>/test/integration/teardown.ts',
+  // JS wrappers register ts-node so the TS modules load in Jest's
+  // globalSetup process (which bypasses the ts-jest transform).
+  globalSetup: '<rootDir>/test/integration/globalSetup.js',
+  globalTeardown: '<rootDir>/test/integration/globalTeardown.js',
 
   // Setup after environment
   setupFilesAfterEnv: ['<rootDir>/test/integration/setupAfterEnv.ts'],

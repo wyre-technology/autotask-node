@@ -37,6 +37,11 @@ describe('Accounts Integration Tests (Optimized)', () => {
   });
 
   afterAll(async () => {
+    // config is undefined when integration tests were skipped (no credentials)
+    if (!config) {
+      return;
+    }
+
     console.log('🧹 Cleaning up created accounts...');
 
     // Clean up any accounts created during tests
