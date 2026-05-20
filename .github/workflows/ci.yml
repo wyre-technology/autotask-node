@@ -60,16 +60,24 @@ jobs:
       - name: Detect integration secrets
         id: detect-secrets
         shell: bash
+        env:
+          AUTOTASK_USERNAME: ${{ secrets.AUTOTASK_USERNAME }}
+          AUTOTASK_INTEGRATION_CODE: ${{ secrets.AUTOTASK_INTEGRATION_CODE }}
+          AUTOTASK_SECRET: ${{ secrets.AUTOTASK_SECRET }}
         run: |
-          if [ -n "${{ secrets.AUTOTASK_USERNAME }}" ] && [ -n "${{ secrets.AUTOTASK_SECRET }}" ] && [ -n "${{ secrets.AUTOTASK_INTEGRATION_CODE }}" ]; then
+          if [ -z "$AUTOTASK_USERNAME" ] || [ -z "$AUTOTASK_SECRET" ] || [ -z "$AUTOTASK_INTEGRATION_CODE" ]; then
+            echo "HAS_AUTOTASK_SECRETS=false" >> "$GITHUB_ENV"
+            echo "::notice::Skipping integration tests — Autotask secrets not configured for this run"
+          elif node scripts/check-integration-connectivity.js; then
             echo "HAS_AUTOTASK_SECRETS=true" >> "$GITHUB_ENV"
           else
             echo "HAS_AUTOTASK_SECRETS=false" >> "$GITHUB_ENV"
-            echo "::notice::Skipping integration tests — Autotask secrets not configured for this run"
+            echo "::notice::Skipping integration tests — Autotask credentials present but the API is not reachable with them"
           fi
 
       - name: Run integration tests
-        # Skip integration tests when secrets are unavailable (forks, dependabot PRs)
+        # Skip when secrets are unavailable (forks, dependabot PRs) or when
+        # the credentials cannot reach a working Autotask API.
         if: ${{ env.HAS_AUTOTASK_SECRETS == 'true' }}
         env:
           NODE_OPTIONS: --max-old-space-size=4096
