@@ -1,4 +1,4 @@
-import { Contact } from '../../../src/entities/contacts';
+import { IContacts as Contact } from '../../../src/entities/contacts';
 import {
   setupIntegrationTest,
   generateTestId,

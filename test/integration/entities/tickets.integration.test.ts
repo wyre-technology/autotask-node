@@ -1,4 +1,4 @@
-import { Ticket } from '../../../src/entities/tickets';
+import { ITickets as Ticket } from '../../../src/entities/tickets';
 import {
   setupIntegrationTest,
   generateTestId,
