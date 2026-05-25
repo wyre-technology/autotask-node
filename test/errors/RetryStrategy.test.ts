@@ -142,6 +142,11 @@ describe('RetryStrategy', () => {
     });
 
     it('should respect max delay', async () => {
+      // Fake timers: with real timers this awaits 500+1000+1000+1000+1000 =
+      // 4500ms of wall-clock. runAllTimersAsync fires the retry-delay
+      // cascade instantly + deterministically (the afterEach restores real
+      // timers). Same pattern as the exponential-backoff test above.
+      jest.useFakeTimers();
       const strategy = new RetryStrategy({
         maxRetries: 5,
         initialDelay: 500,
@@ -155,10 +160,12 @@ describe('RetryStrategy', () => {
         .mockRejectedValue(new NetworkError('Failed'));
       const delays: number[] = [];
 
-      await strategy.execute(operation, {
+      const promise = strategy.execute(operation, {
         onRetry: (error: Error, attempt: number, delay: number) =>
           delays.push(delay),
       });
+      await jest.runAllTimersAsync();
+      await promise;
 
       // 500, 1000, 1000, 1000, 1000 (capped at maxDelay)
       expect(delays).toEqual([500, 1000, 1000, 1000, 1000]);
@@ -167,6 +174,15 @@ describe('RetryStrategy', () => {
 
   describe('Jitter', () => {
     it('should add jitter to prevent thundering herd', async () => {
+      // Fake timers: with real timers this awaits up to 1500+3000+6000 =
+      // ~10.5s of wall-clock — it exceeded the 10s jest testTimeout on the
+      // slower CI runner (passed locally on fast hardware = flaky-by-real-
+      // timer, the root cause of the autotask-node CI RED). The jitter
+      // math (Math.random) still computes real delay VALUES captured via
+      // onRetry; runAllTimersAsync fires the scheduled timers instantly so
+      // we assert the jitter RANGES without waiting. afterEach restores
+      // real timers. Same pattern as the exponential-backoff test above.
+      jest.useFakeTimers();
       const strategy = new RetryStrategy({
         maxRetries: 3,
         initialDelay: 1000,
@@ -179,10 +195,12 @@ describe('RetryStrategy', () => {
         .mockRejectedValue(new NetworkError('Failed'));
       const delays: number[] = [];
 
-      await strategy.execute(operation, {
+      const promise = strategy.execute(operation, {
         onRetry: (error: Error, attempt: number, delay: number) =>
           delays.push(delay),
       });
+      await jest.runAllTimersAsync();
+      await promise;
 
       // With 50% jitter, delays should be within ±50% of base delay
       expect(delays[0]).toBeGreaterThanOrEqual(500); // 1000 - 50%
