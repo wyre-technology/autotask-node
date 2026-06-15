@@ -136,7 +136,7 @@
     "jest-junit": "^17.0.0",
     "lint-staged": "^17.0.7",
     "nock": "^14.0.15",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "semantic-release": "^25.0.2",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.1",
