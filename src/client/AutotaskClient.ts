@@ -281,6 +281,10 @@ export class AutotaskClient {
           process.env.AUTOTASK_API_INTEGRATION_CODE!,
         secret: process.env.AUTOTASK_SECRET || process.env.AUTOTASK_API_SECRET!,
         apiUrl: process.env.AUTOTASK_API_URL,
+        impersonationResourceId:
+          process.env.AUTOTASK_IMPERSONATION_RESOURCE_ID === undefined
+            ? undefined
+            : parseInt(process.env.AUTOTASK_IMPERSONATION_RESOURCE_ID),
       };
 
       if (!config.username || !config.integrationCode || !config.secret) {
@@ -410,6 +414,9 @@ export class AutotaskClient {
         ApiIntegrationCode: config.integrationCode,
         UserName: config.username,
         Secret: config.secret,
+        ...(config.impersonationResourceId && {
+          ImpersonationResourceId: String(config.impersonationResourceId),
+        }),
       },
       transformRequest: [
         (data, headers) => {
