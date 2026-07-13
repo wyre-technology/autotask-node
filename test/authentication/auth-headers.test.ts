@@ -199,4 +199,61 @@ describe('Autotask Authentication Headers', () => {
       );
     }
   });
+
+  it('should properly set include ImpersonationResourceId header when AUTOTASK_IMPERSONATION_RESOURCE_ID env var is provided', async () => {
+    const originalEnv = { ...process.env };
+
+    const mockAxiosCreate = jest.spyOn(axios, 'create');
+
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({
+      data: {
+        url: 'https://webservices14.autotask.net/ATServicesRest/',
+      },
+    });
+
+    mockAxiosCreate.mockReturnValue({
+      get: jest.fn().mockResolvedValue({ data: {} }),
+      defaults: { headers: { common: {} } },
+      interceptors: {
+        request: { use: jest.fn() },
+        response: { use: jest.fn() },
+      },
+    } as any);
+
+    try {
+      process.env.AUTOTASK_USERNAME = 'test@example.com';
+      process.env.AUTOTASK_IMPERSONATION_RESOURCE_ID = '12345';
+      process.env.AUTOTASK_INTEGRATION_CODE = 'TEST_INTEGRATION_CODE';
+      process.env.AUTOTASK_SECRET = 'TEST_SECRET';
+
+      await AutotaskClient.create();
+
+      expect(mockAxiosCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            ImpersonationResourceId: '12345',
+          }),
+        })
+      );
+    } finally {
+      process.env = originalEnv;
+    }
+  });
+
+  it('should fail if an invalid value for AUTOTASK_IMPERSONATION_RESOURCE_ID env var is provided', async () => {
+    const originalEnv = { ...process.env };
+
+    try {
+      process.env.AUTOTASK_USERNAME = 'test@example.com';
+      process.env.AUTOTASK_IMPERSONATION_RESOURCE_ID = 'not-a-number';
+      process.env.AUTOTASK_INTEGRATION_CODE = 'TEST_INTEGRATION_CODE';
+      process.env.AUTOTASK_SECRET = 'TEST_SECRET';
+
+      await expect(AutotaskClient.create()).rejects.toThrow(
+        'AUTOTASK_IMPERSONATION_RESOURCE_ID must be a positive integer'
+      );
+    } finally {
+      process.env = originalEnv;
+    }
+  });
 });
