@@ -1,43 +1,40 @@
+# Canonical Dependabot config for the wyre-technology fleet.
+#
+# Goal: keep PR volume manageable. Updates are GROUPED so this repo gets a
+# handful of PRs per week instead of one-per-package. The dependabot-janitor
+# (org-level, twice-daily) auto-merges green grouped/minor/patch PRs and
+# dev/CI-tooling majors; runtime majors are held for human review.
 version: 2
 updates:
-  # Enable version updates for npm
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "asachs01"
-    assignees:
-      - "asachs01"
     commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
+      prefix: "deps"
+      prefix-development: "deps-dev"
       include: "scope"
-    labels:
-      - "dependencies"
-      - "npm"
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+        update-types: ["major", "minor", "patch"]
+      production-minor-patch:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
     ignore:
       # No patched version available upstream as of 2026-05-07
       - dependency-name: "ip-address"
-    
-  # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "asachs01"
-    assignees:
-      - "asachs01"
     commit-message:
-      prefix: "chore"
+      prefix: "ci"
       include: "scope"
-    labels:
-      - "dependencies"
-      - "github-actions" 
+    groups:
+      github-actions:
+        patterns: ["*"]
