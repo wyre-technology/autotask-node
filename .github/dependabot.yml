@@ -23,6 +23,9 @@ updates:
       production-minor-patch:
         dependency-type: "production"
         update-types: ["minor", "patch"]
+    ignore:
+      # No patched version available upstream as of 2026-05-07
+      - dependency-name: "ip-address"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
